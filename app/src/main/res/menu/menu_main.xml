@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.byteflow.openglcamera2.MainActivity">
+    <item
+        android:id="@+id/action_change_sample"
+        android:icon="@drawable/ic_aspect_sample"
+        android:title="@string/select_sample"
+        app:showAsAction="ifRoom" />
+
+</menu>

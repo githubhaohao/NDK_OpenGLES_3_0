@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">NDK_OpenGLES_3_0</string>
+    <string name="select_sample">Select Sample</string>
+</resources>
