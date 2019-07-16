@@ -136,14 +136,12 @@ void TextureMapSample::CreateTexture()
 
 }
 
-void TextureMapSample::DeleteTexture()
+void TextureMapSample::Destroy()
 {
-	if (m_TextureId)
+	if (m_ProgramObj)
 	{
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, GL_NONE);
+		glDeleteProgram(m_ProgramObj);
 		glDeleteTextures(1, &m_TextureId);
-		m_TextureId = 0;
 	}
 
 }

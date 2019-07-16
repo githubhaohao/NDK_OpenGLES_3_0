@@ -22,10 +22,10 @@ public:
 
 	virtual void Draw();
 
+	virtual void Destroy();
+
 private:
 	void CreateTexture();
-
-	void DeleteTexture();
 
 	GLuint m_TextureId;
 	GLint m_SamplerLoc;

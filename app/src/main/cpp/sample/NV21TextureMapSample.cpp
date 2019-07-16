@@ -135,3 +135,14 @@ void NV21TextureMapSample::Draw()
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
+
+void NV21TextureMapSample::Destroy()
+{
+	if (m_ProgramObj)
+	{
+		glDeleteProgram(m_ProgramObj);
+		glDeleteTextures(1, &m_yTextureId);
+		glDeleteTextures(1, &m_uvTextureId);
+	}
+
+}

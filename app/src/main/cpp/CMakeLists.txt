@@ -29,6 +29,7 @@ add_library( # Sets the name of the library.
         sample/TriangleSample.cpp
         sample/TextureMapSample.cpp
         sample/NV21TextureMapSample.cpp
+        sample/VaoSample.cpp
               )
 
 # Searches for a specified prebuilt library and stores the path as a
