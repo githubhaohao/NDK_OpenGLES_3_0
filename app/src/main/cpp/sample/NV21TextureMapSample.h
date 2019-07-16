@@ -33,6 +33,8 @@ public:
 
 	virtual void Draw();
 
+	virtual void Destroy();
+
 private:
 	GLuint m_yTextureId;
 	GLuint m_uvTextureId;

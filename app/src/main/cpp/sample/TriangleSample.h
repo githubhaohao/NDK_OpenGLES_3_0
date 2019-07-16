@@ -19,6 +19,8 @@ public:
 	virtual void Init();
 
 	virtual void Draw();
+
+	virtual void Destroy();
 };
 
 

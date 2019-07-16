@@ -5,13 +5,15 @@
 #include <TriangleSample.h>
 #include <TextureMapSample.h>
 #include <NV21TextureMapSample.h>
+#include <VaoSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
-const int SAMPLE_TYPE  =   200;
-const int SAMPLE_TYPE_KEY_TRIANGLE = 0;
-const int SAMPLE_TYPE_KEY_TEXTURE_MAP = 1;
+const int SAMPLE_TYPE                     = 200;
+const int SAMPLE_TYPE_KEY_TRIANGLE        = 0;
+const int SAMPLE_TYPE_KEY_TEXTURE_MAP     = 1;
 const int SAMPLE_TYPE_KEY_YUV_TEXTURE_MAP = 2;
+const int SAMPLE_TYPE_KEY_VAO             = 3;
 
 
 MyGLRenderContext* MyGLRenderContext::m_pContext = nullptr;
@@ -55,6 +57,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value)
 			case SAMPLE_TYPE_KEY_YUV_TEXTURE_MAP:
 				m_Sample = new NV21TextureMapSample();
 				break;
+			case SAMPLE_TYPE_KEY_VAO:
+				m_Sample = new VaoSample();
+				break;
 			default:
 				break;
 		}
@@ -95,7 +100,7 @@ void MyGLRenderContext::SetImageData(int format, int width, int height, uint8_t 
 void MyGLRenderContext::OnSurfaceCreated()
 {
 	LOGCATE("MyGLRenderContext::OnSurfaceCreated");
-	glClearColor(1.0f,1.0f,0.5f, 1.0f);
+	glClearColor(1.0f,1.0f,1.0f, 1.0f);
 }
 
 void MyGLRenderContext::OnSurfaceChanged(int width, int height)
@@ -113,6 +118,7 @@ void MyGLRenderContext::OnDrawFrame()
 	{
 		m_Sample->Init();
 		m_Sample->Draw();
+		m_Sample->Destroy();
 	}
 }
 

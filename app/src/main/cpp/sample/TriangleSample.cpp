@@ -13,15 +13,18 @@ TriangleSample::TriangleSample()
 
 TriangleSample::~TriangleSample()
 {
-	if (m_ProgramObj)
-	{
-		glDeleteProgram(m_ProgramObj);
-	}
+}
+
+
+void TriangleSample::LoadImage(NativeImage *pImage)
+{
+	//null implement
 
 }
 
 void TriangleSample::Init()
 {
+
 	char vShaderStr[] =
 			"#version 300 es                          \n"
 			"layout(location = 0) in vec4 vPosition;  \n"
@@ -66,8 +69,11 @@ void TriangleSample::Draw()
 
 }
 
-void TriangleSample::LoadImage(NativeImage *pImage)
+void TriangleSample::Destroy()
 {
-	//null implement
+	if (m_ProgramObj)
+	{
+		glDeleteProgram(m_ProgramObj);
+	}
 
 }

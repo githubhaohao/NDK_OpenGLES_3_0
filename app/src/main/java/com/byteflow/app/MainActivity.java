@@ -35,8 +35,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int SAMPLE_TYPE_KEY_TRIANGLE = 0;
     private static final int SAMPLE_TYPE_KEY_TEXTURE_MAP = 1;
     private static final int SAMPLE_TYPE_KEY_YUV_TEXTURE_MAP = 2;
+    private static final int SAMPLE_TYPE_KEY_VAO = 3;
 
-    private static final String[] SAMPLE_TITLES = {"绘制三角形","纹理映射","绘制YUV图"};
+
+    private static final String[] SAMPLE_TITLES = {"绘制三角形","纹理映射","绘制YUV图","VAO&VBO"};
     private MyGLSurfaceView mGLSurfaceView;
     private int mSampleSelectedIndex = 0;
 
@@ -49,13 +51,17 @@ public class MainActivity extends AppCompatActivity {
         mGLSurfaceView = findViewById(R.id.my_gl_surface_view);
         mGLSurfaceView.getNativeRender().native_OnInit();
 
-        LoadNV21Image();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mGLSurfaceView.getNativeRender().native_OnUnInit();
+
+        /*
+        * Once the EGL context gets destroyed all the GL buffers etc will get destroyed with it,
+        * so this is unnecessary.
+        * */
     }
 
     @Override
@@ -173,8 +179,10 @@ public class MainActivity extends AppCompatActivity {
                     case SAMPLE_TYPE_KEY_YUV_TEXTURE_MAP:
                         LoadNV21Image();
                         break;
-                        default:
-                            break;
+                    case SAMPLE_TYPE_KEY_VAO:
+                        break;
+                    default:
+                        break;
                 }
 
                 mGLSurfaceView.requestRender();

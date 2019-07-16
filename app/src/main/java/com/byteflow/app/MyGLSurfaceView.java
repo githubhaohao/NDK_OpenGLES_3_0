@@ -62,5 +62,6 @@ public class MyGLSurfaceView extends GLSurfaceView {
             mNativeRender.native_OnDrawFrame();
 
         }
+
     }
 }
