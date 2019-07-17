@@ -7,6 +7,9 @@
 
 #include <malloc.h>
 #include <string.h>
+#include <unistd.h>
+#include "stdio.h"
+#include "sys/stat.h"
 #include "stdint.h"
 #include "LogUtil.h"
 
@@ -14,6 +17,11 @@
 #define IMAGE_FORMAT_NV21           0x02
 #define IMAGE_FORMAT_NV12           0x03
 #define IMAGE_FORMAT_I420           0x04
+
+#define IMAGE_FORMAT_RGBA_EXT       "RGB32"
+#define IMAGE_FORMAT_NV21_EXT       "NV21"
+#define IMAGE_FORMAT_NV12_EXT       "NV12"
+#define IMAGE_FORMAT_I420_EXT       "I420"
 
 typedef struct _tag_NativeImage
 {
@@ -107,6 +115,85 @@ public:
 			}
 				break;
 		}
+
+	}
+
+	static void DumpNativeImage(NativeImage *pSrcImg, const char *pPath, const char *pFileName)
+	{
+		if (pSrcImg == nullptr || pPath == nullptr || pFileName == nullptr) return;
+
+		if(access(pPath, 0) == -1)
+		{
+			mkdir(pPath, 0666);
+		}
+
+		char imgPath[256] = {0};
+		const char *pExt = nullptr;
+		switch (pSrcImg->format)
+		{
+			case IMAGE_FORMAT_I420:
+				pExt = IMAGE_FORMAT_I420_EXT;
+				break;
+			case IMAGE_FORMAT_NV12:
+				pExt = IMAGE_FORMAT_NV12_EXT;
+				break;
+			case IMAGE_FORMAT_NV21:
+				pExt = IMAGE_FORMAT_NV21_EXT;
+				break;
+			case IMAGE_FORMAT_RGBA:
+				pExt = IMAGE_FORMAT_RGBA_EXT;
+				break;
+			default:
+				pExt = "Default";
+				break;
+		}
+
+		sprintf(imgPath, "%s/IMG_%dx%d_%s.%s", pPath, pSrcImg->width, pSrcImg->height, pFileName, pExt);
+
+		FILE *fp = fopen(imgPath, "wb");
+
+		LOGCATE("DumpNativeImage fp=%p, file=%s", fp, imgPath);
+
+		if(fp)
+		{
+			switch (pSrcImg->format)
+			{
+				case IMAGE_FORMAT_I420:
+				{
+					fwrite(pSrcImg->ppPlane[0],
+						   static_cast<size_t>(pSrcImg->width * pSrcImg->height), 1, fp);
+					fwrite(pSrcImg->ppPlane[1],
+						   static_cast<size_t>((pSrcImg->width >> 1) * (pSrcImg->height >> 1)), 1, fp);
+					fwrite(pSrcImg->ppPlane[2],
+							static_cast<size_t>((pSrcImg->width >> 1) * (pSrcImg->height >> 1)),1,fp);
+					break;
+				}
+				case IMAGE_FORMAT_NV21:
+				case IMAGE_FORMAT_NV12:
+				{
+					fwrite(pSrcImg->ppPlane[0],
+						   static_cast<size_t>(pSrcImg->width * pSrcImg->height), 1, fp);
+					fwrite(pSrcImg->ppPlane[1],
+						   static_cast<size_t>(pSrcImg->width * (pSrcImg->height >> 1)), 1, fp);
+					break;
+				}
+				case IMAGE_FORMAT_RGBA:
+				{
+					fwrite(pSrcImg->ppPlane[0],
+						   static_cast<size_t>(pSrcImg->width * pSrcImg->height * 4), 1, fp);
+					break;
+				}
+				default:
+				{
+					LOGCATE("DumpNativeImage default");
+					break;
+				}
+			}
+
+			fclose(fp);
+			fp = NULL;
+		}
+
 
 	}
 };

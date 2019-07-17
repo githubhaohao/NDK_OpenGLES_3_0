@@ -2,6 +2,7 @@ package com.byteflow.app;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -18,6 +19,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
+
+import com.byteflow.app.egl.EGLActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,9 +39,11 @@ public class MainActivity extends AppCompatActivity {
     private static final int SAMPLE_TYPE_KEY_TEXTURE_MAP = 1;
     private static final int SAMPLE_TYPE_KEY_YUV_TEXTURE_MAP = 2;
     private static final int SAMPLE_TYPE_KEY_VAO = 3;
+    private static final int SAMPLE_TYPE_KEY_FBO = 4;
+    private static final int SAMPLE_TYPE_KEY_EGL = 5;
 
 
-    private static final String[] SAMPLE_TITLES = {"绘制三角形","纹理映射","绘制YUV图","VAO&VBO"};
+    private static final String[] SAMPLE_TITLES = {"绘制三角形","纹理映射","YUV 图渲染","VAO&VBO","FBO 离屏渲染","EGL 后台渲染"};
     private MyGLSurfaceView mGLSurfaceView;
     private int mSampleSelectedIndex = 0;
 
@@ -82,8 +87,8 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void LoadRGBAImage() {
-        InputStream is = this.getResources().openRawResource(R.drawable.dzzz);
+    private void LoadRGBAImage(int resId) {
+        InputStream is = this.getResources().openRawResource(resId);
         Bitmap bitmap;
         try {
             bitmap = BitmapFactory.decodeStream(is);
@@ -171,12 +176,18 @@ public class MainActivity extends AppCompatActivity {
                     case SAMPLE_TYPE_KEY_TRIANGLE:
                         break;
                     case SAMPLE_TYPE_KEY_TEXTURE_MAP:
-                        LoadRGBAImage();
+                        LoadRGBAImage(R.drawable.dzzz);
                         break;
                     case SAMPLE_TYPE_KEY_YUV_TEXTURE_MAP:
                         LoadNV21Image();
                         break;
                     case SAMPLE_TYPE_KEY_VAO:
+                        break;
+                    case SAMPLE_TYPE_KEY_FBO:
+                        LoadRGBAImage(R.drawable.java);
+                        break;
+                    case SAMPLE_TYPE_KEY_EGL:
+                        startActivity(new Intent(MainActivity.this, EGLActivity.class));
                         break;
                     default:
                         break;

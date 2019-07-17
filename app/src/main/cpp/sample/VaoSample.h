@@ -1,5 +1,5 @@
 //
-// Created by chh7563 on 2019/7/15.
+// Created by ByteFlow on 2019/7/15.
 //
 
 #ifndef NDK_OPENGLES_3_0_VAOSAMPLE_H
@@ -18,7 +18,7 @@ public:
 	virtual void LoadImage(NativeImage *pImage);
 
 	virtual void Init();
-	virtual void Draw();
+	virtual void Draw(int screenW, int screenH);
 	virtual void Destroy();
 
 private:

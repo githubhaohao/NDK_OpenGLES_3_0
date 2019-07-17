@@ -1,5 +1,5 @@
 //
-// Created by chh7563 on 2019/7/15.
+// Created by ByteFlow on 2019/7/15.
 //
 
 #include "VaoSample.h"
@@ -89,7 +89,6 @@ void VaoSample::Init()
 	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr, m_VertexShader, m_FragmentShader);
 
 	// Generate VBO Ids and load the VBOs with data
-
 	glGenBuffers(2, m_VboIds);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -114,7 +113,7 @@ void VaoSample::Init()
 	glBindVertexArray(GL_NONE);
 }
 
-void VaoSample::Draw()
+void VaoSample::Draw(int screenW, int screenH)
 {
 	if(m_ProgramObj == 0) return;
 

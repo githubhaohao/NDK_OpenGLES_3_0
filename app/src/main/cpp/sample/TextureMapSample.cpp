@@ -55,7 +55,7 @@ void TextureMapSample::Init()
 
 }
 
-void TextureMapSample::Draw()
+void TextureMapSample::Draw(int screenW, int screenH)
 {
 	LOGCATE("TextureMapSample::Draw()");
 
@@ -70,10 +70,10 @@ void TextureMapSample::Draw()
 	//glViewport(0, 0, m_RenderImage.width, m_RenderImage.height);
 
 	GLfloat verticesCoords[] = {
-			-1.0f,  0.42f, 0.0f,  // Position 0
-			-1.0f, -0.42f, 0.0f,  // Position 1
-			 1.0f, -0.42f, 0.0f,  // Position 2
-			 1.0f,  0.42f, 0.0f,  // Position 3
+			-1.0f,  0.5f, 0.0f,  // Position 0
+			-1.0f, -0.5f, 0.0f,  // Position 1
+			 1.0f, -0.5f, 0.0f,  // Position 2
+			 1.0f,  0.5f, 0.0f,  // Position 3
 	};
 
 	GLfloat textureCoords[] = {

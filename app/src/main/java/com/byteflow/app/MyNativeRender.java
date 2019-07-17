@@ -9,7 +9,7 @@ public class MyNativeRender {
 
     public native void native_OnUnInit();
 
-    protected native void native_SetParamsInt(int paramType, int value);
+    public native void native_SetParamsInt(int paramType, int value);
 
     public native void native_SetImageData(int format, int width, int height, byte[] bytes);
 

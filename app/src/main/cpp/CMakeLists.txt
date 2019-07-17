@@ -24,12 +24,14 @@ add_library( # Sets the name of the library.
 
              # Provides a relative path to your source file(s).
              JniImpl.cpp
-             render/MyGLRenderContext.cpp
+        render/MyGLRenderContext.cpp
+        render/BgRender.cpp
              util/GLUtils.cpp
         sample/TriangleSample.cpp
         sample/TextureMapSample.cpp
         sample/NV21TextureMapSample.cpp
         sample/VaoSample.cpp
+        sample/FBOSample.cpp
               )
 
 # Searches for a specified prebuilt library and stores the path as a
@@ -55,5 +57,6 @@ target_link_libraries( # Specifies the target library.
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib}
+                       EGL
                        GLESv3
                        )

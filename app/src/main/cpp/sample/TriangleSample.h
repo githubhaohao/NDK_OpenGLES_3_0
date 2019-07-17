@@ -18,7 +18,7 @@ public:
 
 	virtual void Init();
 
-	virtual void Draw();
+	virtual void Draw(int screenW, int screenH);
 
 	virtual void Destroy();
 };

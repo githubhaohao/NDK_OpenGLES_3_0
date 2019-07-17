@@ -17,22 +17,20 @@
 
 #define FUN_BEGIN_TIME(FUN) {\
     LOGCATE("%s:%s start", __FILE__, FUN); \
-    long long t0 = GetCurrentTime();
+    long long t0 = GetSysCurrentTime();
 
 #define FUN_END_TIME(FUN) \
-    long long t1 = GetCurrentTime(); \
+    long long t1 = GetSysCurrentTime(); \
     LOGCATE("%s:%s cost time %ldms", __FILE__, FUN, (long)(t1-t0));}
 
-static long long GetCurrentTime()
+static long long GetSysCurrentTime()
 {
-#if defined(__linux__)
 	struct timeval time;
 	gettimeofday(&time, NULL);
 	long long curTime = ((long long)(time.tv_sec))*1000+time.tv_usec/1000;
 	return curTime;
-#elif defined(_WIN32)
-	return  (long long)timeGetTime();
-#endif
 }
+
+#define GO_CHECK_GL_ERROR(...)   LOGCATE("CHECK_GL_ERROR %s glGetError = %ld, line = %d, ",  __FUNCTION__, glGetError(), __LINE__)
 
 #endif //BYTEFLOW_LOGUTIL_H

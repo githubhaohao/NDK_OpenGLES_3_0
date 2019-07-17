@@ -6,6 +6,7 @@
 #include <TextureMapSample.h>
 #include <NV21TextureMapSample.h>
 #include <VaoSample.h>
+#include <FBOSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -14,6 +15,8 @@ const int SAMPLE_TYPE_KEY_TRIANGLE        = 0;
 const int SAMPLE_TYPE_KEY_TEXTURE_MAP     = 1;
 const int SAMPLE_TYPE_KEY_YUV_TEXTURE_MAP = 2;
 const int SAMPLE_TYPE_KEY_VAO             = 3;
+const int SAMPLE_TYPE_KEY_FBO             = 4;
+
 
 
 MyGLRenderContext* MyGLRenderContext::m_pContext = nullptr;
@@ -59,6 +62,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value)
 				break;
 			case SAMPLE_TYPE_KEY_VAO:
 				m_Sample = new VaoSample();
+				break;
+			case SAMPLE_TYPE_KEY_FBO:
+				m_Sample = new FBOSample();
 				break;
 			default:
 				break;
@@ -107,6 +113,8 @@ void MyGLRenderContext::OnSurfaceChanged(int width, int height)
 {
 	LOGCATE("MyGLRenderContext::OnSurfaceChanged [w, h] = [%d, %d]", width, height);
 	glViewport(0, 0, width, height);
+	m_ScreenW = width;
+	m_ScreenH = height;
 }
 
 void MyGLRenderContext::OnDrawFrame()
@@ -117,7 +125,7 @@ void MyGLRenderContext::OnDrawFrame()
 	if (m_Sample)
 	{
 		m_Sample->Init();
-		m_Sample->Draw();
+		m_Sample->Draw(m_ScreenW, m_ScreenH);
 		m_Sample->Destroy();
 	}
 }

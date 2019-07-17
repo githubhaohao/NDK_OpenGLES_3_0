@@ -64,7 +64,7 @@ void NV21TextureMapSample::Init()
 	m_uvTextureId = textureIds[1];
 }
 
-void NV21TextureMapSample::Draw()
+void NV21TextureMapSample::Draw(int screenW, int screenH)
 {
 	LOGCATE("NV21TextureMapSample::Draw()");
 

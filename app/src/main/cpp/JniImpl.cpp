@@ -3,9 +3,11 @@
 //
 #include "util/LogUtil.h"
 #include <MyGLRenderContext.h>
+#include <BgRender.h>
 #include "jni.h"
 
 #define NATIVE_RENDER_CLASS_NAME "com/byteflow/app/MyNativeRender"
+#define NATIVE_BG_RENDER_CLASS_NAME "com/byteflow/app/egl/NativeBgRender"
 
 #ifdef __cplusplus
 extern "C" {
@@ -91,6 +93,66 @@ JNIEXPORT void JNICALL native_OnDrawFrame(JNIEnv *env, jobject instance)
 
 }
 
+
+/*
+ * Class:     com_byteflow_app_egl_NativeBgRender
+ * Method:    native_BgRenderInit
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL native_BgRenderInit(JNIEnv *env, jobject instance)
+{
+	BgRender::GetInstance()->Init();
+
+}
+
+/*
+ * Class:     com_byteflow_app_egl_NativeBgRender
+ * Method:    native_BgRenderSetImageData
+ * Signature: ([BII)V
+ */
+JNIEXPORT void JNICALL native_BgRenderSetImageData(JNIEnv *env, jobject instance, jbyteArray data, jint width, jint height)
+{
+	int len = env->GetArrayLength (data);
+	uint8_t* buf = new uint8_t[len];
+	env->GetByteArrayRegion(data, 0, len, reinterpret_cast<jbyte*>(buf));
+	BgRender::GetInstance()->SetImageData(buf, width, height);
+	delete[] buf;
+	env->DeleteLocalRef(data);
+
+
+}
+
+/*
+ * Class:     com_byteflow_app_egl_NativeBgRender
+ * Method:    native_BgRenderSetIntParams
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL native_BgRenderSetIntParams(JNIEnv *env, jobject instance, jint type, jint param)
+{
+	BgRender::GetInstance()->SetIntParams(type, param);
+
+}
+
+/*
+ * Class:     com_byteflow_app_egl_NativeBgRender
+ * Method:    native_BgRenderDraw
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL native_BgRenderDraw(JNIEnv *env, jobject instance)
+{
+	BgRender::GetInstance()->Draw();
+}
+
+/*
+ * Class:     com_byteflow_app_egl_NativeBgRender
+ * Method:    natuve_BgRenderUnInit
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL native_BgRenderUnInit(JNIEnv *env, jobject instance)
+{
+	BgRender::GetInstance()->UnInit();
+}
+
 #ifdef __cplusplus
 }
 #endif
@@ -103,6 +165,14 @@ static JNINativeMethod g_RenderMethods[] = {
 		{"native_OnSurfaceCreated",   "()V",       (void *)(native_OnSurfaceCreated)},
 		{"native_OnSurfaceChanged",   "(II)V",     (void *)(native_OnSurfaceChanged)},
 		{"native_OnDrawFrame",        "()V",       (void *)(native_OnDrawFrame)},
+};
+
+static JNINativeMethod g_BgRenderMethods[] = {
+		{"native_BgRenderInit",          "()V",       (void *)(native_BgRenderInit)},
+		{"native_BgRenderSetImageData",  "([BII)V",   (void *)(native_BgRenderSetImageData)},
+		{"native_BgRenderSetIntParams",  "(II)V",     (void *)(native_BgRenderSetIntParams)},
+		{"native_BgRenderDraw",          "()V",       (void *)(native_BgRenderDraw)},
+		{"native_BgRenderUnInit",        "()V",       (void *)(native_BgRenderUnInit)},
 };
 
 static int RegisterNativeMethods(JNIEnv *env, const char *className, JNINativeMethod *methods, int methodNum)
@@ -156,6 +226,14 @@ extern "C" jint JNI_OnLoad(JavaVM *jvm, void *p)
 		return JNI_ERR;
 	}
 
+	regRet = RegisterNativeMethods(env, NATIVE_BG_RENDER_CLASS_NAME, g_BgRenderMethods,
+										sizeof(g_BgRenderMethods) /
+										sizeof(g_BgRenderMethods[0]));
+	if (regRet != JNI_TRUE)
+	{
+		return JNI_ERR;
+	}
+
 	return JNI_VERSION_1_6;
 }
 
@@ -168,4 +246,6 @@ extern "C" void JNI_OnUnload(JavaVM *jvm, void *p)
 	}
 
 	UnregisterNativeMethods(env, NATIVE_RENDER_CLASS_NAME);
+
+	UnregisterNativeMethods(env, NATIVE_BG_RENDER_CLASS_NAME);
 }
