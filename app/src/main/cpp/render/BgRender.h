@@ -22,6 +22,8 @@ public:
 
     int CreateGlesEnv();
 
+    //void CreateProgram(const char *vShaderStr, const char *fShaderStr);
+
     void SetImageData(uint8_t *pData, int width, int height);
 
     void SetIntParams(int paramType, int param);
@@ -57,8 +59,8 @@ private:
 	GLuint m_ImageTextureId;
 	GLuint m_FboTextureId;
 	GLuint m_FboId;
-	GLuint m_VaoIds[2];
-	GLuint m_VboIds[4];
+	GLuint m_VaoIds[1];
+	GLuint m_VboIds[3];
 	GLint m_SamplerLoc;
 	NativeImage m_RenderImage;
 	GLuint m_ProgramObj;
@@ -68,7 +70,8 @@ private:
 	EGLConfig  m_eglConf;
 	EGLSurface m_eglSurface;
 	EGLContext m_eglCtx;
-	EGLDisplay m_eglDisp;
+	EGLDisplay m_eglDisplay;
+	bool       m_IsGLContextReady;
 };
 
 

@@ -1,23 +1,54 @@
 package com.byteflow.app.egl;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.opengl.GLES20;
+import android.opengl.GLException;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import com.byteflow.app.R;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+
+
 public class EGLActivity extends AppCompatActivity {
     private static final String TAG = "EGLActivity";
+    private ImageView mImageView;
+    private Button mBtn;
+    private NativeBgRender mBgRender;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_egl);
-        NativeBgRender bgRender = new NativeBgRender();
-        bgRender.native_BgRenderInit();
-        bgRender.native_BgRenderUnInit();
+
+        mImageView = findViewById(R.id.imageView);
+        mBtn = findViewById(R.id.button);
+        mBgRender = new NativeBgRender();
+
+        mBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mBtn.getText().equals(EGLActivity.this.getResources().getString(R.string.btn_txt_reset))) {
+                    mImageView.setImageResource(R.drawable.java);
+                    mBtn.setText(R.string.bg_render_txt);
+                } else {
+                    startBgRender();
+                    mBtn.setText(R.string.btn_txt_reset);
+                }
+            }
+        });
+
     }
 
     @Override
@@ -51,5 +82,65 @@ public class EGLActivity extends AppCompatActivity {
             //showGLSampleDialog();
         }
         return true;
+    }
+
+    private void startBgRender() {
+        mBgRender.native_BgRenderInit();
+        loadRGBAImage(R.drawable.java, mBgRender);
+        mBgRender.native_BgRenderDraw();
+        mImageView.setImageBitmap(createBitmapFromGLSurface(0, 0, 421, 586));
+        mBgRender.native_BgRenderUnInit();
+    }
+
+    private void loadRGBAImage(int resId, NativeBgRender render) {
+        InputStream is = this.getResources().openRawResource(resId);
+        Bitmap bitmap;
+        try {
+            bitmap = BitmapFactory.decodeStream(is);
+            if (bitmap != null) {
+                int bytes = bitmap.getByteCount();
+                ByteBuffer buf = ByteBuffer.allocate(bytes);
+                bitmap.copyPixelsToBuffer(buf);
+                byte[] byteArray = buf.array();
+                render.native_BgRenderSetImageData(byteArray, bitmap.getWidth(), bitmap.getHeight());
+            }
+        }
+        finally
+        {
+            try
+            {
+                is.close();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private Bitmap createBitmapFromGLSurface(int x, int y, int w, int h) {
+        int bitmapBuffer[] = new int[w * h];
+        int bitmapSource[] = new int[w * h];
+        IntBuffer intBuffer = IntBuffer.wrap(bitmapBuffer);
+        intBuffer.position(0);
+        try {
+            GLES20.glReadPixels(x, y, w, h, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE,
+                    intBuffer);
+            int offset1, offset2;
+            for (int i = 0; i < h; i++) {
+                offset1 = i * w;
+                offset2 = (h - i - 1) * w;
+                for (int j = 0; j < w; j++) {
+                    int texturePixel = bitmapBuffer[offset1 + j];
+                    int blue = (texturePixel >> 16) & 0xff;
+                    int red = (texturePixel << 16) & 0x00ff0000;
+                    int pixel = (texturePixel & 0xff00ff00) | red | blue;
+                    bitmapSource[offset2 + j] = pixel;
+                }
+            }
+        } catch (GLException e) {
+            return null;
+        }
+        return Bitmap.createBitmap(bitmapSource, w, h, Bitmap.Config.ARGB_8888);
     }
 }
