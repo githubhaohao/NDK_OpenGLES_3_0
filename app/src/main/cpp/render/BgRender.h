@@ -62,6 +62,7 @@ private:
 	GLuint m_VaoIds[1];
 	GLuint m_VboIds[3];
 	GLint m_SamplerLoc;
+	GLint m_TexSizeLoc;
 	NativeImage m_RenderImage;
 	GLuint m_ProgramObj;
 	GLuint m_VertexShader;

@@ -32,6 +32,68 @@ const char fShaderStr[] =
 		"    outColor = texture(s_TextureMap, v_texCoord);\n"
 		"}";
 
+const char fShaderStr0[] =
+		"#version 300 es\n"
+		"precision highp float;\n"
+		"layout(location = 0) out vec4 outColor;\n"
+		"in vec2 v_texCoord;\n"
+		"uniform sampler2D s_TextureMap;\n"
+		"uniform vec2 u_texSize;\n"
+		"\n"
+		"vec4 CrossStitching(vec2 uv) {\n"
+		"    float stitchSize = u_texSize.x / 35.0;\n"
+		"    int invert = 0;\n"
+		"    vec4 color = vec4(0.0);\n"
+		"    float size = stitchSize;\n"
+		"    vec2 cPos = uv * u_texSize.xy;\n"
+		"    vec2 tlPos = floor(cPos / vec2(size, size));\n"
+		"    tlPos *= size;\n"
+		"    int remX = int(mod(cPos.x, size));\n"
+		"    int remY = int(mod(cPos.y, size));\n"
+		"    if (remX == 0 && remY == 0)\n"
+		"    tlPos = cPos;\n"
+		"    vec2 blPos = tlPos;\n"
+		"    blPos.y += (size - 1.0);\n"
+		"    if ((remX == remY) || (((int(cPos.x) - int(blPos.x)) == (int(blPos.y) - int(cPos.y))))) {\n"
+		"        if (invert == 1)\n"
+		"        color = vec4(0.2, 0.15, 0.05, 1.0);\n"
+		"        else\n"
+		"        color = texture(s_TextureMap, tlPos * vec2(1.0 / u_texSize.x, 1.0 / u_texSize.y)) * 1.4;\n"
+		"    } else {\n"
+		"        if (invert == 1)\n"
+		"        color = texture(s_TextureMap, tlPos * vec2(1.0 / u_texSize.x, 1.0 / u_texSize.y)) * 1.4;\n"
+		"        else\n"
+		"        color = vec4(0.0, 0.0, 0.0, 1.0);\n"
+		"    }\n"
+		"    return color;\n"
+		"}\n"
+		"void main() {\n"
+		"    outColor = CrossStitching(v_texCoord);\n"
+		"}";
+
+const char fShaderStr1[] =
+		"#version 300 es\n"
+		"precision highp float;\n"
+		"layout(location = 0) out vec4 outColor;\n"
+		"in vec2 v_texCoord;\n"
+		"uniform sampler2D s_TextureMap;\n"
+		"uniform vec2 u_texSize;\n"
+		"void main() {\n"
+		"    float size = u_texSize.x / 75.0;\n"
+		"    float radius = size * 0.5;\n"
+		"    vec2 fragCoord = v_texCoord * u_texSize.xy;\n"
+		"    vec2 quadPos = floor(fragCoord.xy / size) * size;\n"
+		"    vec2 quad = quadPos/u_texSize.xy;\n"
+		"    vec2 quadCenter = (quadPos + size/2.0);\n"
+		"    float dist = length(quadCenter - fragCoord.xy);\n"
+		"\n"
+		"    if (dist > radius) {\n"
+		"        outColor = vec4(0.25);\n"
+		"    } else {\n"
+		"        outColor = texture(s_TextureMap, v_texCoord);\n"
+		"    }\n"
+		"}";
+
 //顶点坐标
 const GLfloat vVertices[] = {
 		-1.0f, -1.0f, 0.0f, // bottom left
@@ -40,13 +102,13 @@ const GLfloat vVertices[] = {
 		1.0f,  1.0f, 0.0f, // top right
 };
 
-////正常纹理坐标
-//const GLfloat vTexCoors[] = {
-//		0.0f, 1.0f, // bottom left
-//		1.0f, 1.0f, // bottom right
-//		0.0f, 0.0f, // top left
-//		1.0f, 0.0f, // top right
-//};
+//正常纹理坐标
+const GLfloat vTexCoors[] = {
+		0.0f, 1.0f, // bottom left
+		1.0f, 1.0f, // bottom right
+		0.0f, 0.0f, // top left
+		1.0f, 0.0f, // top right
+};
 
 //fbo 纹理坐标与正常纹理方向不同
 const GLfloat vFboTexCoors[] = {
@@ -65,6 +127,7 @@ BgRender::BgRender()
 	m_ImageTextureId = GL_NONE;
 	m_FboTextureId = GL_NONE;
 	m_SamplerLoc = GL_NONE;
+	m_TexSizeLoc = GL_NONE;
 	m_FboId = GL_NONE;
 	m_ProgramObj = GL_NONE;
 	m_VertexShader = GL_NONE;
@@ -110,7 +173,7 @@ void BgRender::Init()
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
 
-	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr, m_VertexShader,
+	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr1, m_VertexShader,
 									 m_FragmentShader);
 	if (!m_ProgramObj)
 	{
@@ -120,6 +183,7 @@ void BgRender::Init()
 	}
 
 	m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "s_TextureMap");
+	m_TexSizeLoc = glGetUniformLocation(m_ProgramObj, "u_texSize");
 
 	// Generate VBO Ids and load the VBOs with data
 	glGenBuffers(3, m_VboIds);
@@ -127,7 +191,7 @@ void BgRender::Init()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vVertices), vVertices, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vFboTexCoors), vFboTexCoors, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vFboTexCoors), vTexCoors, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VboIds[2]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
@@ -290,23 +354,28 @@ void BgRender::SetImageData(uint8_t *pData, int width, int height)
 		m_RenderImage.width = width;
 		m_RenderImage.height = height;
 		m_RenderImage.format = IMAGE_FORMAT_RGBA;
-		m_RenderImage.ppPlane[0] = pData;
+		NativeImageUtil::AllocNativeImage(&m_RenderImage);
+		memcpy(m_RenderImage.ppPlane[0], pData, static_cast<size_t>(width * height * 4));
 
 		glBindTexture(GL_TEXTURE_2D, m_ImageTextureId);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderImage.width, m_RenderImage.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_RenderImage.ppPlane[0]);
 		glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
-		// Create FBO
-		glGenFramebuffers(1, &m_FboId);
-		glBindFramebuffer(GL_FRAMEBUFFER, m_FboId);
-		glBindTexture(GL_TEXTURE_2D, m_FboTextureId);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_FboTextureId, 0);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderImage.width, m_RenderImage.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER)!= GL_FRAMEBUFFER_COMPLETE) {
-			LOGCATE("BgRender::SetImageData glCheckFramebufferStatus status != GL_FRAMEBUFFER_COMPLETE");
+		if (m_FboId == GL_NONE)
+		{
+			// Create FBO
+			glGenFramebuffers(1, &m_FboId);
+			glBindFramebuffer(GL_FRAMEBUFFER, m_FboId);
+			glBindTexture(GL_TEXTURE_2D, m_FboTextureId);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_FboTextureId, 0);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderImage.width, m_RenderImage.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+			if (glCheckFramebufferStatus(GL_FRAMEBUFFER)!= GL_FRAMEBUFFER_COMPLETE) {
+				LOGCATE("BgRender::SetImageData glCheckFramebufferStatus status != GL_FRAMEBUFFER_COMPLETE");
+			}
+			glBindTexture(GL_TEXTURE_2D, GL_NONE);
+			glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 		}
-		glBindTexture(GL_TEXTURE_2D, GL_NONE);
-		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+
 	}
 
 }
@@ -332,6 +401,14 @@ void BgRender::Draw()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_ImageTextureId);
 	glUniform1i(m_SamplerLoc, 0);
+
+	if (m_TexSizeLoc != GL_NONE) {
+		GLfloat size[2];
+		size[0] = m_RenderImage.width;
+		size[1] = m_RenderImage.height;
+		glUniform2fv(m_TexSizeLoc, 1, &size[0]);
+	}
+
 	GO_CHECK_GL_ERROR();
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const void *)0);
 	GO_CHECK_GL_ERROR();
@@ -349,31 +426,40 @@ void BgRender::UnInit()
 	if (m_ProgramObj)
 	{
 		glDeleteProgram(m_ProgramObj);
+		m_ProgramObj = GL_NONE;
 	}
 
 	if (m_ImageTextureId)
 	{
 		glDeleteTextures(1, &m_ImageTextureId);
+		m_ImageTextureId = GL_NONE;
 	}
 
 	if (m_FboTextureId)
 	{
 		glDeleteTextures(1, &m_FboTextureId);
+		m_FboTextureId = GL_NONE;
 	}
 
 	if (m_VboIds[0])
 	{
 		glDeleteBuffers(3, m_VboIds);
+		m_VboIds[0] = GL_NONE;
+		m_VboIds[1] = GL_NONE;
+		m_VboIds[2] = GL_NONE;
+
 	}
 
 	if (m_VaoIds[0])
 	{
 		glDeleteVertexArrays(1, m_VaoIds);
+		m_VaoIds[0] = GL_NONE;
 	}
 
 	if (m_FboId)
 	{
 		glDeleteFramebuffers(1, &m_FboId);
+		m_FboId = GL_NONE;
 	}
 
 

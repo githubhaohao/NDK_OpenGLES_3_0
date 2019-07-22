@@ -35,6 +35,7 @@ public class EGLActivity extends AppCompatActivity {
         mImageView = findViewById(R.id.imageView);
         mBtn = findViewById(R.id.button);
         mBgRender = new NativeBgRender();
+        mBgRender.native_BgRenderInit();
 
         mBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,32 +65,13 @@ public class EGLActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_change_sample) {
-            //showGLSampleDialog();
-        }
-        return true;
+        mBgRender.native_BgRenderUnInit();
     }
 
     private void startBgRender() {
-        mBgRender.native_BgRenderInit();
         loadRGBAImage(R.drawable.java, mBgRender);
         mBgRender.native_BgRenderDraw();
         mImageView.setImageBitmap(createBitmapFromGLSurface(0, 0, 421, 586));
-        mBgRender.native_BgRenderUnInit();
     }
 
     private void loadRGBAImage(int resId, NativeBgRender render) {
