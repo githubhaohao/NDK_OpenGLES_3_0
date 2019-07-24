@@ -88,8 +88,6 @@ void NV21TextureMapSample::Draw(int screenW, int screenH)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
-	//glViewport(0, 0, m_RenderImage.width, m_RenderImage.height);
-
 	GLfloat verticesCoords[] = {
 			-1.0f,  0.78f, 0.0f,  // Position 0
 			-1.0f, -0.78f, 0.0f,  // Position 1
