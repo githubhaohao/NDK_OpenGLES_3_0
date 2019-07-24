@@ -5,10 +5,13 @@
 #include <LogUtil.h>
 #include <GLUtils.h>
 #include "BgRender.h"
-BgRender *BgRender::m_Instance = nullptr;
 
 #define VERTEX_POS_LOC  0
 #define TEXTURE_POS_LOC 1
+
+BgRender *BgRender::m_Instance = nullptr;
+
+#define PARAM_TYPE_SHADER_INDEX    200
 
 const char vShaderStr[] =
 		"#version 300 es                            \n"
@@ -21,7 +24,7 @@ const char vShaderStr[] =
 		"   v_texCoord = a_texCoord;                \n"
 		"}                                          \n";
 
-const char fShaderStr[] =
+const char fShaderStr0[] =
 		"#version 300 es\n"
 		"precision mediump float;\n"
 		"in vec2 v_texCoord;\n"
@@ -32,7 +35,7 @@ const char fShaderStr[] =
 		"    outColor = texture(s_TextureMap, v_texCoord);\n"
 		"}";
 
-const char fShaderStr0[] =
+const char fShaderStr1[] =
 		"#version 300 es\n"
 		"precision highp float;\n"
 		"layout(location = 0) out vec4 outColor;\n"
@@ -71,7 +74,7 @@ const char fShaderStr0[] =
 		"    outColor = CrossStitching(v_texCoord);\n"
 		"}";
 
-const char fShaderStr1[] =
+const char fShaderStr2[] =
 		"#version 300 es\n"
 		"precision highp float;\n"
 		"layout(location = 0) out vec4 outColor;\n"
@@ -92,6 +95,58 @@ const char fShaderStr1[] =
 		"    } else {\n"
 		"        outColor = texture(s_TextureMap, v_texCoord);\n"
 		"    }\n"
+		"}";
+
+const char fShaderStr3[] =
+		"#version 300 es\n"
+		"precision highp float;\n"
+		"layout(location = 0) out vec4 outColor;\n"
+		"in vec2 v_texCoord;\n"
+		"uniform lowp sampler2D s_TextureMap;\n"
+		"uniform vec2 u_texSize;\n"
+		"void main() {\n"
+		"    float radius = 200.0;\n"
+		"    float angle = 0.8;\n"
+		"    vec2 center = vec2(u_texSize.x / 2.0, u_texSize.y / 2.0);\n"
+		"    vec2 tc = v_texCoord * u_texSize;\n"
+		"    tc -= center;\n"
+		"    float dist = length(tc);\n"
+		"    if (dist < radius) {\n"
+		"        float percent = (radius - dist) / radius;\n"
+		"        float theta = percent * percent * angle * 8.0;\n"
+		"        float s = sin(theta);\n"
+		"        float c = cos(theta);\n"
+		"        tc = vec2(dot(tc, vec2(c, -s)), dot(tc, vec2(s, c)));\n"
+		"    }\n"
+		"    tc += center;\n"
+		"    outColor = texture(s_TextureMap, tc / u_texSize);\n"
+		"}";
+
+const char fShaderStr4[] =
+		"#version 300 es\n"
+		"precision highp float;\n"
+		"layout(location = 0) out vec4 outColor;\n"
+		"in vec2 v_texCoord;\n"
+		"uniform lowp sampler2D s_TextureMap;\n"
+		"uniform vec2 u_texSize;\n"
+		"void main() {\n"
+		"    vec2 pos = v_texCoord.xy;\n"
+		"    vec2 onePixel = vec2(1, 1) / u_texSize;\n"
+		"    vec4 color = vec4(0);\n"
+		"    mat3 edgeDetectionKernel = mat3(\n"
+		"    -1, -1, -1,\n"
+		"    -1, 8, -1,\n"
+		"    -1, -1, -1\n"
+		"    );\n"
+		"    for(int i = 0; i < 3; i++) {\n"
+		"        for(int j = 0; j < 3; j++) {\n"
+		"            vec2 samplePos = pos + vec2(i - 1 , j - 1) * onePixel;\n"
+		"            vec4 sampleColor = texture(s_TextureMap, samplePos);\n"
+		"            sampleColor *= edgeDetectionKernel[i][j];\n"
+		"            color += sampleColor;\n"
+		"        }\n"
+		"    }\n"
+		"    outColor = vec4(color.rgb, 1.0);\n"
 		"}";
 
 //顶点坐标
@@ -134,6 +189,7 @@ BgRender::BgRender()
 	m_FragmentShader = GL_NONE;
 
 	m_IsGLContextReady = false;
+	m_ShaderIndex = 0;
 }
 
 BgRender::~BgRender()
@@ -155,6 +211,11 @@ void BgRender::Init()
 	}
 
 	if(!m_IsGLContextReady) return;
+	m_fShaderStrs[0] = fShaderStr0;
+	m_fShaderStrs[1] = fShaderStr1;
+	m_fShaderStrs[2] = fShaderStr2;
+	m_fShaderStrs[3] = fShaderStr3;
+	m_fShaderStrs[4] = fShaderStr4;
 
 	glGenTextures(1, &m_ImageTextureId);
 	glBindTexture(GL_TEXTURE_2D, m_ImageTextureId);
@@ -173,7 +234,7 @@ void BgRender::Init()
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
 
-	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr1, m_VertexShader,
+	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, m_fShaderStrs[m_ShaderIndex], m_VertexShader,
 									 m_FragmentShader);
 	if (!m_ProgramObj)
 	{
@@ -383,8 +444,38 @@ void BgRender::SetImageData(uint8_t *pData, int width, int height)
 void BgRender::SetIntParams(int paramType, int param)
 {
 	LOGCATE("BgRender::SetIntParams paramType = %d, param = %d", paramType, param);
+	switch (paramType)
+	{
+		case PARAM_TYPE_SHADER_INDEX:
+		{
+			if (param >= 0)
+			{
+				m_ShaderIndex = param % 5;
 
+				if (m_ProgramObj)
+				{
+					glDeleteProgram(m_ProgramObj);
+					m_ProgramObj = GL_NONE;
+				}
 
+				m_ProgramObj = GLUtils::CreateProgram(vShaderStr, m_fShaderStrs[m_ShaderIndex], m_VertexShader,
+													  m_FragmentShader);
+				if (!m_ProgramObj)
+				{
+					GLUtils::CheckGLError("Create Program");
+					LOGCATE("BgRender::SetIntParams Could not create program.");
+					return;
+				}
+
+				m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "s_TextureMap");
+				m_TexSizeLoc = glGetUniformLocation(m_ProgramObj, "u_texSize");
+			}
+
+		}
+			break;
+		default:
+			break;
+	}
 }
 
 void BgRender::Draw()

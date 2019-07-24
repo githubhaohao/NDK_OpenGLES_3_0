@@ -23,6 +23,7 @@ import java.nio.IntBuffer;
 
 public class EGLActivity extends AppCompatActivity {
     private static final String TAG = "EGLActivity";
+    public static final int PARAM_TYPE_SHADER_INDEX = 200;
     private ImageView mImageView;
     private Button mBtn;
     private NativeBgRender mBgRender;
@@ -68,6 +69,45 @@ public class EGLActivity extends AppCompatActivity {
         mBgRender.native_BgRenderUnInit();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_egl, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        int shaderIndex = 0;
+        switch (id) {
+            case R.id.action_shader0:
+                shaderIndex = 0;
+                break;
+            case R.id.action_shader1:
+                shaderIndex = 1;
+                break;
+
+            case R.id.action_shader2:
+                shaderIndex = 2;
+                break;
+            case R.id.action_shader3:
+                shaderIndex = 3;
+                break;
+            case R.id.action_shader4:
+                shaderIndex = 4;
+                break;
+                default:
+        }
+
+        if (mBgRender != null) {
+            mBgRender.native_BgRenderSetIntParams(PARAM_TYPE_SHADER_INDEX, shaderIndex);
+            startBgRender();
+            mBtn.setText(R.string.btn_txt_reset);
+        }
+        return true;
+    }
     private void startBgRender() {
         loadRGBAImage(R.drawable.java, mBgRender);
         mBgRender.native_BgRenderDraw();
