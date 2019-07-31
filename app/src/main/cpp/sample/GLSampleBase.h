@@ -27,6 +27,9 @@ public:
 
 	virtual void LoadImage(NativeImage *pImage) = 0;
 
+	virtual void SetParamsInt(int paramType, int value0, int value1)
+	{};
+
 	virtual void Init() = 0;
 	virtual void Draw(int screenW, int screenH) = 0;
 

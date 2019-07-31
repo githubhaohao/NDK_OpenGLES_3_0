@@ -20,7 +20,7 @@ class MyGLRenderContext
 public:
 	void SetImageData(int format, int width, int height, uint8_t *pData);
 
-	void SetParamsInt(int paramType, int value);
+	void SetParamsInt(int paramType, int value0, int value1);
 
 	void OnSurfaceCreated();
 

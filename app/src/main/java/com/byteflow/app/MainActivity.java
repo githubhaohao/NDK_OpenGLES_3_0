@@ -28,12 +28,15 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
+import static android.opengl.GLSurfaceView.RENDERMODE_CONTINUOUSLY;
+import static android.opengl.GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_NV21;
 import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_RGBA;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final int SAMPLE_TYPE  =  200;
+    private static final int ANGLE_TYPE  =  300;
 
     private static final int SAMPLE_TYPE_KEY_TRIANGLE = 0;
     private static final int SAMPLE_TYPE_KEY_TEXTURE_MAP = 1;
@@ -41,9 +44,11 @@ public class MainActivity extends AppCompatActivity {
     private static final int SAMPLE_TYPE_KEY_VAO = 3;
     private static final int SAMPLE_TYPE_KEY_FBO = 4;
     private static final int SAMPLE_TYPE_KEY_EGL = 5;
+    private static final int SAMPLE_TYPE_KEY_FBO_LEG = 6;
+    private static final int SAMPLE_TYPE_KEY_COORD_SYSTEM = 7;
 
 
-    private static final String[] SAMPLE_TITLES = {"绘制三角形","纹理映射","YUV 渲染","VAO&VBO","FBO 离屏渲染","EGL 后台渲染"};
+    private static final String[] SAMPLE_TITLES = {"绘制三角形","纹理映射","YUV 渲染","VAO&VBO","FBO 离屏渲染","EGL 后台渲染","FBO 拉伸", "坐标系统"};
     private MyGLSurfaceView mGLSurfaceView;
     private int mSampleSelectedIndex = 0;
 
@@ -170,8 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 myPreviewSizeViewAdapter.notifyItemChanged(position);
                 mSampleSelectedIndex = position;
 
-                mGLSurfaceView.getNativeRender().native_SetParamsInt(SAMPLE_TYPE, position);
-
+                mGLSurfaceView.getNativeRender().native_SetParamsInt(SAMPLE_TYPE, position, 0);
                 switch (position) {
                     case SAMPLE_TYPE_KEY_TRIANGLE:
                         break;
@@ -186,8 +190,14 @@ public class MainActivity extends AppCompatActivity {
                     case SAMPLE_TYPE_KEY_FBO:
                         LoadRGBAImage(R.drawable.java);
                         break;
+                    case SAMPLE_TYPE_KEY_FBO_LEG:
+                        LoadRGBAImage(R.drawable.leg);
+                        break;
                     case SAMPLE_TYPE_KEY_EGL:
                         startActivity(new Intent(MainActivity.this, EGLActivity.class));
+                        break;
+                    case SAMPLE_TYPE_KEY_COORD_SYSTEM:
+                        LoadRGBAImage(R.drawable.dzzz);
                         break;
                     default:
                         break;

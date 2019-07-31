@@ -52,12 +52,12 @@ JNIEXPORT void JNICALL native_SetImageData
 /*
  * Class:     com_byteflow_app_MyNativeRender
  * Method:    native_SetParamsInt
- * Signature: (II)V
+ * Signature: (III)V
  */
 JNIEXPORT void JNICALL native_SetParamsInt
-		(JNIEnv *env, jobject instance, jint paramType, jint value)
+		(JNIEnv *env, jobject instance, jint paramType, jint value0, jint value1)
 {
-	MyGLRenderContext::GetInstance()->SetParamsInt(paramType, value);
+	MyGLRenderContext::GetInstance()->SetParamsInt(paramType, value0, value1);
 }
 
 /*
@@ -161,7 +161,7 @@ static JNINativeMethod g_RenderMethods[] = {
 		{"native_OnInit",             "()V",       (void *)(native_OnInit)},
 		{"native_OnUnInit",           "()V",       (void *)(native_OnUnInit)},
 		{"native_SetImageData",       "(III[B)V",  (void *)(native_SetImageData)},
-		{"native_SetParamsInt",       "(II)V",     (void *)(native_SetParamsInt)},
+		{"native_SetParamsInt",       "(III)V",    (void *)(native_SetParamsInt)},
 		{"native_OnSurfaceCreated",   "()V",       (void *)(native_OnSurfaceCreated)},
 		{"native_OnSurfaceChanged",   "(II)V",     (void *)(native_OnSurfaceChanged)},
 		{"native_OnDrawFrame",        "()V",       (void *)(native_OnDrawFrame)},

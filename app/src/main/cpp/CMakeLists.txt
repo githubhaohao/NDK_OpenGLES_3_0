@@ -9,6 +9,7 @@ include_directories(
         util
         render
         sample
+        glm
 )
 
 # Creates and names a library, sets it as either STATIC
@@ -32,6 +33,8 @@ add_library( # Sets the name of the library.
         sample/NV21TextureMapSample.cpp
         sample/VaoSample.cpp
         sample/FBOSample.cpp
+        sample/FBOLegLengthenSample.cpp
+        sample/CoordSystemSample.cpp
               )
 
 # Searches for a specified prebuilt library and stores the path as a

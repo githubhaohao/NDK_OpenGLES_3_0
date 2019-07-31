@@ -70,8 +70,8 @@ void TextureMapSample::Draw(int screenW, int screenH)
 	GLfloat verticesCoords[] = {
 			-1.0f,  0.5f, 0.0f,  // Position 0
 			-1.0f, -0.5f, 0.0f,  // Position 1
-			1.0f, -0.5f, 0.0f,  // Position 2
-			1.0f,  0.5f, 0.0f,  // Position 3
+			1.0f, -0.5f, 0.0f,   // Position 2
+			1.0f,  0.5f, 0.0f,   // Position 3
 	};
 
 	GLfloat textureCoords[] = {
