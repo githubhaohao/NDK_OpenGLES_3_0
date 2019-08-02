@@ -5,10 +5,14 @@
 #ifndef NDK_OPENGLES_3_0_GLSAMPLEBASE_H
 #define NDK_OPENGLES_3_0_GLSAMPLEBASE_H
 
-
 #include "stdint.h"
 #include <GLES3/gl3.h>
 #include <ImageDef.h>
+
+
+#define ANGLE_PARAM_TYPE           300
+//For PI define
+#define MATH_PI 3.1415926535897932384626433832802
 
 class GLSampleBase
 {

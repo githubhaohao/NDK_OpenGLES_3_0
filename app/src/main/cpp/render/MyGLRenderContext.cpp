@@ -9,6 +9,7 @@
 #include <FBOSample.h>
 #include <FBOLegLengthenSample.h>
 #include <CoordSystemSample.h>
+#include <BasicLightingSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -20,6 +21,7 @@ const int SAMPLE_TYPE_KEY_VAO                = 3;
 const int SAMPLE_TYPE_KEY_FBO                = 4;
 const int SAMPLE_TYPE_KEY_FBO_LEG_LENGTHEN   = 6;
 const int SAMPLE_TYPE_KEY_COORD_SYSTEM       = 7;
+const int SAMPLE_TYPE_KEY_BASIC_LIGHTING     = 8;
 
 
 
@@ -75,6 +77,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 				break;
 			case SAMPLE_TYPE_KEY_COORD_SYSTEM:
 				m_Sample = new CoordSystemSample();
+				break;
+			case SAMPLE_TYPE_KEY_BASIC_LIGHTING:
+				m_Sample = new BasicLightingSample();
 				break;
 			default:
 				break;

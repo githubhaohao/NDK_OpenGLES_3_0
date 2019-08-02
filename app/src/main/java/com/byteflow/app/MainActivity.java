@@ -46,9 +46,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int SAMPLE_TYPE_KEY_EGL = 5;
     private static final int SAMPLE_TYPE_KEY_FBO_LEG = 6;
     private static final int SAMPLE_TYPE_KEY_COORD_SYSTEM = 7;
+    private static final int SAMPLE_TYPE_KEY_BASIC_LIGHTING = 8;
 
 
-    private static final String[] SAMPLE_TITLES = {"绘制三角形","纹理映射","YUV 渲染","VAO&VBO","FBO 离屏渲染","EGL 后台渲染","FBO 拉伸", "坐标系统"};
+    private static final String[] SAMPLE_TITLES = {"绘制三角形","纹理映射","YUV 渲染","VAO&VBO","FBO 离屏渲染","EGL 后台渲染","FBO 拉伸", "坐标系统", "光照基础"};
     private MyGLSurfaceView mGLSurfaceView;
     private int mSampleSelectedIndex = 0;
 
@@ -197,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(new Intent(MainActivity.this, EGLActivity.class));
                         break;
                     case SAMPLE_TYPE_KEY_COORD_SYSTEM:
+                    case SAMPLE_TYPE_KEY_BASIC_LIGHTING:
                         LoadRGBAImage(R.drawable.dzzz);
                         break;
                     default:
