@@ -9,10 +9,20 @@
 #include <GLES3/gl3.h>
 #include <ImageDef.h>
 
-
-#define ANGLE_PARAM_TYPE           300
 //For PI define
 #define MATH_PI 3.1415926535897932384626433832802
+
+#define ROTATE_ANGLE_PARAM_TYPE                 300
+
+#define SAMPLE_TYPE                             200
+#define SAMPLE_TYPE_KEY_TRIANGLE                SAMPLE_TYPE + 0
+#define SAMPLE_TYPE_KEY_TEXTURE_MAP             SAMPLE_TYPE + 1
+#define SAMPLE_TYPE_KEY_YUV_TEXTURE_MAP         SAMPLE_TYPE + 2
+#define SAMPLE_TYPE_KEY_VAO                     SAMPLE_TYPE + 3
+#define SAMPLE_TYPE_KEY_FBO                     SAMPLE_TYPE + 4
+#define SAMPLE_TYPE_KEY_FBO_LEG_LENGTHEN        SAMPLE_TYPE + 6
+#define SAMPLE_TYPE_KEY_COORD_SYSTEM            SAMPLE_TYPE + 7
+#define SAMPLE_TYPE_KEY_BASIC_LIGHTING          SAMPLE_TYPE + 8
 
 class GLSampleBase
 {

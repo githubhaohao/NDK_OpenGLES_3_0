@@ -1,5 +1,5 @@
 //
-// Created by chh7563 on 2019/7/30.
+// Created by ByteFlow on 2019/7/30.
 //
 
 #include <gtc/matrix_transform.hpp>
@@ -11,12 +11,16 @@ BasicLightingSample::BasicLightingSample()
 
 	m_SamplerLoc = GL_NONE;
 	m_MVPMatLoc = GL_NONE;
+	m_ModelMatrixLoc = GL_NONE;
+	m_LightPosLoc = GL_NONE;
 
 	m_TextureId = GL_NONE;
 	m_VaoId = GL_NONE;
 
 	m_AngleX = 0;
 	m_AngleY = 0;
+
+	m_ModelMatrix = glm::mat4(0.0f);
 }
 
 BasicLightingSample::~BasicLightingSample()
@@ -42,80 +46,119 @@ void BasicLightingSample::Init()
 
 	char vShaderStr[] =
 			"#version 300 es\n"
+			"precision mediump float;\n"
 			"layout(location = 0) in vec4 a_position;\n"
 			"layout(location = 1) in vec2 a_texCoord;\n"
+			"layout(location = 2) in vec3 a_normal;\n"
 			"uniform mat4 u_MVPMatrix;\n"
+			"uniform mat4 u_ModelMatrix;\n"
+			"uniform vec3 lightPos;\n"
+			"uniform vec3 lightColor;\n"
+			"uniform vec3 viewPos;\n"
 			"out vec2 v_texCoord;\n"
+			"out vec3 ambient;\n"
+			"out vec3 diffuse;\n"
+			"out vec3 specular;\n"
 			"void main()\n"
 			"{\n"
 			"    gl_Position = u_MVPMatrix * a_position;\n"
+			"    vec3 fragPos = vec3(u_ModelMatrix * a_position);\n"
+			"\n"
+			"    // Ambient\n"
+			"    float ambientStrength = 0.24;\n"
+			"    ambient = ambientStrength * lightColor;\n"
+			"\n"
+			"    // Diffuse\n"
+			"    vec3 unitNormal = normalize(u_ModelMatrix * vec4(a_normal, 1.0)).xyz;\n"
+			"    vec3 lightDir = normalize(lightPos - fragPos);\n"
+			"    float diff = max(dot(unitNormal, lightDir), 0.0);\n"
+			"    diffuse = diff * lightColor;\n"
+			"\n"
+			"    // Specular\n"
+			"    float specularStrength = 0.5;\n"
+			"    vec3 viewDir = normalize(viewPos - fragPos);\n"
+			"    vec3 reflectDir = reflect(-lightDir, unitNormal);\n"
+			"    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 256.0);\n"
+			"    specular = specularStrength * spec * lightColor;\n"
+			"\n"
 			"    v_texCoord = a_texCoord;\n"
 			"}";
 
 	char fShaderStr[] =
-			"#version 300 es                                     \n"
-			"precision mediump float;                            \n"
-			"in vec2 v_texCoord;                                 \n"
-			"layout(location = 0) out vec4 outColor;             \n"
-			"uniform sampler2D s_TextureMap;                     \n"
-			"void main()                                         \n"
-			"{                                                   \n"
-			"  outColor = texture(s_TextureMap, v_texCoord);     \n"
-			"}                                                   \n";
+			"#version 300 es\n"
+			"precision mediump float;\n"
+			"in vec2 v_texCoord;\n"
+			"in vec3 ambient;\n"
+			"in vec3 diffuse;\n"
+			"in vec3 specular;\n"
+			"layout(location = 0) out vec4 outColor;\n"
+			"uniform sampler2D s_TextureMap;\n"
+			"void main()\n"
+			"{\n"
+			"    vec4 objectColor = texture(s_TextureMap, v_texCoord);\n"
+			"    vec3 finalColor = (ambient + diffuse + specular) * vec3(objectColor);\n"
+			"    outColor = vec4(finalColor, 1.0);\n"
+			"}";
 
 	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr, m_VertexShader, m_FragmentShader);
 	if (m_ProgramObj)
 	{
 		m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "s_TextureMap");
 		m_MVPMatLoc = glGetUniformLocation(m_ProgramObj, "u_MVPMatrix");
+		m_ModelMatrixLoc = glGetUniformLocation(m_ProgramObj, "u_ModelMatrix");
+		m_LightPosLoc = glGetUniformLocation(m_ProgramObj, "lightPos");
+		m_LightColorLoc = glGetUniformLocation(m_ProgramObj, "lightColor");
+		m_ViewPosLoc = glGetUniformLocation(m_ProgramObj, "viewPos");
 	}
 	else
 	{
 		LOGCATE("BasicLightingSample::Init create program fail");
+		return;
 	}
 
 	GLfloat vertices[] = {
-			-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-			0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
-			0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-			0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-			-0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+			 //position            //texture coord  //normal
+			-0.5f, -0.5f, -0.5f,   0.0f, 0.0f,      0.0f,  0.0f, -1.0f,
+			 0.5f, -0.5f, -0.5f,   1.0f, 0.0f,      0.0f,  0.0f, -1.0f,
+			 0.5f,  0.5f, -0.5f,   1.0f, 1.0f,      0.0f,  0.0f, -1.0f,
+			 0.5f,  0.5f, -0.5f,   1.0f, 1.0f,      0.0f,  0.0f, -1.0f,
+			-0.5f,  0.5f, -0.5f,   0.0f, 1.0f,      0.0f,  0.0f, -1.0f,
+			-0.5f, -0.5f, -0.5f,   0.0f, 0.0f,      0.0f,  0.0f, -1.0f,
 
-			-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-			0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-			0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-			0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-			-0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
-			-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+			-0.5f, -0.5f, 0.5f,    0.0f, 0.0f,      0.0f,  0.0f,  1.0f,
+			 0.5f, -0.5f, 0.5f,    1.0f, 0.0f,      0.0f,  0.0f,  1.0f,
+			 0.5f,  0.5f, 0.5f,    1.0f, 1.0f,      0.0f,  0.0f,  1.0f,
+			 0.5f,  0.5f, 0.5f,    1.0f, 1.0f,      0.0f,  0.0f,  1.0f,
+			-0.5f,  0.5f, 0.5f,    0.0f, 1.0f,      0.0f,  0.0f,  1.0f,
+			-0.5f, -0.5f, 0.5f,    0.0f, 0.0f,      0.0f,  0.0f,  1.0f,
 
-			-0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-			-0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-			-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-			-0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+			-0.5f,  0.5f,  0.5f,   1.0f, 0.0f,     -1.0f,  0.0f,  0.0f,
+			-0.5f,  0.5f, -0.5f,   1.0f, 1.0f,     -1.0f,  0.0f,  0.0f,
+			-0.5f, -0.5f, -0.5f,   0.0f, 1.0f,     -1.0f,  0.0f,  0.0f,
+			-0.5f, -0.5f, -0.5f,   0.0f, 1.0f,     -1.0f,  0.0f,  0.0f,
+			-0.5f, -0.5f,  0.5f,   0.0f, 0.0f,     -1.0f,  0.0f,  0.0f,
+			-0.5f,  0.5f,  0.5f,   1.0f, 0.0f,     -1.0f,  0.0f,  0.0f,
 
-			0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-			0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-			0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-			0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-			0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-			0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,   1.0f, 0.0f,      1.0f,  0.0f,  0.0f,
+			 0.5f,  0.5f, -0.5f,   1.0f, 1.0f,      1.0f,  0.0f,  0.0f,
+			 0.5f, -0.5f, -0.5f,   0.0f, 1.0f,      1.0f,  0.0f,  0.0f,
+			 0.5f, -0.5f, -0.5f,   0.0f, 1.0f,      1.0f,  0.0f,  0.0f,
+			 0.5f, -0.5f,  0.5f,   0.0f, 0.0f,      1.0f,  0.0f,  0.0f,
+			 0.5f,  0.5f,  0.5f,   1.0f, 0.0f,      1.0f,  0.0f,  0.0f,
 
-			-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-			0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
-			0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-			0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-			-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-			-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f,   0.0f, 1.0f,      0.0f, -1.0f,  0.0f,
+			 0.5f, -0.5f, -0.5f,   1.0f, 1.0f,      0.0f, -1.0f,  0.0f,
+			 0.5f, -0.5f,  0.5f,   1.0f, 0.0f,      0.0f, -1.0f,  0.0f,
+			 0.5f, -0.5f,  0.5f,   1.0f, 0.0f,      0.0f, -1.0f,  0.0f,
+			-0.5f, -0.5f,  0.5f,   0.0f, 0.0f,      0.0f, -1.0f,  0.0f,
+			-0.5f, -0.5f, -0.5f,   0.0f, 1.0f,      0.0f, -1.0f,  0.0f,
 
-			-0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-			0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-			0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-			0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-			-0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
-			-0.5f, 0.5f, -0.5f, 0.0f, 1.0f
+			-0.5f, 0.5f, -0.5f,    0.0f, 1.0f,      0.0f,  1.0f,  0.0f,
+			 0.5f, 0.5f, -0.5f,    1.0f, 1.0f,      0.0f,  1.0f,  0.0f,
+			 0.5f, 0.5f,  0.5f,    1.0f, 0.0f,      0.0f,  1.0f,  0.0f,
+			 0.5f, 0.5f,  0.5f,    1.0f, 0.0f,      0.0f,  1.0f,  0.0f,
+			-0.5f, 0.5f,  0.5f,    0.0f, 0.0f,      0.0f,  1.0f,  0.0f,
+			-0.5f, 0.5f, -0.5f,    0.0f, 1.0f,      0.0f,  1.0f,  0.0f,
 	};
 
 	// Generate VBO Ids and load the VBOs with data
@@ -129,9 +172,11 @@ void BasicLightingSample::Init()
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (const void *) 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const void *) 0);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (const void *) (3* sizeof(GLfloat)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const void *) (3* sizeof(GLfloat)));
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const void *) (5* sizeof(GLfloat)));
 	glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 
 	glBindVertexArray(GL_NONE);
@@ -173,6 +218,11 @@ void BasicLightingSample::Draw(int screenW, int screenH)
 	glBindVertexArray(m_VaoId);
 
 	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
+	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
+
+	glUniform3f(m_LightColorLoc,  1.0f, 1.0f, 1.0f);
+	glUniform3f(m_LightPosLoc,    2.0f, 0.0f, 0.0f);
+	glUniform3f(m_ViewPosLoc,     3.0f, 3.0f, 3.0f);
 
 	// Bind the RGBA map
 	glActiveTexture(GL_TEXTURE0);
@@ -213,13 +263,13 @@ void BasicLightingSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int 
 
 
 	// Projection matrix
-	//glm::mat4 Projection = glm::ortho(-ratio, ratio, -1.0f, 1.0f, 0.1f, 100.0f);
+	//glm::mat4 Projection = glm::ortho(-ratio, ratio, -1.0f, 1.0f, 0.0f, 100.0f);
 	//glm::mat4 Projection = glm::frustum(-ratio, ratio, -1.0f, 1.0f, 4.0f, 100.0f);
 	glm::mat4 Projection = glm::perspective(45.0f, ratio, 0.1f, 100.f);
 
 	// View matrix
 	glm::mat4 View = glm::lookAt(
-			glm::vec3(2, 2, 2), // Camera is at (0,0,1), in World Space
+			glm::vec3(3, 3, 3), // Camera is at (0,0,1), in World Space
 			glm::vec3(0, 0, 0), // and looks at the origin
 			glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
 	);
@@ -231,6 +281,8 @@ void BasicLightingSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int 
 	Model = glm::rotate(Model, radiansY, glm::vec3(0.0f, 1.0f, 0.0f));
 	Model = glm::translate(Model, glm::vec3(0.0f, 0.0f, 0.0f));
 
+	m_ModelMatrix = Model;
+
 	mvpMatrix = Projection * View * Model;
 
 }
@@ -239,7 +291,7 @@ void BasicLightingSample::SetParamsInt(int paramType, int value0, int value1)
 {
 	LOGCATE("BasicLightingSample::SetParamsInt paramType = %d, value0 = %d", paramType, value0);
 	GLSampleBase::SetParamsInt(paramType, value0, value1);
-	if (paramType == ANGLE_PARAM_TYPE)
+	if (paramType == ROTATE_ANGLE_PARAM_TYPE)
 	{
 		m_AngleX = value0;
 		m_AngleY = value1;

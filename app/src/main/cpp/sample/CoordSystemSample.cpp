@@ -1,5 +1,5 @@
 //
-// Created by chh7563 on 2019/7/30.
+// Created by ByteFlow on 2019/7/30.
 //
 
 #include <gtc/matrix_transform.hpp>
@@ -217,7 +217,7 @@ void CoordSystemSample::SetParamsInt(int paramType,  int value0, int value1)
 {
 	LOGCATE("CoordSystemSample::SetParamsInt paramType = %d, value0 = %d", paramType, value0);
 	GLSampleBase::SetParamsInt(paramType, value0, value1);
-	if (paramType == ANGLE_PARAM_TYPE)
+	if (paramType == ROTATE_ANGLE_PARAM_TYPE)
 	{
 		m_AngleX = value0;
 		m_AngleY = value1;

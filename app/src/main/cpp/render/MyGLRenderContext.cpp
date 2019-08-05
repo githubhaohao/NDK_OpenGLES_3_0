@@ -13,18 +13,6 @@
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
-const int SAMPLE_TYPE                        = 200;
-const int SAMPLE_TYPE_KEY_TRIANGLE           = 0;
-const int SAMPLE_TYPE_KEY_TEXTURE_MAP        = 1;
-const int SAMPLE_TYPE_KEY_YUV_TEXTURE_MAP    = 2;
-const int SAMPLE_TYPE_KEY_VAO                = 3;
-const int SAMPLE_TYPE_KEY_FBO                = 4;
-const int SAMPLE_TYPE_KEY_FBO_LEG_LENGTHEN   = 6;
-const int SAMPLE_TYPE_KEY_COORD_SYSTEM       = 7;
-const int SAMPLE_TYPE_KEY_BASIC_LIGHTING     = 8;
-
-
-
 MyGLRenderContext* MyGLRenderContext::m_pContext = nullptr;
 
 MyGLRenderContext::MyGLRenderContext()
@@ -86,7 +74,7 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 		}
 	}
 
-	if (paramType == ANGLE_PARAM_TYPE && m_Sample)
+	if (paramType == ROTATE_ANGLE_PARAM_TYPE && m_Sample)
 	{
 		m_Sample->SetParamsInt(paramType, value0, value1);
 	}
