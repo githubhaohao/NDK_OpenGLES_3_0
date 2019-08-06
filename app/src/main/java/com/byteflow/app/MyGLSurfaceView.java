@@ -9,6 +9,8 @@ import android.view.MotionEvent;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import static com.byteflow.app.MyNativeRender.PARAM_TYPE_ROTATE_ANGLE;
+
 public class MyGLSurfaceView extends GLSurfaceView {
     private static final String TAG = "MyGLSurfaceView";
 
@@ -54,7 +56,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
         mPreviousY = y;
         mPreviousX = x;
 
-        mNativeRender.native_SetParamsInt(300, mXAngle, mYAngle);
+        mNativeRender.native_SetParamsInt(PARAM_TYPE_ROTATE_ANGLE, mXAngle, mYAngle);
         requestRender();
         return true;
     }

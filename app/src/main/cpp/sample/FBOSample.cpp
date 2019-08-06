@@ -43,26 +43,26 @@ void FBOSample::Init()
 {
 	//顶点坐标
 	GLfloat vVertices[] = {
-			-1.0f, -1.0f, 0.0f, // bottom left
-			 1.0f, -1.0f, 0.0f, // bottom right
-			-1.0f,  1.0f, 0.0f, // top left
-			 1.0f,  1.0f, 0.0f, // top right
+			-1.0f, -1.0f, 0.0f,
+			 1.0f, -1.0f, 0.0f,
+			-1.0f,  1.0f, 0.0f,
+			 1.0f,  1.0f, 0.0f,
 	};
 
 	//正常纹理坐标
 	GLfloat vTexCoors[] = {
-            0.0f, 1.0f, // bottom left
-            1.0f, 1.0f, // bottom right
-            0.0f, 0.0f, // top left
-            1.0f, 0.0f, // top right
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f,
     };
 
-	//fbo 纹理坐标与正常纹理方向不同
+	//fbo 纹理坐标与正常纹理方向不同，原点位于左下角
 	GLfloat vFboTexCoors[] = {
-			0.0f, 0.0f,  // bottom left
-			1.0f, 0.0f,  // bottom right
-			0.0f, 1.0f,  // top left
-			1.0f, 1.0f,  // top right
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			0.0f, 1.0f,
+			1.0f, 1.0f,
 	};
 
 	GLushort indices[] = { 0, 1, 2, 1, 3, 2 };
@@ -78,6 +78,7 @@ void FBOSample::Init()
 			"   v_texCoord = a_texCoord;                \n"
 			"}                                          \n";
 
+	// 用于普通渲染的顶点着色器脚本，简单纹理映射
 	char fShaderStr[] =
 			"#version 300 es\n"
 			"precision mediump float;\n"
@@ -89,6 +90,7 @@ void FBOSample::Init()
 			"    outColor = texture(s_TextureMap, v_texCoord);\n"
 			"}";
 
+	// 用于离屏渲染的片段着色器脚本，取每个像素的灰度值
 	char fFboShaderStr[] =
 			"#version 300 es\n"
 			"precision mediump float;\n"
@@ -102,8 +104,10 @@ void FBOSample::Init()
 			"    outColor = vec4(vec3(luminance), tempColor.a);\n"
 			"}"; // 输出灰度图
 
+	// 编译链接用于普通渲染的着色器程序
 	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr, m_VertexShader, m_FragmentShader);
 
+	// 编译链接用于离屏渲染的着色器程序
 	m_FboProgramObj = GLUtils::CreateProgram(vShaderStr, fFboShaderStr, m_FboVertexShader, m_FboFragmentShader);
 
 	if (m_ProgramObj == GL_NONE || m_FboProgramObj == GL_NONE)
@@ -114,6 +118,7 @@ void FBOSample::Init()
 	m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "s_TextureMap");
 	m_FboSamplerLoc = glGetUniformLocation(m_FboProgramObj, "s_TextureMap");
 
+	// 生成 VBO ，加载顶点数据和索引数据
 	// Generate VBO Ids and load the VBOs with data
 	glGenBuffers(4, m_VboIds);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
@@ -130,9 +135,10 @@ void FBOSample::Init()
 
 	GO_CHECK_GL_ERROR();
 
+	// 生成 2 个 VAO，一个用于普通渲染，另一个用于离屏渲染
 	// Generate VAO Ids
 	glGenVertexArrays(2, m_VaoIds);
-
+    // 初始化用于普通渲染的 VAO
 	// Normal rendering VAO
 	glBindVertexArray(m_VaoIds[0]);
 
@@ -151,6 +157,7 @@ void FBOSample::Init()
 	glBindVertexArray(GL_NONE);
 
 
+	// 初始化用于离屏渲染的 VAO
 	// FBO off screen rendering VAO
 	glBindVertexArray(m_VaoIds[1]);
 
@@ -168,6 +175,7 @@ void FBOSample::Init()
 	GO_CHECK_GL_ERROR();
 	glBindVertexArray(GL_NONE);
 
+	// 创建并初始化图像纹理
 	glGenTextures(1, &m_ImageTextureId);
 	glBindTexture(GL_TEXTURE_2D, m_ImageTextureId);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -188,14 +196,13 @@ void FBOSample::Init()
 
 void FBOSample::Draw(int screenW, int screenH)
 {
-	//纹理就是一个“可以被采样的复杂的数据集合” 纹理作为 GPU 图像数据结构
+	// 离屏渲染
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	glViewport(0, 0, m_RenderImage.width, m_RenderImage.height);
 
 	// Do FBO off screen rendering
-	glUseProgram(m_FboProgramObj);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FboId);
-
+	glUseProgram(m_FboProgramObj);
 	glBindVertexArray(m_VaoIds[1]);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_ImageTextureId);
@@ -220,8 +227,9 @@ void FBOSample::Draw(int screenW, int screenH)
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	glViewport(0, 0, screenW, screenH);
+	// 普通渲染
 	// Do normal rendering
+	glViewport(0, 0, screenW, screenH);
 	glUseProgram(m_ProgramObj);
 	GO_CHECK_GL_ERROR();
 	glBindVertexArray(m_VaoIds[0]);
@@ -277,6 +285,7 @@ void FBOSample::Destroy()
 
 bool FBOSample::CreateFrameBufferObj()
 {
+	// 创建并初始化 FBO 纹理
 	glGenTextures(1, &m_FboTextureId);
 	glBindTexture(GL_TEXTURE_2D, m_FboTextureId);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -285,6 +294,7 @@ bool FBOSample::CreateFrameBufferObj()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
+	// 创建并初始化 FBO
 	glGenFramebuffers(1, &m_FboId);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FboId);
 	glBindTexture(GL_TEXTURE_2D, m_FboTextureId);

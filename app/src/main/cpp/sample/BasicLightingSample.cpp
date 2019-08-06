@@ -59,28 +59,31 @@ void BasicLightingSample::Init()
 			"out vec3 ambient;\n"
 			"out vec3 diffuse;\n"
 			"out vec3 specular;\n"
+			"out vec3 outVec0;\n"
+			"out vec3 outVec1;\n"
 			"void main()\n"
 			"{\n"
 			"    gl_Position = u_MVPMatrix * a_position;\n"
 			"    vec3 fragPos = vec3(u_ModelMatrix * a_position);\n"
 			"\n"
 			"    // Ambient\n"
-			"    float ambientStrength = 0.24;\n"
+			"    float ambientStrength = 0.2;\n"
 			"    ambient = ambientStrength * lightColor;\n"
 			"\n"
 			"    // Diffuse\n"
-			"    vec3 unitNormal = normalize(u_ModelMatrix * vec4(a_normal, 1.0)).xyz;\n"
+			"    vec3 unitNormal = normalize(vec3(u_ModelMatrix * vec4(a_normal, 1.0)));\n"
 			"    vec3 lightDir = normalize(lightPos - fragPos);\n"
 			"    float diff = max(dot(unitNormal, lightDir), 0.0);\n"
 			"    diffuse = diff * lightColor;\n"
 			"\n"
 			"    // Specular\n"
-			"    float specularStrength = 0.5;\n"
+			"    float specularStrength = 0.9;\n"
 			"    vec3 viewDir = normalize(viewPos - fragPos);\n"
+			"    //vec3 helfVector  = normalize(viewDir + lightDir);\n"
 			"    vec3 reflectDir = reflect(-lightDir, unitNormal);\n"
-			"    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 256.0);\n"
+			"    float spec = pow(max(dot(unitNormal, reflectDir), 0.0), 16.0);\n"
 			"    specular = specularStrength * spec * lightColor;\n"
-			"\n"
+			"    outVec0 = unitNormal;outVec1 = specular;\n"
 			"    v_texCoord = a_texCoord;\n"
 			"}";
 
@@ -99,8 +102,9 @@ void BasicLightingSample::Init()
 			"    vec3 finalColor = (ambient + diffuse + specular) * vec3(objectColor);\n"
 			"    outColor = vec4(finalColor, 1.0);\n"
 			"}";
-
-	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr, m_VertexShader, m_FragmentShader);
+	GLchar const * varyings[] = {"outVec0", "outVec1"};
+	m_ProgramObj = GLUtils::CreateProgramWithFeedback(vShaderStr, fShaderStr, m_VertexShader, m_FragmentShader, varyings,
+													  sizeof(varyings)/ sizeof(varyings[0]));
 	if (m_ProgramObj)
 	{
 		m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "s_TextureMap");
@@ -115,6 +119,9 @@ void BasicLightingSample::Init()
 		LOGCATE("BasicLightingSample::Init create program fail");
 		return;
 	}
+
+
+	//glTransformFeedbackVaryings(m_ProgramObj, 1, Strings, GL_INTERLEAVED_ATTRIBS);
 
 	GLfloat vertices[] = {
 			 //position            //texture coord  //normal
@@ -181,6 +188,19 @@ void BasicLightingSample::Init()
 
 	glBindVertexArray(GL_NONE);
 
+
+	glGenBuffers(1, &m_TfoBufId);
+	glBindBuffer(GL_ARRAY_BUFFER, m_TfoBufId);
+	glBufferData(GL_ARRAY_BUFFER, 6 * 36 * sizeof(GLfloat), NULL, GL_STATIC_READ);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glGenTransformFeedbacks(1, &m_TfoId);
+	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_TfoId);
+	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_TfoBufId); // Specify the index of the binding point within the array specified by target.
+	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
+	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
+
+
 }
 
 void BasicLightingSample::LoadImage(NativeImage *pImage)
@@ -221,16 +241,40 @@ void BasicLightingSample::Draw(int screenW, int screenH)
 	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
 
 	glUniform3f(m_LightColorLoc,  1.0f, 1.0f, 1.0f);
-	glUniform3f(m_LightPosLoc,    2.0f, 0.0f, 0.0f);
-	glUniform3f(m_ViewPosLoc,     3.0f, 3.0f, 3.0f);
+	glUniform3f(m_LightPosLoc,    -2.0f, 0.0f, 2.0f);
+	glUniform3f(m_ViewPosLoc,     -2.0f, 0.0f, 2.0f);
 
 	// Bind the RGBA map
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_TextureId);
 	glUniform1i(m_SamplerLoc, 0);
 
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_TfoId);
+	glBeginTransformFeedback(GL_TRIANGLES);
+	GO_CHECK_GL_ERROR();
 
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	GO_CHECK_GL_ERROR();
+
+	glEndTransformFeedback();
+	GO_CHECK_GL_ERROR();
+	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
+	GO_CHECK_GL_ERROR();
+
+	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_TfoBufId);
+	GO_CHECK_GL_ERROR();
+	void* rawData = glMapBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0,  6 * 36 * sizeof(GLfloat), GL_MAP_READ_BIT);
+	GO_CHECK_GL_ERROR();
+
+	float *p = (float*)rawData;
+	for(int i=0; i< 36; i++)
+	{
+		LOGCATE("BasicLightingSample::Draw() outVec0[%d] = [%f, %f, %f], outVec1[%d] = [%f, %f, %f]", i, p[i * 6], p[i * 6 + 1], p[i * 6 + 2], i, p[i * 6 + 3], p[i * 6 + 4], p[i * 6 + 5]);
+	}
+
+
+	glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
+	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
 }
 
 void BasicLightingSample::Destroy()
@@ -269,7 +313,7 @@ void BasicLightingSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int 
 
 	// View matrix
 	glm::mat4 View = glm::lookAt(
-			glm::vec3(3, 3, 3), // Camera is at (0,0,1), in World Space
+			glm::vec3(-2, 0, 2), // Camera is at (0,0,1), in World Space
 			glm::vec3(0, 0, 0), // and looks at the origin
 			glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
 	);

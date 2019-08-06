@@ -39,6 +39,8 @@ private:
 
 	GLuint m_VaoId;
 	GLuint m_VboIds[1];
+	GLuint m_TfoId;
+	GLuint m_TfoBufId;
 	NativeImage m_RenderImage;
 	glm::mat4 m_MVPMatrix;
 	glm::mat4 m_ModelMatrix;

@@ -28,28 +28,33 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
-import static android.opengl.GLSurfaceView.RENDERMODE_CONTINUOUSLY;
-import static android.opengl.GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_NV21;
 import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_RGBA;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_BASIC_LIGHTING;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_COORD_SYSTEM;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_EGL;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TEXTURE_MAP;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TRIANGLE;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_VAO;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_YUV_TEXTURE_MAP;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    private static final int SAMPLE_TYPE  =  200;
-    private static final int ANGLE_TYPE  =  300;
+    private static final String[] SAMPLE_TITLES = {
+            "绘制三角形",
+            "纹理映射",
+            "YUV 渲染",
+            "VAO&VBO",
+            "FBO 离屏渲染",
+            "EGL 后台渲染",
+            "FBO 拉伸",
+            "坐标系统",
+            "光照基础",
+    };
 
-    private static final int SAMPLE_TYPE_KEY_TRIANGLE = 0;
-    private static final int SAMPLE_TYPE_KEY_TEXTURE_MAP = 1;
-    private static final int SAMPLE_TYPE_KEY_YUV_TEXTURE_MAP = 2;
-    private static final int SAMPLE_TYPE_KEY_VAO = 3;
-    private static final int SAMPLE_TYPE_KEY_FBO = 4;
-    private static final int SAMPLE_TYPE_KEY_EGL = 5;
-    private static final int SAMPLE_TYPE_KEY_FBO_LEG = 6;
-    private static final int SAMPLE_TYPE_KEY_COORD_SYSTEM = 7;
-    private static final int SAMPLE_TYPE_KEY_BASIC_LIGHTING = 8;
-
-
-    private static final String[] SAMPLE_TITLES = {"绘制三角形","纹理映射","YUV 渲染","VAO&VBO","FBO 离屏渲染","EGL 后台渲染","FBO 拉伸", "坐标系统", "光照基础"};
     private MyGLSurfaceView mGLSurfaceView;
     private int mSampleSelectedIndex = 0;
 
@@ -176,29 +181,29 @@ public class MainActivity extends AppCompatActivity {
                 myPreviewSizeViewAdapter.notifyItemChanged(position);
                 mSampleSelectedIndex = position;
 
-                mGLSurfaceView.getNativeRender().native_SetParamsInt(SAMPLE_TYPE, position, 0);
-                switch (position) {
-                    case SAMPLE_TYPE_KEY_TRIANGLE:
+                mGLSurfaceView.getNativeRender().native_SetParamsInt(SAMPLE_TYPE, position + SAMPLE_TYPE, 0);
+                switch (position + SAMPLE_TYPE) {
+                    case SAMPLE_TYPE_TRIANGLE:
                         break;
-                    case SAMPLE_TYPE_KEY_TEXTURE_MAP:
+                    case SAMPLE_TYPE_TEXTURE_MAP:
                         LoadRGBAImage(R.drawable.dzzz);
                         break;
-                    case SAMPLE_TYPE_KEY_YUV_TEXTURE_MAP:
+                    case SAMPLE_TYPE_YUV_TEXTURE_MAP:
                         LoadNV21Image();
                         break;
-                    case SAMPLE_TYPE_KEY_VAO:
+                    case SAMPLE_TYPE_VAO:
                         break;
-                    case SAMPLE_TYPE_KEY_FBO:
+                    case SAMPLE_TYPE_FBO:
                         LoadRGBAImage(R.drawable.java);
                         break;
-                    case SAMPLE_TYPE_KEY_FBO_LEG:
+                    case SAMPLE_TYPE_FBO_LEG:
                         LoadRGBAImage(R.drawable.leg);
                         break;
-                    case SAMPLE_TYPE_KEY_EGL:
+                    case SAMPLE_TYPE_EGL:
                         startActivity(new Intent(MainActivity.this, EGLActivity.class));
                         break;
-                    case SAMPLE_TYPE_KEY_COORD_SYSTEM:
-                    case SAMPLE_TYPE_KEY_BASIC_LIGHTING:
+                    case SAMPLE_TYPE_COORD_SYSTEM:
+                    case SAMPLE_TYPE_BASIC_LIGHTING:
                         LoadRGBAImage(R.drawable.dzzz);
                         break;
                     default:

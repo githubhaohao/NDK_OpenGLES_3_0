@@ -22,7 +22,7 @@ public:
 
     int CreateGlesEnv();
 
-    //void CreateProgram(const char *vShaderStr, const char *fShaderStr);
+    //void CreateProgramWithFeedback(const char *vShaderStr, const char *fShaderStr);
 
     void SetImageData(uint8_t *pData, int width, int height);
 
