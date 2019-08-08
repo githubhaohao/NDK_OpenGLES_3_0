@@ -79,7 +79,6 @@ void BasicLightingSample::Init()
 			"    // Specular\n"
 			"    float specularStrength = 0.9;\n"
 			"    vec3 viewDir = normalize(viewPos - fragPos);\n"
-			"    //vec3 helfVector  = normalize(viewDir + lightDir);\n"
 			"    vec3 reflectDir = reflect(-lightDir, unitNormal);\n"
 			"    float spec = pow(max(dot(unitNormal, reflectDir), 0.0), 16.0);\n"
 			"    specular = specularStrength * spec * lightColor;\n"

@@ -78,7 +78,7 @@ void FBOSample::Init()
 			"   v_texCoord = a_texCoord;                \n"
 			"}                                          \n";
 
-	// 用于普通渲染的顶点着色器脚本，简单纹理映射
+	// 用于普通渲染的片段着色器脚本，简单纹理映射
 	char fShaderStr[] =
 			"#version 300 es\n"
 			"precision mediump float;\n"

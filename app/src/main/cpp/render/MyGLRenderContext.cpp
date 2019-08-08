@@ -10,6 +10,7 @@
 #include <FBOLegLengthenSample.h>
 #include <CoordSystemSample.h>
 #include <BasicLightingSample.h>
+#include <TransformFeedbackSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -68,6 +69,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 				break;
 			case SAMPLE_TYPE_KEY_BASIC_LIGHTING:
 				m_Sample = new BasicLightingSample();
+				break;
+			case SAMPLE_TYPE_KEY_TRANSFORM_FEEDBACK:
+				m_Sample = new TransformFeedbackSample();
 				break;
 			default:
 				break;
