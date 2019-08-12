@@ -11,6 +11,7 @@
 #include <CoordSystemSample.h>
 #include <BasicLightingSample.h>
 #include <TransformFeedbackSample.h>
+#include <MultiLightsSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -72,6 +73,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 				break;
 			case SAMPLE_TYPE_KEY_TRANSFORM_FEEDBACK:
 				m_Sample = new TransformFeedbackSample();
+				break;
+			case SAMPLE_TYPE_KEY_MULTI_LIGHTS:
+				m_Sample = new MultiLightsSample();
 				break;
 			default:
 				break;

@@ -3,10 +3,10 @@
 //
 
 #include <gtc/matrix_transform.hpp>
-#include "BasicLightingSample.h"
+#include "MultiLightsSample.h"
 #include "../util/GLUtils.h"
 
-BasicLightingSample::BasicLightingSample()
+MultiLightsSample::MultiLightsSample()
 {
 
 	m_SamplerLoc = GL_NONE;
@@ -23,13 +23,13 @@ BasicLightingSample::BasicLightingSample()
 	m_ModelMatrix = glm::mat4(0.0f);
 }
 
-BasicLightingSample::~BasicLightingSample()
+MultiLightsSample::~MultiLightsSample()
 {
 	NativeImageUtil::FreeNativeImage(&m_RenderImage);
 
 }
 
-void BasicLightingSample::Init()
+void MultiLightsSample::Init()
 {
 	if (m_ProgramObj)
 	{
@@ -98,7 +98,6 @@ void BasicLightingSample::Init()
 			"    vec3 finalColor = (ambient + diffuse + specular) * vec3(objectColor);\n"
 			"    outColor = vec4(finalColor, 1.0);\n"
 			"}";
-	//GLchar const * varyings[] = {"outVec0", "outVec1"};
 	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr, m_VertexShader, m_FragmentShader);
 	if (m_ProgramObj)
 	{
@@ -111,12 +110,9 @@ void BasicLightingSample::Init()
 	}
 	else
 	{
-		LOGCATE("BasicLightingSample::Init create program fail");
+		LOGCATE("MultiLightsSample::Init create program fail");
 		return;
 	}
-
-
-	//glTransformFeedbackVaryings(m_ProgramObj, 1, Strings, GL_INTERLEAVED_ATTRIBS);
 
 	GLfloat vertices[] = {
 			 //position            //texture coord  //normal
@@ -183,24 +179,11 @@ void BasicLightingSample::Init()
 
 	glBindVertexArray(GL_NONE);
 
-
-//	glGenBuffers(1, &m_TfoBufId);
-//	glBindBuffer(GL_ARRAY_BUFFER, m_TfoBufId);
-//	glBufferData(GL_ARRAY_BUFFER, 6 * 36 * sizeof(GLfloat), NULL, GL_STATIC_READ);
-//	glBindBuffer(GL_ARRAY_BUFFER, 0);
-//
-//	glGenTransformFeedbacks(1, &m_TfoId);
-//	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_TfoId);
-//	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_TfoBufId); // Specify the index of the binding point within the array specified by target.
-//	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
-//	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
-
-
 }
 
-void BasicLightingSample::LoadImage(NativeImage *pImage)
+void MultiLightsSample::LoadImage(NativeImage *pImage)
 {
-	LOGCATE("BasicLightingSample::LoadImage pImage = %p", pImage->ppPlane[0]);
+	LOGCATE("MultiLightsSample::LoadImage pImage = %p", pImage->ppPlane[0]);
 	if (pImage)
 	{
 		m_RenderImage.width = pImage->width;
@@ -211,14 +194,14 @@ void BasicLightingSample::LoadImage(NativeImage *pImage)
 
 }
 
-void BasicLightingSample::Draw(int screenW, int screenH)
+void MultiLightsSample::Draw(int screenW, int screenH)
 {
-	LOGCATE("BasicLightingSample::Draw()");
+	LOGCATE("MultiLightsSample::Draw()");
 
 	if (m_ProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
 	glEnable(GL_DEPTH_TEST);
 
-	UpdateMVPMatrix(m_MVPMatrix, m_AngleX, m_AngleY, (float) screenW / screenH);
+	float ratio = (float)screenW / screenH;
 
 	//upload RGBA image data
 	glActiveTexture(GL_TEXTURE0);
@@ -232,6 +215,7 @@ void BasicLightingSample::Draw(int screenW, int screenH)
 
 	glBindVertexArray(m_VaoId);
 
+	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX, m_AngleY, 0.8, glm::vec3(0.0f, 0.0f, 0.5f), ratio);
 	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
 
@@ -244,35 +228,48 @@ void BasicLightingSample::Draw(int screenW, int screenH)
 	glBindTexture(GL_TEXTURE_2D, m_TextureId);
 	glUniform1i(m_SamplerLoc, 0);
 
-//	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_TfoId);
-//	glBeginTransformFeedback(GL_TRIANGLES);
-//	GO_CHECK_GL_ERROR();
-
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	GO_CHECK_GL_ERROR();
 
-//	glEndTransformFeedback();
-//	GO_CHECK_GL_ERROR();
-//	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
-//	GO_CHECK_GL_ERROR();
-//
-//	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_TfoBufId);
-//	GO_CHECK_GL_ERROR();
-//	void* rawData = glMapBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0,  6 * 36 * sizeof(GLfloat), GL_MAP_READ_BIT);
-//	GO_CHECK_GL_ERROR();
-//
-//	float *p = (float*)rawData;
-//	for(int i=0; i< 36; i++)
-//	{
-//		LOGCATE("BasicLightingSample::Draw() outVec0[%d] = [%f, %f, %f], outVec1[%d] = [%f, %f, %f]", i, p[i * 6], p[i * 6 + 1], p[i * 6 + 2], i, p[i * 6 + 3], p[i * 6 + 4], p[i * 6 + 5]);
-//	}
-//
-//
-//	glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
-//	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
+	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX + 10, m_AngleY + 20, 0.4, glm::vec3(1.0f, 1.0f, 3.0f), ratio);
+	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
+	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	GO_CHECK_GL_ERROR();
+
+	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX + 10, m_AngleY + 50, 0.3, glm::vec3(0.0f, 2.5f, 2.5f), ratio);
+	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
+	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	GO_CHECK_GL_ERROR();
+
+	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX + 30, m_AngleY + 40, 0.4, glm::vec3(1.0f, 1.0f, -2.5f), ratio);
+	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
+	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	GO_CHECK_GL_ERROR();
+
+
+	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX + 10, m_AngleY + 20, 0.3, glm::vec3(0.0f, 0.0f, -3.0f), ratio);
+	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
+	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	GO_CHECK_GL_ERROR();
+
+	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX + 10, m_AngleY + 50, 0.4, glm::vec3(2.5f, -2.0f, -2.5f), ratio);
+	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
+	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	GO_CHECK_GL_ERROR();
+
+	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX + 30, m_AngleY + 40, 0.4, glm::vec3(1.0f, -1.0f, -3.0f), ratio);
+	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
+	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	GO_CHECK_GL_ERROR();
 }
 
-void BasicLightingSample::Destroy()
+void MultiLightsSample::Destroy()
 {
 //	if (m_ProgramObj)
 //	{
@@ -283,22 +280,21 @@ void BasicLightingSample::Destroy()
 
 }
 
-
-/**
- * @param angleX 绕X轴旋转度数
- * @param angleY 绕Y轴旋转度数
- * @param ratio 宽高比
- * */
-void BasicLightingSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio)
+void MultiLightsSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio)
 {
-	LOGCATE("BasicLightingSample::UpdateMVPMatrix angleX = %d, angleY = %d, ratio = %f", angleX,
-			angleY, ratio);
-	angleX = angleX % 360;
-	angleY = angleY % 360;
+	//no implement
+}
+
+void MultiLightsSample::UpdateMatrix(glm::mat4 &mvpMatrix, glm::mat4 &modelMatrix, int angleXRotate, int angleYRotate, float scale, glm::vec3 transVec3, float ratio)
+{
+	LOGCATE("MultiLightsSample::UpdateMatrix angleX = %d, angleY = %d, ratio = %f", angleXRotate,
+			angleYRotate, ratio);
+	angleXRotate = angleXRotate % 360;
+	angleYRotate = angleYRotate % 360;
 
 	//转化为弧度角
-	float radiansX = static_cast<float>(MATH_PI / 180.0f * angleX);
-	float radiansY = static_cast<float>(MATH_PI / 180.0f * angleY);
+	float radiansX = static_cast<float>(MATH_PI / 180.0f * angleXRotate);
+	float radiansY = static_cast<float>(MATH_PI / 180.0f * angleYRotate);
 
 
 	// Projection matrix
@@ -315,21 +311,21 @@ void BasicLightingSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int 
 
 	// Model matrix
 	glm::mat4 Model = glm::mat4(1.0f);
-	Model = glm::scale(Model, glm::vec3(1.0f, 1.0f, 1.0f));
+	Model = glm::scale(Model, glm::vec3(scale, scale, scale));
 	Model = glm::rotate(Model, radiansX, glm::vec3(1.0f, 0.0f, 0.0f));
 	Model = glm::rotate(Model, radiansY, glm::vec3(0.0f, 1.0f, 0.0f));
-	Model = glm::translate(Model, glm::vec3(0.0f, 0.0f, 0.0f));
+	Model = glm::translate(Model, transVec3);
 
-	m_ModelMatrix = Model;
+	modelMatrix = Model;
 
 	mvpMatrix = Projection * View * Model;
-
 }
 
-void BasicLightingSample::SetParamsInt(int paramType, int value0, int value1)
+void MultiLightsSample::SetParamsInt(int paramType, int value0, int value1)
 {
-	LOGCATE("BasicLightingSample::SetParamsInt paramType = %d, value0 = %d", paramType, value0);
+	LOGCATE("MultiLightsSample::SetParamsInt paramType = %d, value0 = %d", paramType, value0);
 	GLSampleBase::SetParamsInt(paramType, value0, value1);
+	//no implement
 	if (paramType == ROTATE_ANGLE_PARAM_TYPE)
 	{
 		m_AngleX = value0;
