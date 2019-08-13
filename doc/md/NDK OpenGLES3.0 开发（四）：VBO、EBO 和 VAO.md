@@ -1,12 +1,14 @@
-NDK OpenGLES3.0 开发（四）：VBO、EBO 和 VAO
+> 该原创文章首发于微信公众号：字节流动
 # VBO 和 EBO
-VBO（Vertex Buffer Object）是指顶点缓冲区对象，而 EBO（Element Buffer Object）是指图元索引缓冲区对象，VAO 和 EBO 实际上是对同一类 Buffer 按照用途的不同称呼。
+**VBO（Vertex Buffer Object）是指顶点缓冲区对象，而 EBO（Element Buffer Object）是指图元索引缓冲区对象，VAO 和 EBO 实际上是对同一类 Buffer 按照用途的不同称呼**。
 
-OpenGLES2.0 编程中，用于绘制的顶点数组数据首先保存在 CPU 内存，在调用 glDrawArrays 或者 glDrawElements 等进行绘制时，需要将顶点数组数据从 CPU 内存拷贝到显存，但是很多时候我们没必要每次绘制的时候都去进行内存拷贝，如果可以在显存中缓存这些数据，就可以在很大程度上降低内存拷贝带来的开销。
+OpenGLES2.0 编程中，用于绘制的顶点数组数据首先保存在 CPU 内存，在调用 glDrawArrays 或者 glDrawElements 等进行绘制时，需要将顶点数组数据从 CPU 内存拷贝到显存。
 
-OpenGLES3.0 VBO 和 EBO 的出现就是为了解决这个问题。 VBO 和 EBO 的作用是在显存中提前开辟好一块内存，用于缓存顶点数据或者图元索引数据，从而避免每次绘制时的 CPU 与 GPU 之间的内存拷贝，可以改进渲染性能，降低内存带宽和功耗。
+但是很多时候我们没必要每次绘制的时候都去进行内存拷贝，如果可以在显存中缓存这些数据，就可以在很大程度上降低内存拷贝带来的开销。
 
-OpenGLES3.0 支持两类缓冲区对象：顶点数组缓冲区对象、图元索引缓冲区对象。GL_ARRAY_BUFFER 标志指定的缓冲区对象用于保存顶点数组，GL_ELEMENT_ARRAY_BUFFER 标志指定的缓存区对象用于保存图元索引。
+OpenGLES3.0 VBO 和 EBO 的出现就是为了解决这个问题。 **VBO 和 EBO 的作用是在显存中提前开辟好一块内存，用于缓存顶点数据或者图元索引数据，从而避免每次绘制时的 CPU 与 GPU 之间的内存拷贝，可以改进渲染性能，降低内存带宽和功耗**。
+
+**OpenGLES3.0 支持两类缓冲区对象：顶点数组缓冲区对象、图元索引缓冲区对象。GL_ARRAY_BUFFER 标志指定的缓冲区对象用于保存顶点数组，GL_ELEMENT_ARRAY_BUFFER 标志指定的缓存区对象用于保存图元索引**。
 
 VBO（EBO）的创建和更新。
 ```c
@@ -64,9 +66,13 @@ GLfloat vertices[] =
 // Index buffer data
 GLushort indices[6] = { 0, 1, 2, 0, 2, 3};
 ```
+![VBO更新后内存中的数据结构](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/4/vertex_attribute_pointer_interleaved.png)
 
-![VBO更新后内存中的数据结构]()
-由于顶点位置和颜色数据在同一个数组里，一起更新到 VBO 里面，所以需要知道 2 个属性的步长和偏移量。为获得数据队列中下一个属性值（比如位置向量的下个 3 维分量）我们必须向右移动 6 个 float ，其中 3 个是位置值，另外 3 个是颜色值，那么步长就是 6 乘以 float 的字节数（= 24 字节）。
+VBO更新后内存中的数据结构
+
+由于顶点位置和颜色数据在同一个数组里，一起更新到 VBO 里面，所以需要知道 2 个属性的步长和偏移量。
+
+为获得数据队列中下一个属性值（比如位置向量的下个 3 维分量）我们必须向右移动 6 个 float ，其中 3 个是位置值，另外 3 个是颜色值，那么步长就是 6 乘以 float 的字节数（= 24 字节）。
 
 同样，也需要指定顶点位置属性和颜色属性在 VBO 内存中的偏移量。对于每个顶点来说，位置顶点属性在前，所以它的偏移量是 0 。而颜色属性紧随位置数据之后，所以偏移量就是 3 * sizeof(GLfloat) ，用字节来计算就是 12 字节。
 
@@ -87,17 +93,19 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
 glEnableVertexAttribArray(0);
 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (3+3)*sizeof(GLfloat), (const void *)0);
-
-glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VboIds[1]);
 glEnableVertexAttribArray(1);
 glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (3+3)*sizeof(GLfloat), (const void *)(3 *sizeof(GLfloat)));
+
+glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VboIds[1]);
 
 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const void *)0);
 ```
 # VAO
-VAO（Vertex Array Object）是指顶点数组对象，VAO 的主要作用是用于管理 VBO 或 EBO ，减少 glBindBuffer 、glEnableVertexAttribArray、 glVertexAttribPointer 这些调用操作，高效地实现在顶点数组配置之间切换。
+**VAO（Vertex Array Object）是指顶点数组对象，VAO 的主要作用是用于管理 VBO 或 EBO ，减少 glBindBuffer 、glEnableVertexAttribArray、 glVertexAttribPointer 这些调用操作，高效地实现在顶点数组配置之间切换**。
 
-![VAO 与 VBO 之间的关系]()
+![VAO 与 VBO 之间的关系](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/4/vertex_array_objects.png)
+
+VAO 与 VBO 之间的关系
 
 基于上小节的例子创建 VAO ：
 ```c
@@ -109,10 +117,10 @@ glBindVertexArray(m_VaoId);
 glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
 glEnableVertexAttribArray(0);
 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (3+3)*sizeof(GLfloat), (const void *)0);
-
-glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VboIds[1]);
 glEnableVertexAttribArray(1);
 glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (3+3)*sizeof(GLfloat), (const void *)(3 *sizeof(GLfloat)));
+
+glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VboIds[1]);
 
 glBindVertexArray(GL_NONE);
 ```
@@ -126,3 +134,9 @@ glBindVertexArray(m_VaoId);
 
 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const void *)0);
 ```
+# 联系与交流 #
+
+微信公众号
+![我的公众号](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/accountID.jpg#pic_center)
+个人微信
+![个人微信](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/WeChatID.jpg#pic_center)
