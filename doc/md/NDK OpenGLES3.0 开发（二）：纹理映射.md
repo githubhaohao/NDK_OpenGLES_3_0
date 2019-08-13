@@ -21,6 +21,7 @@
 ![纹理坐标系](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/2/%E7%BA%B9%E7%90%86%E5%9D%90%E6%A0%87%E7%B3%BB.png#pic_center)
 
 渲染坐标系或OpenGLES 坐标系:
+
 ![渲染坐标系](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/2/Opengles%E5%9D%90%E6%A0%87%E7%B3%BB.png#pic_center)
 
 4 个纹理坐标分别为
@@ -185,6 +186,5 @@ void TextureMapSample::Draw(int screenW, int screenH)
 # 联系与交流 #
 微信公众号
 ![我的公众号](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/WeChatID.jpg#pic_center)
-
 个人微信
 ![我的微信](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/accountID.jpg#pic_center)
