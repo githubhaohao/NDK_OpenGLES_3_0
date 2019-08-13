@@ -1,4 +1,5 @@
 
+# NDK OpenGLES3.0 开发（三）：YUV 渲染
 > 该原创文章首发于微信公众号：字节流动
 # YUV 渲染原理
 前面文章[一文掌握 YUV 图像的基本处理](https://blog.csdn.net/Kennethdroid/article/details/94031821)介绍了 YUV 常用的基本格式，本文以实现 NV21/NV12 的渲染为例。
