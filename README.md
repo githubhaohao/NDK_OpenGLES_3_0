@@ -13,8 +13,6 @@
 # NDK OpenGLES3.0 开发（二）：纹理映射
 > 该原创文章首发于微信公众号：字节流动
 
-![cover](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/ProjCover.gif)
-
 # 什么是纹理 
 
 现实生活中，纹理（Texture）最通常的作用是装饰 3D 物体，它就像是贴纸一样贴在物体表面，丰富物体的表面和细节。 在 OpenGLES 开发中，纹理除了用于装饰物体表面，还可以用来作为存储数据的容器。
