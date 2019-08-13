@@ -1,3 +1,4 @@
+# NDK OpenGLES3.0 开发（四）：VBO、EBO 和 VAO
 > 该原创文章首发于微信公众号：字节流动
 # VBO 和 EBO
 **VBO（Vertex Buffer Object）是指顶点缓冲区对象，而 EBO（Element Buffer Object）是指图元索引缓冲区对象，VAO 和 EBO 实际上是对同一类 Buffer 按照用途的不同称呼**。
