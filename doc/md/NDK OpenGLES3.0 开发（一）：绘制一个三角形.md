@@ -641,6 +641,7 @@ void main()
 
 opengles 坐标系中三角形顶点坐标：
 ![opengles 坐标系中三角形顶点坐标](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/1/20190712151914390.png#pic_center)
+
 绘制结果图
 ![绘制的结果图](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/1/20190712151834578.jpg#pic_center)
 
@@ -653,6 +654,5 @@ opengles 坐标系中三角形顶点坐标：
 
 微信公众号
 ![我的公众号](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/WeChatID.jpg#pic_center)
-
 个人微信
 ![我的微信](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/accountID.jpg#pic_center)
