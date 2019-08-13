@@ -643,10 +643,12 @@ opengles 坐标系中三角形顶点坐标：
 ![opengles 坐标系中三角形顶点坐标](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/1/20190712151914390.png#pic_center)
 
 绘制结果图
+
 ![绘制的结果图](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/1/20190712151834578.jpg#pic_center)
 
 # 参考
 [OpenGLES 维基百科 https://zh.wikipedia.org/wiki/OpenGL_ES](https://zh.wikipedia.org/wiki/OpenGL_ES)
+
 [OpenGLES 3.0 编程指南 https://book.douban.com/subject/26414014/](https://book.douban.com/subject/26414014/)
 
 
