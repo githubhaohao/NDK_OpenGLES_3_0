@@ -1,9 +1,12 @@
+> 该原创文章首发于微信公众号：字节流动
+
 # 什么是 OpenGLES 
 
 OpenGLES 全称 OpenGL for Embedded Systems ，是三维图形应用程序接口 OpenGL 的子集，本质上是一个跨编程语言、跨平台的编程接口规范，主要应用于嵌入式设备，如手机、平板等。由[科纳斯（Khronos）](https://www.khronos.org/opengles/)组织定义和推广，科纳斯是一个图形软硬件行业协会，该协会主要关注图形和多媒体方面的开放标准。
 
 # OpenGLES 3.0 的特点
 OpenGLES 3.0 实际上是 OpenGLES 2.0 的扩展版本，向下兼容 OpenGLES 2.0 ，但不兼容 OpenGLES 1.0 。
+![OpenGLES 3.0 图形管线.png](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/1/20190712151959897.png#pic_center)
 
 ## OpenGLES 3.0 主要新特性
 ### 纹理
@@ -636,8 +639,20 @@ void main()
 ```
 在 Draw 函数中指定着色器程序，为着色器程序中的变量赋值，传入顶点坐标信息，然后绘制三角形。
 
-![opengles 坐标系中三角形顶点坐标](https://upload-images.jianshu.io/upload_images/3239933-6602e399209f252c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+opengles 坐标系中三角形顶点坐标：
+![opengles 坐标系中三角形顶点坐标](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/1/20190712151914390.png#pic_center)
+绘制结果图
+![绘制的结果图](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/1/20190712151834578.jpg#pic_center)
 
-![绘制的结果图](https://upload-images.jianshu.io/upload_images/3239933-2f77a65e6a59c06a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+# 参考
+[OpenGLES 维基百科 https://zh.wikipedia.org/wiki/OpenGL_ES](https://zh.wikipedia.org/wiki/OpenGL_ES)
+[OpenGLES 3.0 编程指南 https://book.douban.com/subject/26414014/](https://book.douban.com/subject/26414014/)
 
 
+# 联系与交流 #
+
+微信公众号
+![我的公众号](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/WeChatID.jpg#pic_center)
+
+个人微信
+![我的微信](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/accountID.jpg#pic_center)
