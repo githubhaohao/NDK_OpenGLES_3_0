@@ -1,4 +1,7 @@
-NDK OpenGLES3.0 开发（五）：FBO 离屏渲染
+# NDK OpenGLES3.0 开发（五）：FBO 离屏渲染
+
+> 该原创文章首发于微信公众号：字节流动
+
 # 什么是 FBO 
 **FBO（Frame Buffer Object）即帧缓冲区对象，实际上是一个可添加缓冲区的容器，可以为其添加纹理或渲染缓冲区对象（RBO）。**
 
@@ -8,7 +11,10 @@ RBO（Render Buffer Object）即渲染缓冲区对象，是一个由应用程序
 
 使用 FBO 作为渲染目标时，首先需要为 FBO 的附着添加连接对象，如颜色附着需要连接纹理或者渲染缓冲区对象的颜色缓冲区。
 
-![帧缓冲区对象，渲染缓冲区对象和纹理]()
+![帧缓冲区对象，渲染缓冲区对象和纹理](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/5/FBO.png)
+
+帧缓冲区对象，渲染缓冲区对象和纹理关系
+
 # 为什么用 FBO
 默认情况下，OpenGL ES 通过绘制到窗口系统提供的帧缓冲区，然后将帧缓冲区的对应区域复制到纹理来实现渲染到纹理，但是此方法只有在纹理尺寸小于或等于帧缓冲区尺寸才有效。
 
@@ -315,4 +321,12 @@ void FBOSample::Draw(int screenW, int screenH)
 }
 ```
 渲染结果图：
-![FBO]()
+
+![渲染结果图](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/5/fbo.gif)
+
+# 联系与交流 #
+
+微信公众号
+![我的公众号](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/accountID.jpg#pic_center)
+个人微信
+![个人微信](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/WeChatID.jpg#pic_center)
