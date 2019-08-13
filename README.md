@@ -10,10 +10,11 @@
 #### 4. [NDK OpenGLES3.0 开发（四）：VBO、EBO 和 VAO](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/md/NDK%20OpenGLES3.0%20%E5%BC%80%E5%8F%91%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9AVBO%E3%80%81EBO%20%E5%92%8C%20VAO.md)
 #### 5.[NDK OpenGLES3.0 开发（五）：FBO 离屏渲染](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/md/NDK%20OpenGLES3.0%20%E5%BC%80%E5%8F%91%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9AFBO%20%E7%A6%BB%E5%B1%8F%E6%B8%B2%E6%9F%93.md)
 
-![cover](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/ProjCover.gif)
-
 # NDK OpenGLES3.0 开发（二）：纹理映射
 > 该原创文章首发于微信公众号：字节流动
+
+![cover](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/ProjCover.gif)
+
 # 什么是纹理 
 
 现实生活中，纹理（Texture）最通常的作用是装饰 3D 物体，它就像是贴纸一样贴在物体表面，丰富物体的表面和细节。 在 OpenGLES 开发中，纹理除了用于装饰物体表面，还可以用来作为存储数据的容器。
