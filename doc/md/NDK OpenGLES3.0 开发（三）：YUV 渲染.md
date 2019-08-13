@@ -6,7 +6,8 @@
 前文提到，YUV 图不能直接用于显示，需要转换为 RGB 格式，而 YUV 转 RGB 是一个逐像素处理的耗时操作，在 CPU 端进行转换效率过低，这时正好可以利用 GPU 强大的并行处理能力来实现 YUV 到 RGB 的转换。
 
 YUV 与 RGB 之间的转换公式。
-![YUV 与 RGB 之间的转换公式](https://img-blog.csdnimg.cn/20190724185459290.png#pic_center)
+
+![YUV 与 RGB 之间的转换公式](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/3/yuv2rgbmat.png)
 
 需要注意的是 OpenGLES 的内置矩阵实际上是一列一列地构建的，比如 YUV 和 RGB 的转换矩阵的构建是：
 ```c
@@ -18,7 +19,8 @@ mat3 convertMat = mat3(1.0, 1.0, 1.0,      //第一列
 OpenGLES 实现 YUV 渲染需要用到 GL_LUMINANCE 和 GL_LUMINANCE_ALPHA 格式的纹理，其中 GL_LUMINANCE 纹理用来加载 NV21 Y Plane 的数据，GL_LUMINANCE_ALPHA 纹理用来加载 UV Plane 的数据。
 
 OpenGLES 常用纹理的格式类型
-![OpenGLES 常用纹理的格式类型](https://img-blog.csdnimg.cn/20190724185539335.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0tlbm5ldGhkcm9pZA==,size_16,color_FFFFFF,t_70#pic_center)
+
+![OpenGLES 常用纹理的格式类型](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/3/texture_format.png)
 
 GL_LUMINANCE 纹理在着色器中采样的纹理像素格式是（L，L，L，1），L 表示亮度。GL_LUMINANCE 纹理在着色器中采样的纹理像素格式是（L，L，L，A），A 表示透明度。
 
@@ -274,7 +276,7 @@ void NV21TextureMapSample::Draw(int screenW, int screenH)
 ```
 YUV 渲染结果
 
-![YUV 渲染结果](https://img-blog.csdnimg.cn/20190724185653937.gif#pic_center)
+![YUV 渲染结果](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/3/YUVRenderRet.gif#pic_center)
 
 # 联系与交流 #
 
