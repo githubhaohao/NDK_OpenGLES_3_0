@@ -36,7 +36,9 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_COORD_SYSTEM;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_EGL;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TEXTURE_MAP;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TRANS_FEEDBACK;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TRIANGLE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_VAO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_YUV_TEXTURE_MAP;
@@ -53,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
             "FBO 拉伸",
             "坐标系统",
             "光照基础",
+            "TransformFeedback",
+            "MultiLights",
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -204,6 +208,8 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case SAMPLE_TYPE_COORD_SYSTEM:
                     case SAMPLE_TYPE_BASIC_LIGHTING:
+                    case SAMPLE_TYPE_TRANS_FEEDBACK:
+                    case SAMPLE_TYPE_MULTI_LIGHTS:
                         LoadRGBAImage(R.drawable.dzzz);
                         break;
                     default:

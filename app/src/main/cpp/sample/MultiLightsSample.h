@@ -35,8 +35,6 @@ private:
 	GLint m_SamplerLoc;
 	GLint m_MVPMatLoc;
 	GLint m_ModelMatrixLoc;
-	GLint m_LightPosLoc;
-	GLint m_LightColorLoc;
 	GLint m_ViewPosLoc;
 
 	GLuint m_VaoId;

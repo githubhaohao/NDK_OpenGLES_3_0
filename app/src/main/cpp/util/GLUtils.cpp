@@ -38,7 +38,7 @@ GLuint GLUtils::LoadShader(GLenum shaderType, const char *pSource)
 GLuint GLUtils::CreateProgram(const char *pVertexShaderSource, const char *pFragShaderSource, GLuint &vertexShaderHandle, GLuint &fragShaderHandle)
 {
     GLuint program = 0;
-    FUN_BEGIN_TIME("GLUtils::CreateProgramWithFeedback")
+    FUN_BEGIN_TIME("GLUtils::CreateProgram")
         vertexShaderHandle = LoadShader(GL_VERTEX_SHADER, pVertexShaderSource);
         if (!vertexShaderHandle) return program;
 
@@ -72,7 +72,7 @@ GLuint GLUtils::CreateProgram(const char *pVertexShaderSource, const char *pFrag
                     if (buf)
                     {
                         glGetProgramInfoLog(program, bufLength, NULL, buf);
-                        LOGCATE("GLUtils::CreateProgramWithFeedback Could not link program:\n%s\n", buf);
+                        LOGCATE("GLUtils::CreateProgram Could not link program:\n%s\n", buf);
                         free(buf);
                     }
                 }
@@ -80,8 +80,8 @@ GLuint GLUtils::CreateProgram(const char *pVertexShaderSource, const char *pFrag
                 program = 0;
             }
         }
-    FUN_END_TIME("GLUtils::CreateProgramWithFeedback")
-    LOGCATE("GLUtils::CreateProgramWithFeedback program = %d", program);
+    FUN_END_TIME("GLUtils::CreateProgram")
+    LOGCATE("GLUtils::CreateProgram program = %d", program);
 	return program;
 }
 

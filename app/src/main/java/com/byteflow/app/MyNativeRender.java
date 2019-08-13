@@ -12,6 +12,8 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_FBO_LEG         = SAMPLE_TYPE + 6;
     public static final int SAMPLE_TYPE_COORD_SYSTEM    = SAMPLE_TYPE + 7;
     public static final int SAMPLE_TYPE_BASIC_LIGHTING  = SAMPLE_TYPE + 8;
+    public static final int SAMPLE_TYPE_TRANS_FEEDBACK  = SAMPLE_TYPE + 9;
+    public static final int SAMPLE_TYPE_MULTI_LIGHTS    = SAMPLE_TYPE + 10;
 
     public static final int PARAM_TYPE_ROTATE_ANGLE =  300;
 
