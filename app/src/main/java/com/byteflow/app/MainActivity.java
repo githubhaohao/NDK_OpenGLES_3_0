@@ -46,17 +46,17 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_YUV_TEXTURE_MAP;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String[] SAMPLE_TITLES = {
-            "绘制三角形",
-            "纹理映射",
-            "YUV 渲染",
+            "DrawTriangle",
+            "TextureMap",
+            "YUV Rendering",
             "VAO&VBO",
-            "FBO 离屏渲染",
-            "EGL 后台渲染",
-            "FBO 拉伸",
-            "坐标系统",
-            "光照基础",
-            "TransformFeedback",
-            "MultiLights",
+            "FBO Offscreen Rendering",
+            "EGL Background Rendering",
+            "FBO Stretching",
+            "Coordinate System",
+            "Basic Lighting",
+            "Transform Feedback",
+            "Complex Lighting",
     };
 
     private MyGLSurfaceView mGLSurfaceView;
