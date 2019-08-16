@@ -315,6 +315,7 @@ int BgRender::CreateGlesEnv()
 	int resultCode = 0;
 	do
 	{
+		//1. 获取 EGLDisplay 对象，建立与本地窗口系统的连接
 		m_eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 		if(m_eglDisplay == EGL_NO_DISPLAY)
 		{
@@ -324,6 +325,7 @@ int BgRender::CreateGlesEnv()
 			break;
 		}
 
+		//2. 初始化 EGL 方法
 		if(!eglInitialize(m_eglDisplay, &eglMajVers, &eglMinVers))
 		{
 			// Unable to initialize EGL. Handle and recover
@@ -334,7 +336,7 @@ int BgRender::CreateGlesEnv()
 
 		LOGCATE("BgRender::CreateGlesEnv EGL init with version %d.%d", eglMajVers, eglMinVers);
 
-		// choose the first config, i.e. best config
+		//3. 获取 EGLConfig 对象，确定渲染表面的配置信息
 		if(!eglChooseConfig(m_eglDisplay, confAttr, &m_eglConf, 1, &numConfigs))
 		{
 			LOGCATE("BgRender::CreateGlesEnv some config is wrong");
@@ -342,7 +344,7 @@ int BgRender::CreateGlesEnv()
 			break;
 		}
 
-		// create a pixelbuffer surface
+		//4. 创建渲染表面 EGLSurface, 使用 eglCreatePbufferSurface 创建屏幕外渲染区域
 		m_eglSurface = eglCreatePbufferSurface(m_eglDisplay, m_eglConf, surfaceAttr);
 		if(m_eglSurface == EGL_NO_SURFACE)
 		{
@@ -369,6 +371,7 @@ int BgRender::CreateGlesEnv()
 			}
 		}
 
+		//5. 创建渲染上下文 EGLContext
 		m_eglCtx = eglCreateContext(m_eglDisplay, m_eglConf, EGL_NO_CONTEXT, ctxAttr);
 		if(m_eglCtx == EGL_NO_CONTEXT)
 		{
@@ -382,6 +385,7 @@ int BgRender::CreateGlesEnv()
 			}
 		}
 
+		//6. 绑定上下文
 		if(!eglMakeCurrent(m_eglDisplay, m_eglSurface, m_eglSurface, m_eglCtx))
 		{
 			LOGCATE("BgRender::CreateGlesEnv MakeCurrent failed");
@@ -500,6 +504,7 @@ void BgRender::Draw()
 		glUniform2fv(m_TexSizeLoc, 1, &size[0]);
 	}
 
+	//7. 渲染
 	GO_CHECK_GL_ERROR();
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const void *)0);
 	GO_CHECK_GL_ERROR();
@@ -564,6 +569,7 @@ void BgRender::UnInit()
 
 void BgRender::DestroyGlesEnv()
 {
+	//8. 释放 EGL 环境
 	if (m_eglDisplay != EGL_NO_DISPLAY) {
 		eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 		eglDestroyContext(m_eglDisplay, m_eglCtx);
