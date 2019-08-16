@@ -1,4 +1,4 @@
-![OpenGLES3.0](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/1/opengles.png)
+![OpenGLES3.0](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/opengles.png)
 
 # NDK OpenGLES 3.0 开发笔记
 
