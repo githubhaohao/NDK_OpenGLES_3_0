@@ -3,7 +3,6 @@
 # NDK OpenGLES 3.0 开发笔记
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/LICENSE.txt)
-[![sdk](https://img.shields.io/badge/SDK-21+-red.svg)](https://github.com/githubhaohao/NDK_OpenGLES_3_0)
 ![Build](https://img.shields.io/badge/build-passing-brightgreen)
 
 - [NDK OpenGLES3.0 开发（一）：绘制一个三角形](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/md/NDK%20OpenGLES3.0%20%E5%BC%80%E5%8F%91%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E7%BB%98%E5%88%B6%E4%B8%80%E4%B8%AA%E4%B8%89%E8%A7%92%E5%BD%A2.md)
