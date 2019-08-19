@@ -74,21 +74,18 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
         @Override
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-            Log.d(TAG, "onSurfaceCreated() called with: gl = [" + gl + "], config = [" + config + "]");
             mNativeRender.native_OnSurfaceCreated();
 
         }
 
         @Override
         public void onSurfaceChanged(GL10 gl, int width, int height) {
-            Log.d(TAG, "onSurfaceChanged() called with: gl = [" + gl + "], width = [" + width + "], height = [" + height + "]");
             mNativeRender.native_OnSurfaceChanged(width, height);
 
         }
 
         @Override
         public void onDrawFrame(GL10 gl) {
-            Log.d(TAG, "onDrawFrame() called with: gl = [" + gl + "]");
             mNativeRender.native_OnDrawFrame();
 
         }
