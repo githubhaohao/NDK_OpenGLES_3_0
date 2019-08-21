@@ -126,11 +126,10 @@ void TransformFeedbackSample::Init()
 	GO_CHECK_GL_ERROR();
 	glBindVertexArray(GL_NONE);
 
-
 	glGenBuffers(1, &m_TransFeedbackBufId);
-	glBindBuffer(GL_ARRAY_BUFFER, m_TransFeedbackBufId);
-	glBufferData(GL_ARRAY_BUFFER, (3 + 2) * 6 * sizeof(GLfloat), NULL, GL_STATIC_READ);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_TransFeedbackBufId);
+	glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER, (3 + 2) * 6 * sizeof(GLfloat), NULL, GL_STATIC_READ);
+	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
 
 	glGenTransformFeedbacks(1, &m_TransFeedbackObjId);
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_TransFeedbackObjId);
@@ -156,12 +155,10 @@ void TransformFeedbackSample::Draw(int screenW, int screenH)
 	// Do normal rendering
 	glViewport(0, 0, screenW, screenH);
 	glUseProgram(m_ProgramObj);
-	GO_CHECK_GL_ERROR();
 	glBindVertexArray(m_VaoId);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_ImageTextureId);
 	glUniform1i(m_SamplerLoc, 0);
-	GO_CHECK_GL_ERROR();
 
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_TransFeedbackObjId);
 	glBeginTransformFeedback(GL_TRIANGLES);
@@ -169,25 +166,20 @@ void TransformFeedbackSample::Draw(int screenW, int screenH)
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glEndTransformFeedback();
-	GO_CHECK_GL_ERROR();
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
 
-	GO_CHECK_GL_ERROR();
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 	glBindVertexArray(GL_NONE);
 
 	// Read feedback buffer
 	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_TransFeedbackBufId);
-	GO_CHECK_GL_ERROR();
 	void* rawData = glMapBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0,  (3 + 2) * 6 * sizeof(GLfloat), GL_MAP_READ_BIT);
-	GO_CHECK_GL_ERROR();
 
 	float *p = (float*)rawData;
 	for(int i= 0; i< 6; i++)
 	{
 		LOGCATE("TransformFeedbackSample::Draw() read feedback buffer outPos[%d] = [%f, %f, %f], outTex[%d] = [%f, %f]", i, p[i * 5], p[i * 5 + 1], p[i * 5 + 2], i, p[i * 5 + 3], p[i * 5 + 4]);
 	}
-
 
 	glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
 	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
