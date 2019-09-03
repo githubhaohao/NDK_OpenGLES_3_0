@@ -6,7 +6,7 @@
 #include "DepthTestingSample.h"
 #include "../util/GLUtils.h"
 
-glm::vec3 transPositions[] = {
+glm::vec3 transPos[] = {
 		glm::vec3( 0.0f,  0.0f,  0.0f),
 		glm::vec3( 2.0f,  2.0f, -1.0f),
 		glm::vec3(-1.5f, -2.2f, -1.5f),
@@ -289,9 +289,9 @@ void DepthTestingSample::Draw(int screenW, int screenH)
 	glUniform1f(glGetUniformLocation(m_ProgramObj, "light.quadratic"), 0.032);
 
 	// 绘制多个立方体，不同的位移和旋转角度
-	for(int i = 0; i < sizeof(transPositions)/ sizeof(transPositions[0]); i++)
+	for(int i = 0; i < sizeof(transPos)/ sizeof(transPos[0]); i++)
 	{
-		UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX + 10, m_AngleY + 10, 0.4, transPositions[i], ratio);
+		UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX + 10, m_AngleY + 10, 0.4, transPos[i], ratio);
 		glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 		glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
 		glDrawArrays(GL_TRIANGLES, 0, 36);

@@ -23,6 +23,18 @@
 #define IMAGE_FORMAT_NV12_EXT       "NV12"
 #define IMAGE_FORMAT_I420_EXT       "I420"
 
+typedef struct _tag_NativeRectF
+{
+	float left;
+	float top;
+	float right;
+	float bottom;
+	_tag_NativeRectF()
+	{
+		left = top = right = bottom = 0.0f;
+	}
+} RectF;
+
 typedef struct _tag_NativeImage
 {
 	int width;
