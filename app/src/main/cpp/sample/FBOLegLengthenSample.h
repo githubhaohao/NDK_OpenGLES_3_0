@@ -10,6 +10,16 @@
 #include "GLSampleBase.h"
 #include "../util/ImageDef.h"
 
+#define VERTICAL_STRETCH_8_POINTS          0x10
+#define VERTICAL_STRETCH_TOP_6_POINTS      0x11
+#define VERTICAL_STRETCH_BOTTOM_6_POINTS   0x12
+#define VERTICAL_STRETCH_4_POINTS          0x13
+
+#define HORIZONTAL_STRETCH_8_POINTS        0x20
+#define HORIZONTAL_STRETCH_LEFT_6_POINTS   0x21
+#define HORIZONTAL_STRETCH_RIGHT_6_POINTS  0x22
+#define HORIZONTAL_STRETCH_4_POINTS        0x23
+
 class FBOLegLengthenSample : public GLSampleBase
 {
 public:
@@ -39,6 +49,9 @@ private:
 	GLuint m_FboFragmentShader;
 	GLint m_FboSamplerLoc;
 
+	glm::mat4 m_FboMVPMatrix;
+	GLint m_FboMVPMatLoc;
+
 	glm::mat4 m_MVPMatrix;
 	GLint m_MVPMatLoc;
 
@@ -46,7 +59,9 @@ private:
 	bool    m_isgo;
 
 	RectF m_StretchRect;
+	int   m_StretchMode;
 
+	bool  m_bIsVerticalMode;
 };
 
 

@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 ByteBuffer buf = ByteBuffer.allocate(bytes);
                 bitmap.copyPixelsToBuffer(buf);
                 byte[] byteArray = buf.array();
+                mGLSurfaceView.setAspectRatio(bitmap.getWidth(), bitmap.getHeight());
                 mGLSurfaceView.getNativeRender().native_SetImageData(IMAGE_FORMAT_RGBA, bitmap.getWidth(), bitmap.getHeight(), byteArray);
             }
         }
@@ -201,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
                         LoadRGBAImage(R.drawable.java);
                         break;
                     case SAMPLE_TYPE_FBO_LEG:
-                        LoadRGBAImage(R.drawable.leg);
+                        LoadRGBAImage(R.drawable.cszm);
                         break;
                     case SAMPLE_TYPE_EGL:
                         startActivity(new Intent(MainActivity.this, EGLActivity.class));
