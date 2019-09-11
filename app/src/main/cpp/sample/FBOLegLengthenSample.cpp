@@ -104,12 +104,12 @@ void FBOLegLengthenSample::LoadImage(NativeImage *pImage)
 
 void FBOLegLengthenSample::Init()
 {
-	m_bIsVerticalMode = false;
+	m_bIsVerticalMode = true;
 
 	RectF inRectF;
-	inRectF.left = m_RenderImage.width / 2 ;
-	inRectF.right = m_RenderImage.width / 1.5f;
-	inRectF.top = 0.0f;
+	inRectF.left = 0.0f ;
+	inRectF.right = m_RenderImage.width;
+	inRectF.top = m_RenderImage.height * 0.5f;
 	inRectF.bottom = m_RenderImage.height;
 
 	m_StretchRect.left = inRectF.left / m_RenderImage.width;

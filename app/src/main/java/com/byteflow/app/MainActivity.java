@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                         LoadRGBAImage(R.drawable.java);
                         break;
                     case SAMPLE_TYPE_FBO_LEG:
-                        LoadRGBAImage(R.drawable.cszm);
+                        LoadRGBAImage(R.drawable.leg);
                         break;
                     case SAMPLE_TYPE_EGL:
                         startActivity(new Intent(MainActivity.this, EGLActivity.class));
