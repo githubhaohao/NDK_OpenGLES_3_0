@@ -12,6 +12,9 @@ include_directories(
         glm
 )
 
+#add_library(cryptopp STATIC IMPORTED )
+#set_target_properties(cryptopp PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/libs/libcryptopp.a)
+
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
 # You can define multiple libraries, and CMake builds them for you.
@@ -27,7 +30,7 @@ add_library( # Sets the name of the library.
              JniImpl.cpp
         render/MyGLRenderContext.cpp
         render/BgRender.cpp
-             util/GLUtils.cpp
+        util/GLUtils.cpp
         sample/TriangleSample.cpp
         sample/TextureMapSample.cpp
         sample/NV21TextureMapSample.cpp

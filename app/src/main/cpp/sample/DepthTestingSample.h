@@ -34,8 +34,6 @@ private:
 	GLuint m_TextureId;
 	GLint m_SamplerLoc;
 	GLint m_MVPMatLoc;
-	GLint m_ModelMatrixLoc;
-	GLint m_ViewPosLoc;
 
 	GLuint m_VaoId;
 	GLuint m_VboIds[1];

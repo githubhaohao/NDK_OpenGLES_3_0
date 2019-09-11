@@ -33,6 +33,7 @@ import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_RGBA;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_BASIC_LIGHTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_COORD_SYSTEM;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_DEPTH_TESTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_EGL;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             "Basic Lighting",
             "Transform Feedback",
             "Complex Lighting",
+            "Depth Testing",
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -211,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
                     case SAMPLE_TYPE_BASIC_LIGHTING:
                     case SAMPLE_TYPE_TRANS_FEEDBACK:
                     case SAMPLE_TYPE_MULTI_LIGHTS:
+                    case SAMPLE_TYPE_DEPTH_TESTING:
                         LoadRGBAImage(R.drawable.dzzz);
                         break;
                     default:
