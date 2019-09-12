@@ -15,6 +15,7 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_TRANS_FEEDBACK  = SAMPLE_TYPE + 9;
     public static final int SAMPLE_TYPE_MULTI_LIGHTS    = SAMPLE_TYPE + 10;
     public static final int SAMPLE_TYPE_DEPTH_TESTING   = SAMPLE_TYPE + 11;
+    public static final int SAMPLE_TYPE_INSTANCING      = SAMPLE_TYPE + 12;
 
     public static final int PARAM_TYPE_ROTATE_ANGLE =  300;
 
@@ -22,9 +23,9 @@ public class MyNativeRender {
         System.loadLibrary("native-render");
     }
 
-    public native void native_OnInit();
+    public native void native_Init();
 
-    public native void native_OnUnInit();
+    public native void native_UnInit();
 
     public native void native_SetParamsInt(int paramType, int value0, int value1);
 

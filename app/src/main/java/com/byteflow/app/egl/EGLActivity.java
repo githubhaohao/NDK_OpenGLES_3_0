@@ -26,7 +26,7 @@ public class EGLActivity extends AppCompatActivity {
     public static final int PARAM_TYPE_SHADER_INDEX = 200;
     private ImageView mImageView;
     private Button mBtn;
-    private NativeBgRender mBgRender;
+    private NativeEglRender mBgRender;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,8 +35,8 @@ public class EGLActivity extends AppCompatActivity {
 
         mImageView = findViewById(R.id.imageView);
         mBtn = findViewById(R.id.button);
-        mBgRender = new NativeBgRender();
-        mBgRender.native_BgRenderInit();
+        mBgRender = new NativeEglRender();
+        mBgRender.native_EglRenderInit();
 
         mBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +66,7 @@ public class EGLActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mBgRender.native_BgRenderUnInit();
+        mBgRender.native_EglRenderUnInit();
     }
 
     @Override
@@ -102,7 +102,7 @@ public class EGLActivity extends AppCompatActivity {
         }
 
         if (mBgRender != null) {
-            mBgRender.native_BgRenderSetIntParams(PARAM_TYPE_SHADER_INDEX, shaderIndex);
+            mBgRender.native_EglRenderSetIntParams(PARAM_TYPE_SHADER_INDEX, shaderIndex);
             startBgRender();
             mBtn.setText(R.string.btn_txt_reset);
         }
@@ -110,11 +110,11 @@ public class EGLActivity extends AppCompatActivity {
     }
     private void startBgRender() {
         loadRGBAImage(R.drawable.java, mBgRender);
-        mBgRender.native_BgRenderDraw();
+        mBgRender.native_EglRenderDraw();
         mImageView.setImageBitmap(createBitmapFromGLSurface(0, 0, 421, 586));
     }
 
-    private void loadRGBAImage(int resId, NativeBgRender render) {
+    private void loadRGBAImage(int resId, NativeEglRender render) {
         InputStream is = this.getResources().openRawResource(resId);
         Bitmap bitmap;
         try {
@@ -124,7 +124,7 @@ public class EGLActivity extends AppCompatActivity {
                 ByteBuffer buf = ByteBuffer.allocate(bytes);
                 bitmap.copyPixelsToBuffer(buf);
                 byte[] byteArray = buf.array();
-                render.native_BgRenderSetImageData(byteArray, bitmap.getWidth(), bitmap.getHeight());
+                render.native_EglRenderSetImageData(byteArray, bitmap.getWidth(), bitmap.getHeight());
             }
         }
         finally

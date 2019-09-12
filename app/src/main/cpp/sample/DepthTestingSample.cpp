@@ -80,7 +80,6 @@ void DepthTestingSample::Init()
 			"uniform sampler2D s_TextureMap;\n"
 			"void main()\n"
 			"{\n"
-			"    //vec4 objectColor = texture(s_TextureMap, v_texCoord);\n"
 			"    vec4 objectColor = vec4(vec3(gl_FragCoord.z), 1.0f);\n"
 			"    outColor = objectColor;\n"
 			"}";
@@ -275,7 +274,6 @@ void DepthTestingSample::SetParamsInt(int paramType, int value0, int value1)
 {
 	LOGCATE("DepthTestingSample::SetParamsInt paramType = %d, value0 = %d", paramType, value0);
 	GLSampleBase::SetParamsInt(paramType, value0, value1);
-	//no implement
 	if (paramType == ROTATE_ANGLE_PARAM_TYPE)
 	{
 		m_AngleX = value0;

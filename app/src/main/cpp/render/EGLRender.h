@@ -12,11 +12,11 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
-class BgRender
+class EGLRender
 {
 public:
-	BgRender();
-	~BgRender();
+	EGLRender();
+	~EGLRender();
 
     void Init();
 
@@ -34,11 +34,11 @@ public:
 
     void UnInit();
 
-    static BgRender* GetInstance()
+    static EGLRender* GetInstance()
 	{
 		if (m_Instance == nullptr)
 		{
-			m_Instance = new BgRender();
+			m_Instance = new EGLRender();
 		}
 
 		return m_Instance;
@@ -55,7 +55,7 @@ public:
 	}
 
 private:
-	static BgRender *m_Instance;
+	static EGLRender *m_Instance;
 	GLuint m_ImageTextureId;
 	GLuint m_FboTextureId;
 	GLuint m_FboId;

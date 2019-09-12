@@ -37,6 +37,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_DEPTH_TESTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_EGL;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TEXTURE_MAP;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TRANS_FEEDBACK;
@@ -59,11 +60,11 @@ public class MainActivity extends AppCompatActivity {
             "Transform Feedback",
             "Complex Lighting",
             "Depth Testing",
+            "Instancing",
     };
 
     private MyGLSurfaceView mGLSurfaceView;
     private int mSampleSelectedIndex = 0;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,14 +72,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mGLSurfaceView = findViewById(R.id.my_gl_surface_view);
-        mGLSurfaceView.getNativeRender().native_OnInit();
-
+        mGLSurfaceView.getGLRender().Init();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mGLSurfaceView.getNativeRender().native_OnUnInit();
+        mGLSurfaceView.getGLRender().UnInit();
 
         /*
         * Once the EGL context gets destroyed all the GL buffers etc will get destroyed with it,
@@ -102,62 +102,6 @@ public class MainActivity extends AppCompatActivity {
             showGLSampleDialog();
         }
         return true;
-    }
-
-    private void LoadRGBAImage(int resId) {
-        InputStream is = this.getResources().openRawResource(resId);
-        Bitmap bitmap;
-        try {
-            bitmap = BitmapFactory.decodeStream(is);
-            if (bitmap != null) {
-                int bytes = bitmap.getByteCount();
-                ByteBuffer buf = ByteBuffer.allocate(bytes);
-                bitmap.copyPixelsToBuffer(buf);
-                byte[] byteArray = buf.array();
-                mGLSurfaceView.setAspectRatio(bitmap.getWidth(), bitmap.getHeight());
-                mGLSurfaceView.getNativeRender().native_SetImageData(IMAGE_FORMAT_RGBA, bitmap.getWidth(), bitmap.getHeight(), byteArray);
-            }
-        }
-        finally
-        {
-            try
-            {
-                is.close();
-            }
-            catch(IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void LoadNV21Image() {
-        InputStream is = null;
-        try {
-            is = getAssets().open("YUV_Image_840x1074.NV21");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        int lenght = 0;
-        try {
-            lenght = is.available();
-            byte[] buffer = new byte[lenght];
-            is.read(buffer);
-            mGLSurfaceView.getNativeRender().native_SetImageData(IMAGE_FORMAT_NV21, 840, 1074, buffer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try
-            {
-                is.close();
-            }
-            catch(IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
-
     }
 
     private void showGLSampleDialog() {
@@ -188,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 myPreviewSizeViewAdapter.notifyItemChanged(position);
                 mSampleSelectedIndex = position;
 
-                mGLSurfaceView.getNativeRender().native_SetParamsInt(SAMPLE_TYPE, position + SAMPLE_TYPE, 0);
+                mGLSurfaceView.getGLRender().SetParamsInt(SAMPLE_TYPE, position + SAMPLE_TYPE, 0);
                 switch (position + SAMPLE_TYPE) {
                     case SAMPLE_TYPE_TRIANGLE:
                         break;
@@ -214,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
                     case SAMPLE_TYPE_TRANS_FEEDBACK:
                     case SAMPLE_TYPE_MULTI_LIGHTS:
                     case SAMPLE_TYPE_DEPTH_TESTING:
+                    case SAMPLE_TYPE_INSTANCING:
                         LoadRGBAImage(R.drawable.dzzz);
                         break;
                     default:
@@ -234,6 +179,61 @@ public class MainActivity extends AppCompatActivity {
 
         dialog.show();
         dialog.getWindow().setContentView(rootView);
+
+    }
+
+    private void LoadRGBAImage(int resId) {
+        InputStream is = this.getResources().openRawResource(resId);
+        Bitmap bitmap;
+        try {
+            bitmap = BitmapFactory.decodeStream(is);
+            if (bitmap != null) {
+                int bytes = bitmap.getByteCount();
+                ByteBuffer buf = ByteBuffer.allocate(bytes);
+                bitmap.copyPixelsToBuffer(buf);
+                byte[] byteArray = buf.array();
+                mGLSurfaceView.getGLRender().SetImageData(IMAGE_FORMAT_RGBA, bitmap.getWidth(), bitmap.getHeight(), byteArray);
+            }
+        }
+        finally
+        {
+            try
+            {
+                is.close();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void LoadNV21Image() {
+        InputStream is = null;
+        try {
+            is = getAssets().open("YUV_Image_840x1074.NV21");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int lenght = 0;
+        try {
+            lenght = is.available();
+            byte[] buffer = new byte[lenght];
+            is.read(buffer);
+            mGLSurfaceView.getGLRender().SetImageData(IMAGE_FORMAT_NV21, 840, 1074, buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try
+            {
+                is.close();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
 
     }
 

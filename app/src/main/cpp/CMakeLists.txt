@@ -29,7 +29,7 @@ add_library( # Sets the name of the library.
              # Provides a relative path to your source file(s).
              JniImpl.cpp
         render/MyGLRenderContext.cpp
-        render/BgRender.cpp
+        render/EGLRender.cpp
         util/GLUtils.cpp
         sample/TriangleSample.cpp
         sample/TextureMapSample.cpp
@@ -42,6 +42,8 @@ add_library( # Sets the name of the library.
         sample/TransformFeedbackSample.cpp
         sample/MultiLightsSample.cpp
         sample/DepthTestingSample.cpp
+        sample/InstancingSample.cpp
+        sample/Instancing3DSample.cpp
               )
 
 # Searches for a specified prebuilt library and stores the path as a
