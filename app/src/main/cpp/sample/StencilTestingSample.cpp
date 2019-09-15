@@ -3,10 +3,10 @@
 //
 
 #include <gtc/matrix_transform.hpp>
-#include "Instancing3DSample.h"
+#include "StencilTestingSample.h"
 #include "../util/GLUtils.h"
 
-Instancing3DSample::Instancing3DSample()
+StencilTestingSample::StencilTestingSample()
 {
 
 	m_SamplerLoc = GL_NONE;
@@ -22,13 +22,13 @@ Instancing3DSample::Instancing3DSample()
 	m_ModelMatrix = glm::mat4(0.0f);
 }
 
-Instancing3DSample::~Instancing3DSample()
+StencilTestingSample::~StencilTestingSample()
 {
 	NativeImageUtil::FreeNativeImage(&m_RenderImage);
 
 }
 
-void Instancing3DSample::Init()
+void StencilTestingSample::Init()
 {
 	if (m_ProgramObj)
 	{
@@ -49,7 +49,6 @@ void Instancing3DSample::Init()
 			"layout(location = 0) in vec4 a_position;\n"
 			"layout(location = 1) in vec2 a_texCoord;\n"
 			"layout(location = 2) in vec3 a_normal;\n"
-			"layout(location = 3) in vec3 offset;\n"
 			"\n"
 			"out vec3 normal;\n"
 			"out vec3 fragPos;\n"
@@ -60,8 +59,8 @@ void Instancing3DSample::Init()
 			"\n"
 			"void main()\n"
 			"{\n"
-			"    gl_Position = u_MVPMatrix * (a_position + vec4(offset, 1.0));\n"
-			"    fragPos = vec3(u_ModelMatrix * (a_position + vec4(offset, 1.0)));\n"
+			"    gl_Position = u_MVPMatrix * a_position;\n"
+			"    fragPos = vec3(u_ModelMatrix * a_position);\n"
 			"    normal = mat3(transpose(inverse(u_ModelMatrix))) * a_normal;\n"
 			"    v_texCoord = a_texCoord;\n"
 			"}";
@@ -131,11 +130,23 @@ void Instancing3DSample::Init()
 			"\n"
 			"    vec3 finalColor = (ambient + diffuse + specular) * vec3(objectColor);\n"
 			"    outColor = vec4(finalColor, 1.0f);\n"
-			"    //outColor = objectColor;\n"
+			"}";
+
+	char fFrameShaderStr[] =
+			"#version 300 es\n"
+			"precision mediump float;\n"
+			"\n"
+			"layout(location = 0) out vec4 outColor;\n"
+			"\n"
+			"void main()\n"
+			"{\n"
+			"    outColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);\n"
 			"}";
 
 	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr, m_VertexShader, m_FragmentShader);
-	if (m_ProgramObj)
+	GLuint vertexShader, fragmentShader;
+	m_FrameProgramObj = GLUtils::CreateProgram(vShaderStr, fFrameShaderStr, vertexShader, fragmentShader);
+	if (m_ProgramObj && m_FrameProgramObj)
 	{
 		m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "s_TextureMap");
 		GO_CHECK_GL_ERROR();
@@ -148,80 +159,59 @@ void Instancing3DSample::Init()
 	}
 	else
 	{
-		LOGCATE("Instancing3DSample::Init create program fail");
+		LOGCATE("StencilTestingSample::Init create program fail");
 		return;
 	}
 
 	GLfloat vertices[] = {
 			 //position            //texture coord  //normal
-			-0.05f, -0.05f, -0.05f,   0.0f, 0.0f,      0.0f,  0.0f, -1.0f,
-			 0.05f, -0.05f, -0.05f,   1.0f, 0.0f,      0.0f,  0.0f, -1.0f,
-			 0.05f,  0.05f, -0.05f,   1.0f, 1.0f,      0.0f,  0.0f, -1.0f,
-			 0.05f,  0.05f, -0.05f,   1.0f, 1.0f,      0.0f,  0.0f, -1.0f,
-			-0.05f,  0.05f, -0.05f,   0.0f, 1.0f,      0.0f,  0.0f, -1.0f,
-			-0.05f, -0.05f, -0.05f,   0.0f, 0.0f,      0.0f,  0.0f, -1.0f,
+			-0.5f, -0.5f, -0.5f,   0.0f, 0.0f,      0.0f,  0.0f, -1.0f,
+			 0.5f, -0.5f, -0.5f,   1.0f, 0.0f,      0.0f,  0.0f, -1.0f,
+			 0.5f,  0.5f, -0.5f,   1.0f, 1.0f,      0.0f,  0.0f, -1.0f,
+			 0.5f,  0.5f, -0.5f,   1.0f, 1.0f,      0.0f,  0.0f, -1.0f,
+			-0.5f,  0.5f, -0.5f,   0.0f, 1.0f,      0.0f,  0.0f, -1.0f,
+			-0.5f, -0.5f, -0.5f,   0.0f, 0.0f,      0.0f,  0.0f, -1.0f,
 
-			-0.05f, -0.05f, 0.05f,    0.0f, 0.0f,      0.0f,  0.0f,  1.0f,
-			 0.05f, -0.05f, 0.05f,    1.0f, 0.0f,      0.0f,  0.0f,  1.0f,
-			 0.05f,  0.05f, 0.05f,    1.0f, 1.0f,      0.0f,  0.0f,  1.0f,
-			 0.05f,  0.05f, 0.05f,    1.0f, 1.0f,      0.0f,  0.0f,  1.0f,
-			-0.05f,  0.05f, 0.05f,    0.0f, 1.0f,      0.0f,  0.0f,  1.0f,
-			-0.05f, -0.05f, 0.05f,    0.0f, 0.0f,      0.0f,  0.0f,  1.0f,
+			-0.5f, -0.5f, 0.5f,    0.0f, 0.0f,      0.0f,  0.0f,  1.0f,
+			 0.5f, -0.5f, 0.5f,    1.0f, 0.0f,      0.0f,  0.0f,  1.0f,
+			 0.5f,  0.5f, 0.5f,    1.0f, 1.0f,      0.0f,  0.0f,  1.0f,
+			 0.5f,  0.5f, 0.5f,    1.0f, 1.0f,      0.0f,  0.0f,  1.0f,
+			-0.5f,  0.5f, 0.5f,    0.0f, 1.0f,      0.0f,  0.0f,  1.0f,
+			-0.5f, -0.5f, 0.5f,    0.0f, 0.0f,      0.0f,  0.0f,  1.0f,
 
-			-0.05f,  0.05f,  0.05f,   1.0f, 0.0f,     -1.0f,  0.0f,  0.0f,
-			-0.05f,  0.05f, -0.05f,   1.0f, 1.0f,     -1.0f,  0.0f,  0.0f,
-			-0.05f, -0.05f, -0.05f,   0.0f, 1.0f,     -1.0f,  0.0f,  0.0f,
-			-0.05f, -0.05f, -0.05f,   0.0f, 1.0f,     -1.0f,  0.0f,  0.0f,
-			-0.05f, -0.05f,  0.05f,   0.0f, 0.0f,     -1.0f,  0.0f,  0.0f,
-			-0.05f,  0.05f,  0.05f,   1.0f, 0.0f,     -1.0f,  0.0f,  0.0f,
+			-0.5f,  0.5f,  0.5f,   1.0f, 0.0f,     -1.0f,  0.0f,  0.0f,
+			-0.5f,  0.5f, -0.5f,   1.0f, 1.0f,     -1.0f,  0.0f,  0.0f,
+			-0.5f, -0.5f, -0.5f,   0.0f, 1.0f,     -1.0f,  0.0f,  0.0f,
+			-0.5f, -0.5f, -0.5f,   0.0f, 1.0f,     -1.0f,  0.0f,  0.0f,
+			-0.5f, -0.5f,  0.5f,   0.0f, 0.0f,     -1.0f,  0.0f,  0.0f,
+			-0.5f,  0.5f,  0.5f,   1.0f, 0.0f,     -1.0f,  0.0f,  0.0f,
 
-			 0.05f,  0.05f,  0.05f,   1.0f, 0.0f,      1.0f,  0.0f,  0.0f,
-			 0.05f,  0.05f, -0.05f,   1.0f, 1.0f,      1.0f,  0.0f,  0.0f,
-			 0.05f, -0.05f, -0.05f,   0.0f, 1.0f,      1.0f,  0.0f,  0.0f,
-			 0.05f, -0.05f, -0.05f,   0.0f, 1.0f,      1.0f,  0.0f,  0.0f,
-			 0.05f, -0.05f,  0.05f,   0.0f, 0.0f,      1.0f,  0.0f,  0.0f,
-			 0.05f,  0.05f,  0.05f,   1.0f, 0.0f,      1.0f,  0.0f,  0.0f,
+			 0.5f,  0.5f,  0.5f,   1.0f, 0.0f,      1.0f,  0.0f,  0.0f,
+			 0.5f,  0.5f, -0.5f,   1.0f, 1.0f,      1.0f,  0.0f,  0.0f,
+			 0.5f, -0.5f, -0.5f,   0.0f, 1.0f,      1.0f,  0.0f,  0.0f,
+			 0.5f, -0.5f, -0.5f,   0.0f, 1.0f,      1.0f,  0.0f,  0.0f,
+			 0.5f, -0.5f,  0.5f,   0.0f, 0.0f,      1.0f,  0.0f,  0.0f,
+			 0.5f,  0.5f,  0.5f,   1.0f, 0.0f,      1.0f,  0.0f,  0.0f,
 
-			-0.05f, -0.05f, -0.05f,   0.0f, 1.0f,      0.0f, -1.0f,  0.0f,
-			 0.05f, -0.05f, -0.05f,   1.0f, 1.0f,      0.0f, -1.0f,  0.0f,
-			 0.05f, -0.05f,  0.05f,   1.0f, 0.0f,      0.0f, -1.0f,  0.0f,
-			 0.05f, -0.05f,  0.05f,   1.0f, 0.0f,      0.0f, -1.0f,  0.0f,
-			-0.05f, -0.05f,  0.05f,   0.0f, 0.0f,      0.0f, -1.0f,  0.0f,
-			-0.05f, -0.05f, -0.05f,   0.0f, 1.0f,      0.0f, -1.0f,  0.0f,
+			-0.5f, -0.5f, -0.5f,   0.0f, 1.0f,      0.0f, -1.0f,  0.0f,
+			 0.5f, -0.5f, -0.5f,   1.0f, 1.0f,      0.0f, -1.0f,  0.0f,
+			 0.5f, -0.5f,  0.5f,   1.0f, 0.0f,      0.0f, -1.0f,  0.0f,
+			 0.5f, -0.5f,  0.5f,   1.0f, 0.0f,      0.0f, -1.0f,  0.0f,
+			-0.5f, -0.5f,  0.5f,   0.0f, 0.0f,      0.0f, -1.0f,  0.0f,
+			-0.5f, -0.5f, -0.5f,   0.0f, 1.0f,      0.0f, -1.0f,  0.0f,
 
-			-0.05f, 0.05f, -0.05f,    0.0f, 1.0f,      0.0f,  1.0f,  0.0f,
-			 0.05f, 0.05f, -0.05f,    1.0f, 1.0f,      0.0f,  1.0f,  0.0f,
-			 0.05f, 0.05f,  0.05f,    1.0f, 0.0f,      0.0f,  1.0f,  0.0f,
-			 0.05f, 0.05f,  0.05f,    1.0f, 0.0f,      0.0f,  1.0f,  0.0f,
-			-0.05f, 0.05f,  0.05f,    0.0f, 0.0f,      0.0f,  1.0f,  0.0f,
-			-0.05f, 0.05f, -0.05f,    0.0f, 1.0f,      0.0f,  1.0f,  0.0f,
+			-0.5f, 0.5f, -0.5f,    0.0f, 1.0f,      0.0f,  1.0f,  0.0f,
+			 0.5f, 0.5f, -0.5f,    1.0f, 1.0f,      0.0f,  1.0f,  0.0f,
+			 0.5f, 0.5f,  0.5f,    1.0f, 0.0f,      0.0f,  1.0f,  0.0f,
+			 0.5f, 0.5f,  0.5f,    1.0f, 0.0f,      0.0f,  1.0f,  0.0f,
+			-0.5f, 0.5f,  0.5f,    0.0f, 0.0f,      0.0f,  1.0f,  0.0f,
+			-0.5f, 0.5f, -0.5f,    0.0f, 1.0f,      0.0f,  1.0f,  0.0f,
 	};
 
-	glm::vec3 translations[1000];
-	int index = 0;
-	GLfloat offset = 0.1f;
-	for(GLint y = -10; y < 10; y += 2)
-	{
-		for(GLint x = -10; x < 10; x += 2)
-		{
-			for(GLint z = -10; z < 10; z += 2)
-			{
-				glm::vec3 translation;
-				translation.x = (GLfloat)x / 10.0f + offset;
-				translation.y = (GLfloat)y / 10.0f + offset;
-				translation.z = (GLfloat)z / 10.0f + offset;
-				translations[index++] = translation;
-			}
-
-		}
-	}
 	// Generate VBO Ids and load the VBOs with data
-	glGenBuffers(2, m_VboIds);
+	glGenBuffers(1, m_VboIds);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 1000, &translations[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Generate VAO Id
 	glGenVertexArrays(1, &m_VaoId);
@@ -236,12 +226,6 @@ void Instancing3DSample::Init()
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (const void *) (5* sizeof(GLfloat)));
 	glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[1]);
-	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glVertexAttribDivisor(3, 1); // Tell OpenGL this is an instanced vertex attribute.
-
 	glBindVertexArray(GL_NONE);
 
 	//upload RGBA image data
@@ -253,9 +237,9 @@ void Instancing3DSample::Init()
 
 }
 
-void Instancing3DSample::LoadImage(NativeImage *pImage)
+void StencilTestingSample::LoadImage(NativeImage *pImage)
 {
-	LOGCATE("Instancing3DSample::LoadImage pImage = %p", pImage->ppPlane[0]);
+	LOGCATE("StencilTestingSample::LoadImage pImage = %p", pImage->ppPlane[0]);
 	if (pImage)
 	{
 		m_RenderImage.width = pImage->width;
@@ -266,22 +250,25 @@ void Instancing3DSample::LoadImage(NativeImage *pImage)
 
 }
 
-void Instancing3DSample::Draw(int screenW, int screenH)
+void StencilTestingSample::Draw(int screenW, int screenH)
 {
-	LOGCATE("Instancing3DSample::Draw()");
+	LOGCATE("StencilTestingSample::Draw()");
 
 	if (m_ProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
-	glEnable(GL_DEPTH_TEST);
 
 	float ratio = (float)screenW / screenH;
 
-	// Use the program object
-	glUseProgram(m_ProgramObj);
+	glEnable(GL_DEPTH_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0xFF);
 
 	glBindVertexArray(m_VaoId);
 
-	glUniform3f(m_ViewPosLoc,     0.0f, 0.0f, 3.0f);
-
+	// Use the program object
+	glUseProgram(m_ProgramObj);
+	glUniform3f(m_ViewPosLoc, 0.0f, 0.0f, 3.0f);
 	// Bind the RGBA map
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_TextureId);
@@ -301,37 +288,59 @@ void Instancing3DSample::Draw(int screenW, int screenH)
 	glUniform1f(glGetUniformLocation(m_ProgramObj, "light.linear"),    0.09);
 	glUniform1f(glGetUniformLocation(m_ProgramObj, "light.quadratic"), 0.032);
 
-	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX + 10, m_AngleY + 10, 2.0f, glm::vec3(0.0f, 0.0f, 0.0f), ratio);
+//	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX, m_AngleY, 0.4, glm::vec3(1.0f,  1.0f,  0.0f), ratio);
+//	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
+//	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
+//	glDrawArrays(GL_TRIANGLES, 0, 36);
+	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX, m_AngleY , 0.7, glm::vec3(0.0f,  0.0f,  0.0f), ratio);
 	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
 
-	glDrawArraysInstanced(GL_TRIANGLES, 0, 36, 1000);
+
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilMask(0x00);
+	glDisable(GL_DEPTH_TEST);
+	glBindVertexArray(m_VaoId);
+	glUseProgram(m_FrameProgramObj);
+//	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX, m_AngleY, 0.5, glm::vec3(1.0f,  1.0f,  0.0f), ratio);
+//	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
+//	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
+//	glDrawArrays(GL_TRIANGLES, 0, 36);
+	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX, m_AngleY, 0.8, glm::vec3(0.0f,  0.0f,  0.0f), ratio);
+	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
+	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+
+	glStencilMask(0xFF);
+	glEnable(GL_DEPTH_TEST);
 	glBindVertexArray(0);
 }
 
-void Instancing3DSample::Destroy()
+void StencilTestingSample::Destroy()
 {
-//	if (m_ProgramObj)
-//	{
-//		glDeleteProgram(m_ProgramObj);
-//		glDeleteBuffers(3, m_VboIds);
-//		glDeleteVertexArrays(1, &m_VaoId);
-//		glDeleteTextures(1, &m_TextureId);
-//		m_ProgramObj = GL_NONE;
-//		m_VaoId = GL_NONE;
-//		m_TextureId = GL_NONE;
-//	}
+	if (m_ProgramObj)
+	{
+		glDeleteProgram(m_ProgramObj);
+		glDeleteBuffers(3, m_VboIds);
+		glDeleteVertexArrays(1, &m_VaoId);
+		glDeleteTextures(1, &m_TextureId);
+		m_ProgramObj = GL_NONE;
+		m_VaoId = GL_NONE;
+		m_TextureId = GL_NONE;
+	}
 
 }
 
-void Instancing3DSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio)
+void StencilTestingSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio)
 {
 	//No implement
 }
 
-void Instancing3DSample::UpdateMatrix(glm::mat4 &mvpMatrix, glm::mat4 &modelMatrix, int angleXRotate, int angleYRotate, float scale, glm::vec3 transVec3, float ratio)
+void StencilTestingSample::UpdateMatrix(glm::mat4 &mvpMatrix, glm::mat4 &modelMatrix, int angleXRotate, int angleYRotate, float scale, glm::vec3 transVec3, float ratio)
 {
-	LOGCATE("Instancing3DSample::UpdateMatrix angleX = %d, angleY = %d, ratio = %f", angleXRotate,
+	LOGCATE("StencilTestingSample::UpdateMatrix angleX = %d, angleY = %d, ratio = %f", angleXRotate,
 			angleYRotate, ratio);
 	angleXRotate = angleXRotate % 360;
 	angleYRotate = angleYRotate % 360;
@@ -358,16 +367,16 @@ void Instancing3DSample::UpdateMatrix(glm::mat4 &mvpMatrix, glm::mat4 &modelMatr
 	Model = glm::scale(Model, glm::vec3(scale, scale, scale));
 	Model = glm::rotate(Model, radiansX, glm::vec3(1.0f, 0.0f, 0.0f));
 	Model = glm::rotate(Model, radiansY, glm::vec3(0.0f, 1.0f, 0.0f));
-	//Model = glm::translate(Model, transVec3);
+	Model = glm::translate(Model, transVec3);
 
 	modelMatrix = Model;
 
 	mvpMatrix = Projection * View * Model;
 }
 
-void Instancing3DSample::SetParamsInt(int paramType, int value0, int value1)
+void StencilTestingSample::SetParamsInt(int paramType, int value0, int value1)
 {
-	LOGCATE("Instancing3DSample::SetParamsInt paramType = %d, value0 = %d", paramType, value0);
+	LOGCATE("StencilTestingSample::SetParamsInt paramType = %d, value0 = %d", paramType, value0);
 	GLSampleBase::SetParamsInt(paramType, value0, value1);
 	//no implement
 	if (paramType == ROTATE_ANGLE_PARAM_TYPE)

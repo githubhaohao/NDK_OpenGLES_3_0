@@ -8,7 +8,7 @@ import android.view.MotionEvent;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import static com.byteflow.app.MyNativeRender.PARAM_TYPE_ROTATE_ANGLE;
+import static com.byteflow.app.MyNativeRender.PARAM_TYPE_ROTATE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_BASIC_LIGHTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_COORD_SYSTEM;
@@ -16,6 +16,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_DEPTH_TESTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_STENCIL_TESTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TRANS_FEEDBACK;
 
 public class MyGLSurfaceView extends GLSurfaceView {
@@ -72,7 +73,8 @@ public class MyGLSurfaceView extends GLSurfaceView {
             case SAMPLE_TYPE_MULTI_LIGHTS:
             case SAMPLE_TYPE_DEPTH_TESTING:
             case SAMPLE_TYPE_INSTANCING:
-                mGLRender.SetParamsInt(PARAM_TYPE_ROTATE_ANGLE, mXAngle, mYAngle);
+            case SAMPLE_TYPE_STENCIL_TESTING:
+                mGLRender.SetParamsInt(PARAM_TYPE_ROTATE, mXAngle, mYAngle);
                 requestRender();
                 break;
             default:

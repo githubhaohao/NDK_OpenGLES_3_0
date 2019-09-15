@@ -44,6 +44,7 @@ add_library( # Sets the name of the library.
         sample/DepthTestingSample.cpp
         sample/InstancingSample.cpp
         sample/Instancing3DSample.cpp
+        sample/StencilTestingSample.cpp
               )
 
 # Searches for a specified prebuilt library and stores the path as a

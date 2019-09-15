@@ -16,8 +16,9 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_MULTI_LIGHTS    = SAMPLE_TYPE + 10;
     public static final int SAMPLE_TYPE_DEPTH_TESTING   = SAMPLE_TYPE + 11;
     public static final int SAMPLE_TYPE_INSTANCING      = SAMPLE_TYPE + 12;
+    public static final int SAMPLE_TYPE_STENCIL_TESTING = SAMPLE_TYPE + 13;
 
-    public static final int PARAM_TYPE_ROTATE_ANGLE =  300;
+    public static final int PARAM_TYPE_ROTATE =  300;
 
     static {
         System.loadLibrary("native-render");

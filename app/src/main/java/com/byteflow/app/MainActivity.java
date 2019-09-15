@@ -39,6 +39,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_STENCIL_TESTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TEXTURE_MAP;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TRANS_FEEDBACK;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TRIANGLE;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
             "Complex Lighting",
             "Depth Testing",
             "Instancing",
+            "Stencil Testing",
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -159,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                     case SAMPLE_TYPE_MULTI_LIGHTS:
                     case SAMPLE_TYPE_DEPTH_TESTING:
                     case SAMPLE_TYPE_INSTANCING:
+                    case SAMPLE_TYPE_STENCIL_TESTING:
                         LoadRGBAImage(R.drawable.dzzz);
                         break;
                     default:

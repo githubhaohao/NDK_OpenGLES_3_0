@@ -15,6 +15,7 @@
 #include <DepthTestingSample.h>
 #include <InstancingSample.h>
 #include <Instancing3DSample.h>
+#include <StencilTestingSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -85,6 +86,8 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 				break;
 			case SAMPLE_TYPE_KEY_INSTANCING:
 				m_Sample = new Instancing3DSample();
+			case SAMPLE_TYPE_KEY_STENCIL_TESTING:
+				m_Sample = new StencilTestingSample();
 				break;
 			default:
 				break;
