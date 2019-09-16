@@ -257,16 +257,18 @@ void StencilTestingSample::Draw(int screenW, int screenH)
 	if (m_ProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
 
 	float ratio = (float)screenW / screenH;
-
+	glClear(GL_STENCIL_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	glEnable(GL_STENCIL_TEST);
+	GO_CHECK_GL_ERROR();
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	GO_CHECK_GL_ERROR();
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	GO_CHECK_GL_ERROR();
 	glStencilMask(0xFF);
+	GO_CHECK_GL_ERROR();
 
 	glBindVertexArray(m_VaoId);
-
-	// Use the program object
 	glUseProgram(m_ProgramObj);
 	glUniform3f(m_ViewPosLoc, 0.0f, 0.0f, 3.0f);
 	// Bind the RGBA map
@@ -292,44 +294,47 @@ void StencilTestingSample::Draw(int screenW, int screenH)
 //	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 //	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
 //	glDrawArrays(GL_TRIANGLES, 0, 36);
-	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX, m_AngleY , 0.7, glm::vec3(0.0f,  0.0f,  0.0f), ratio);
+	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX, m_AngleY , 1.0, glm::vec3(0.0f,  0.0f,  0.0f), ratio);
 	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
+	GO_CHECK_GL_ERROR();
 	glBindVertexArray(0);
-
 
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilMask(0x00);
 	glDisable(GL_DEPTH_TEST);
+
 	glBindVertexArray(m_VaoId);
 	glUseProgram(m_FrameProgramObj);
 //	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX, m_AngleY, 0.5, glm::vec3(1.0f,  1.0f,  0.0f), ratio);
 //	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 //	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
 //	glDrawArrays(GL_TRIANGLES, 0, 36);
-	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX, m_AngleY, 0.8, glm::vec3(0.0f,  0.0f,  0.0f), ratio);
+	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX, m_AngleY, 1.1, glm::vec3(0.0f,  0.0f,  0.0f), ratio);
 	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
+	GO_CHECK_GL_ERROR();
+	glBindVertexArray(0);
 
 	glStencilMask(0xFF);
 	glEnable(GL_DEPTH_TEST);
-	glBindVertexArray(0);
+	glDisable(GL_STENCIL_TEST);
 }
 
 void StencilTestingSample::Destroy()
 {
-	if (m_ProgramObj)
-	{
-		glDeleteProgram(m_ProgramObj);
-		glDeleteBuffers(3, m_VboIds);
-		glDeleteVertexArrays(1, &m_VaoId);
-		glDeleteTextures(1, &m_TextureId);
-		m_ProgramObj = GL_NONE;
-		m_VaoId = GL_NONE;
-		m_TextureId = GL_NONE;
-	}
+//	if (m_ProgramObj)
+//	{
+//		glDeleteProgram(m_ProgramObj);
+//		glDeleteBuffers(3, m_VboIds);
+//		glDeleteVertexArrays(1, &m_VaoId);
+//		glDeleteTextures(1, &m_TextureId);
+//		m_ProgramObj = GL_NONE;
+//		m_VaoId = GL_NONE;
+//		m_TextureId = GL_NONE;
+//	}
 
 }
 

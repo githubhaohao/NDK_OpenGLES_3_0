@@ -154,57 +154,57 @@ void Instancing3DSample::Init()
 
 	GLfloat vertices[] = {
 			 //position            //texture coord  //normal
-			-0.05f, -0.05f, -0.05f,   0.0f, 0.0f,      0.0f,  0.0f, -1.0f,
-			 0.05f, -0.05f, -0.05f,   1.0f, 0.0f,      0.0f,  0.0f, -1.0f,
-			 0.05f,  0.05f, -0.05f,   1.0f, 1.0f,      0.0f,  0.0f, -1.0f,
-			 0.05f,  0.05f, -0.05f,   1.0f, 1.0f,      0.0f,  0.0f, -1.0f,
-			-0.05f,  0.05f, -0.05f,   0.0f, 1.0f,      0.0f,  0.0f, -1.0f,
-			-0.05f, -0.05f, -0.05f,   0.0f, 0.0f,      0.0f,  0.0f, -1.0f,
+			-0.08f, -0.08f, -0.08f,   0.0f, 0.0f,      0.0f,  0.0f, -1.0f,
+			 0.08f, -0.08f, -0.08f,   1.0f, 0.0f,      0.0f,  0.0f, -1.0f,
+			 0.08f,  0.08f, -0.08f,   1.0f, 1.0f,      0.0f,  0.0f, -1.0f,
+			 0.08f,  0.08f, -0.08f,   1.0f, 1.0f,      0.0f,  0.0f, -1.0f,
+			-0.08f,  0.08f, -0.08f,   0.0f, 1.0f,      0.0f,  0.0f, -1.0f,
+			-0.08f, -0.08f, -0.08f,   0.0f, 0.0f,      0.0f,  0.0f, -1.0f,
 
-			-0.05f, -0.05f, 0.05f,    0.0f, 0.0f,      0.0f,  0.0f,  1.0f,
-			 0.05f, -0.05f, 0.05f,    1.0f, 0.0f,      0.0f,  0.0f,  1.0f,
-			 0.05f,  0.05f, 0.05f,    1.0f, 1.0f,      0.0f,  0.0f,  1.0f,
-			 0.05f,  0.05f, 0.05f,    1.0f, 1.0f,      0.0f,  0.0f,  1.0f,
-			-0.05f,  0.05f, 0.05f,    0.0f, 1.0f,      0.0f,  0.0f,  1.0f,
-			-0.05f, -0.05f, 0.05f,    0.0f, 0.0f,      0.0f,  0.0f,  1.0f,
+			-0.08f, -0.08f, 0.08f,    0.0f, 0.0f,      0.0f,  0.0f,  1.0f,
+			 0.08f, -0.08f, 0.08f,    1.0f, 0.0f,      0.0f,  0.0f,  1.0f,
+			 0.08f,  0.08f, 0.08f,    1.0f, 1.0f,      0.0f,  0.0f,  1.0f,
+			 0.08f,  0.08f, 0.08f,    1.0f, 1.0f,      0.0f,  0.0f,  1.0f,
+			-0.08f,  0.08f, 0.08f,    0.0f, 1.0f,      0.0f,  0.0f,  1.0f,
+			-0.08f, -0.08f, 0.08f,    0.0f, 0.0f,      0.0f,  0.0f,  1.0f,
 
-			-0.05f,  0.05f,  0.05f,   1.0f, 0.0f,     -1.0f,  0.0f,  0.0f,
-			-0.05f,  0.05f, -0.05f,   1.0f, 1.0f,     -1.0f,  0.0f,  0.0f,
-			-0.05f, -0.05f, -0.05f,   0.0f, 1.0f,     -1.0f,  0.0f,  0.0f,
-			-0.05f, -0.05f, -0.05f,   0.0f, 1.0f,     -1.0f,  0.0f,  0.0f,
-			-0.05f, -0.05f,  0.05f,   0.0f, 0.0f,     -1.0f,  0.0f,  0.0f,
-			-0.05f,  0.05f,  0.05f,   1.0f, 0.0f,     -1.0f,  0.0f,  0.0f,
+			-0.08f,  0.08f,  0.08f,   1.0f, 0.0f,     -1.0f,  0.0f,  0.0f,
+			-0.08f,  0.08f, -0.08f,   1.0f, 1.0f,     -1.0f,  0.0f,  0.0f,
+			-0.08f, -0.08f, -0.08f,   0.0f, 1.0f,     -1.0f,  0.0f,  0.0f,
+			-0.08f, -0.08f, -0.08f,   0.0f, 1.0f,     -1.0f,  0.0f,  0.0f,
+			-0.08f, -0.08f,  0.08f,   0.0f, 0.0f,     -1.0f,  0.0f,  0.0f,
+			-0.08f,  0.08f,  0.08f,   1.0f, 0.0f,     -1.0f,  0.0f,  0.0f,
 
-			 0.05f,  0.05f,  0.05f,   1.0f, 0.0f,      1.0f,  0.0f,  0.0f,
-			 0.05f,  0.05f, -0.05f,   1.0f, 1.0f,      1.0f,  0.0f,  0.0f,
-			 0.05f, -0.05f, -0.05f,   0.0f, 1.0f,      1.0f,  0.0f,  0.0f,
-			 0.05f, -0.05f, -0.05f,   0.0f, 1.0f,      1.0f,  0.0f,  0.0f,
-			 0.05f, -0.05f,  0.05f,   0.0f, 0.0f,      1.0f,  0.0f,  0.0f,
-			 0.05f,  0.05f,  0.05f,   1.0f, 0.0f,      1.0f,  0.0f,  0.0f,
+			 0.08f,  0.08f,  0.08f,   1.0f, 0.0f,      1.0f,  0.0f,  0.0f,
+			 0.08f,  0.08f, -0.08f,   1.0f, 1.0f,      1.0f,  0.0f,  0.0f,
+			 0.08f, -0.08f, -0.08f,   0.0f, 1.0f,      1.0f,  0.0f,  0.0f,
+			 0.08f, -0.08f, -0.08f,   0.0f, 1.0f,      1.0f,  0.0f,  0.0f,
+			 0.08f, -0.08f,  0.08f,   0.0f, 0.0f,      1.0f,  0.0f,  0.0f,
+			 0.08f,  0.08f,  0.08f,   1.0f, 0.0f,      1.0f,  0.0f,  0.0f,
 
-			-0.05f, -0.05f, -0.05f,   0.0f, 1.0f,      0.0f, -1.0f,  0.0f,
-			 0.05f, -0.05f, -0.05f,   1.0f, 1.0f,      0.0f, -1.0f,  0.0f,
-			 0.05f, -0.05f,  0.05f,   1.0f, 0.0f,      0.0f, -1.0f,  0.0f,
-			 0.05f, -0.05f,  0.05f,   1.0f, 0.0f,      0.0f, -1.0f,  0.0f,
-			-0.05f, -0.05f,  0.05f,   0.0f, 0.0f,      0.0f, -1.0f,  0.0f,
-			-0.05f, -0.05f, -0.05f,   0.0f, 1.0f,      0.0f, -1.0f,  0.0f,
+			-0.08f, -0.08f, -0.08f,   0.0f, 1.0f,      0.0f, -1.0f,  0.0f,
+			 0.08f, -0.08f, -0.08f,   1.0f, 1.0f,      0.0f, -1.0f,  0.0f,
+			 0.08f, -0.08f,  0.08f,   1.0f, 0.0f,      0.0f, -1.0f,  0.0f,
+			 0.08f, -0.08f,  0.08f,   1.0f, 0.0f,      0.0f, -1.0f,  0.0f,
+			-0.08f, -0.08f,  0.08f,   0.0f, 0.0f,      0.0f, -1.0f,  0.0f,
+			-0.08f, -0.08f, -0.08f,   0.0f, 1.0f,      0.0f, -1.0f,  0.0f,
 
-			-0.05f, 0.05f, -0.05f,    0.0f, 1.0f,      0.0f,  1.0f,  0.0f,
-			 0.05f, 0.05f, -0.05f,    1.0f, 1.0f,      0.0f,  1.0f,  0.0f,
-			 0.05f, 0.05f,  0.05f,    1.0f, 0.0f,      0.0f,  1.0f,  0.0f,
-			 0.05f, 0.05f,  0.05f,    1.0f, 0.0f,      0.0f,  1.0f,  0.0f,
-			-0.05f, 0.05f,  0.05f,    0.0f, 0.0f,      0.0f,  1.0f,  0.0f,
-			-0.05f, 0.05f, -0.05f,    0.0f, 1.0f,      0.0f,  1.0f,  0.0f,
+			-0.08f, 0.08f, -0.08f,    0.0f, 1.0f,      0.0f,  1.0f,  0.0f,
+			 0.08f, 0.08f, -0.08f,    1.0f, 1.0f,      0.0f,  1.0f,  0.0f,
+			 0.08f, 0.08f,  0.08f,    1.0f, 0.0f,      0.0f,  1.0f,  0.0f,
+			 0.08f, 0.08f,  0.08f,    1.0f, 0.0f,      0.0f,  1.0f,  0.0f,
+			-0.08f, 0.08f,  0.08f,    0.0f, 0.0f,      0.0f,  1.0f,  0.0f,
+			-0.08f, 0.08f, -0.08f,    0.0f, 1.0f,      0.0f,  1.0f,  0.0f,
 	};
 
-	glm::vec3 translations[1000];
+	glm::vec3 translations[125];
 	int index = 0;
-	GLfloat offset = 0.1f;
-	for(GLint y = -10; y < 10; y += 2)
+	GLfloat offset = 0.2f;
+	for(GLint y = -10; y < 10; y += 4)
 	{
-		for(GLint x = -10; x < 10; x += 2)
+		for(GLint x = -10; x < 10; x += 4)
 		{
-			for(GLint z = -10; z < 10; z += 2)
+			for(GLint z = -10; z < 10; z += 4)
 			{
 				glm::vec3 translation;
 				translation.x = (GLfloat)x / 10.0f + offset;
@@ -220,7 +220,7 @@ void Instancing3DSample::Init()
 	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 1000, &translations[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 125, &translations[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Generate VAO Id
@@ -305,7 +305,7 @@ void Instancing3DSample::Draw(int screenW, int screenH)
 	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
 
-	glDrawArraysInstanced(GL_TRIANGLES, 0, 36, 1000);
+	glDrawArraysInstanced(GL_TRIANGLES, 0, 36, 125);
 	glBindVertexArray(0);
 }
 
