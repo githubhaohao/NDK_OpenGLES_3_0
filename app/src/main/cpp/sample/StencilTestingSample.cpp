@@ -290,10 +290,6 @@ void StencilTestingSample::Draw(int screenW, int screenH)
 	glUniform1f(glGetUniformLocation(m_ProgramObj, "light.linear"),    0.09);
 	glUniform1f(glGetUniformLocation(m_ProgramObj, "light.quadratic"), 0.032);
 
-//	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX, m_AngleY, 0.4, glm::vec3(1.0f,  1.0f,  0.0f), ratio);
-//	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
-//	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
-//	glDrawArrays(GL_TRIANGLES, 0, 36);
 	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX, m_AngleY , 1.0, glm::vec3(0.0f,  0.0f,  0.0f), ratio);
 	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
@@ -307,11 +303,7 @@ void StencilTestingSample::Draw(int screenW, int screenH)
 
 	glBindVertexArray(m_VaoId);
 	glUseProgram(m_FrameProgramObj);
-//	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX, m_AngleY, 0.5, glm::vec3(1.0f,  1.0f,  0.0f), ratio);
-//	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
-//	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
-//	glDrawArrays(GL_TRIANGLES, 0, 36);
-	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX, m_AngleY, 1.1, glm::vec3(0.0f,  0.0f,  0.0f), ratio);
+	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX, m_AngleY, 1.05, glm::vec3(0.0f,  0.0f,  0.0f), ratio);
 	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
