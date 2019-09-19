@@ -65,14 +65,15 @@ void BasicLightingSample::Init()
 			"    vec3 fragPos = vec3(u_ModelMatrix * a_position);\n"
 			"\n"
 			"    // Ambient\n"
-			"    float ambientStrength = 0.2;\n"
+			"    float ambientStrength = 0.1;\n"
 			"    ambient = ambientStrength * lightColor;\n"
 			"\n"
 			"    // Diffuse\n"
+            "    float diffuseStrength = 0.5;\n"
 			"    vec3 unitNormal = normalize(vec3(u_ModelMatrix * vec4(a_normal, 1.0)));\n"
 			"    vec3 lightDir = normalize(lightPos - fragPos);\n"
 			"    float diff = max(dot(unitNormal, lightDir), 0.0);\n"
-			"    diffuse = diff * lightColor;\n"
+			"    diffuse = diffuseStrength * diff * lightColor;\n"
 			"\n"
 			"    // Specular\n"
 			"    float specularStrength = 0.9;\n"
@@ -183,19 +184,6 @@ void BasicLightingSample::Init()
 
 	glBindVertexArray(GL_NONE);
 
-
-//	glGenBuffers(1, &m_TfoBufId);
-//	glBindBuffer(GL_ARRAY_BUFFER, m_TfoBufId);
-//	glBufferData(GL_ARRAY_BUFFER, 6 * 36 * sizeof(GLfloat), NULL, GL_STATIC_READ);
-//	glBindBuffer(GL_ARRAY_BUFFER, 0);
-//
-//	glGenTransformFeedbacks(1, &m_TfoId);
-//	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_TfoId);
-//	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_TfoBufId); // Specify the index of the binding point within the array specified by target.
-//	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
-//	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
-
-
 }
 
 void BasicLightingSample::LoadImage(NativeImage *pImage)
@@ -244,32 +232,8 @@ void BasicLightingSample::Draw(int screenW, int screenH)
 	glBindTexture(GL_TEXTURE_2D, m_TextureId);
 	glUniform1i(m_SamplerLoc, 0);
 
-//	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_TfoId);
-//	glBeginTransformFeedback(GL_TRIANGLES);
-//	GO_CHECK_GL_ERROR();
-
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	GO_CHECK_GL_ERROR();
-
-//	glEndTransformFeedback();
-//	GO_CHECK_GL_ERROR();
-//	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
-//	GO_CHECK_GL_ERROR();
-//
-//	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_TfoBufId);
-//	GO_CHECK_GL_ERROR();
-//	void* rawData = glMapBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0,  6 * 36 * sizeof(GLfloat), GL_MAP_READ_BIT);
-//	GO_CHECK_GL_ERROR();
-//
-//	float *p = (float*)rawData;
-//	for(int i=0; i< 36; i++)
-//	{
-//		LOGCATE("BasicLightingSample::Draw() outVec0[%d] = [%f, %f, %f], outVec1[%d] = [%f, %f, %f]", i, p[i * 6], p[i * 6 + 1], p[i * 6 + 2], i, p[i * 6 + 3], p[i * 6 + 4], p[i * 6 + 5]);
-//	}
-//
-//
-//	glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
-//	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
 }
 
 void BasicLightingSample::Destroy()
