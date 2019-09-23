@@ -16,5 +16,9 @@
 - [NDK OpenGLES3.0 开发（五）：FBO 离屏渲染](https://www.jianshu.com/p/2596f1e758c7)
 
 - [NDK OpenGLES3.0 开发（六）：EGL](https://www.jianshu.com/p/44f280abaf53)
+
 - [NDK OpenGLES3.0 开发（七）：Transform Feedback](https://www.jianshu.com/p/ff103464a84f)
+
 - [NDK OpenGLES3.0 开发（八）：坐标系统](https://www.jianshu.com/p/aee250678e77)
+
+- [NDK OpenGLES3.0 开发（九）：光照基础](https://www.jianshu.com/p/882bd2b9dfe3)
