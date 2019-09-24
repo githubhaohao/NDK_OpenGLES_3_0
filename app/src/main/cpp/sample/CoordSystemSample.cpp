@@ -17,6 +17,9 @@ CoordSystemSample::CoordSystemSample()
 
 	m_AngleX = 0;
 	m_AngleY = 0;
+
+	m_ScaleX = 1.0f;
+	m_ScaleY = 1.0f;
 }
 
 CoordSystemSample::~CoordSystemSample()
@@ -204,7 +207,7 @@ void CoordSystemSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int an
 
 	// Model matrix
 	glm::mat4 Model = glm::mat4(1.0f);
-	Model = glm::scale(Model, glm::vec3(1.0f, 1.0f, 1.0f));
+	Model = glm::scale(Model, glm::vec3(m_ScaleX, m_ScaleY, 1.0f));
 	Model = glm::rotate(Model, radiansX, glm::vec3(1.0f, 0.0f, 0.0f));
 	Model = glm::rotate(Model, radiansY, glm::vec3(0.0f, 1.0f, 0.0f));
 	Model = glm::translate(Model, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -213,15 +216,11 @@ void CoordSystemSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int an
 
 }
 
-void CoordSystemSample::SetParamsInt(int paramType,  int value0, int value1)
+void CoordSystemSample::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
 {
-	LOGCATE("CoordSystemSample::SetParamsInt paramType = %d, value0 = %d", paramType, value0);
-	GLSampleBase::SetParamsInt(paramType, value0, value1);
-	if (paramType == ROTATE_ANGLE_PARAM_TYPE)
-	{
-		m_AngleX = value0;
-		m_AngleY = value1;
-	}
-
-
+	GLSampleBase::UpdateTransformMatrix(rotateX, rotateY, scaleX, scaleY);
+	m_AngleX = static_cast<int>(rotateX);
+	m_AngleY = static_cast<int>(rotateY);
+	m_ScaleX = scaleX;
+	m_ScaleY = scaleY;
 }

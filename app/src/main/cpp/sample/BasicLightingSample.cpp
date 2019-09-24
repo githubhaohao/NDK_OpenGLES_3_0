@@ -20,6 +20,9 @@ BasicLightingSample::BasicLightingSample()
 	m_AngleX = 0;
 	m_AngleY = 0;
 
+	m_ScaleX = 1.0f;
+	m_ScaleY = 1.0f;
+
 	m_ModelMatrix = glm::mat4(0.0f);
 }
 
@@ -35,6 +38,7 @@ void BasicLightingSample::Init()
 	{
 		return;
 	}
+
 	//create RGBA texture
 	glGenTextures(1, &m_TextureId);
 	glBindTexture(GL_TEXTURE_2D, m_TextureId);
@@ -99,7 +103,7 @@ void BasicLightingSample::Init()
 			"    vec3 finalColor = (ambient + diffuse + specular) * vec3(objectColor);\n"
 			"    outColor = vec4(finalColor, 1.0);\n"
 			"}";
-	//GLchar const * varyings[] = {"outVec0", "outVec1"};
+
 	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr, m_VertexShader, m_FragmentShader);
 	if (m_ProgramObj)
 	{
@@ -115,9 +119,6 @@ void BasicLightingSample::Init()
 		LOGCATE("BasicLightingSample::Init create program fail");
 		return;
 	}
-
-
-	//glTransformFeedbackVaryings(m_ProgramObj, 1, Strings, GL_INTERLEAVED_ATTRIBS);
 
 	GLfloat vertices[] = {
 			 //position            //texture coord  //normal
@@ -279,7 +280,7 @@ void BasicLightingSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int 
 
 	// Model matrix
 	glm::mat4 Model = glm::mat4(1.0f);
-	Model = glm::scale(Model, glm::vec3(1.0f, 1.0f, 1.0f));
+	Model = glm::scale(Model, glm::vec3(m_ScaleX, m_ScaleX, m_ScaleX));
 	Model = glm::rotate(Model, radiansX, glm::vec3(1.0f, 0.0f, 0.0f));
 	Model = glm::rotate(Model, radiansY, glm::vec3(0.0f, 1.0f, 0.0f));
 	Model = glm::translate(Model, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -290,13 +291,11 @@ void BasicLightingSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int 
 
 }
 
-void BasicLightingSample::SetParamsInt(int paramType, int value0, int value1)
+void BasicLightingSample::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
 {
-	LOGCATE("BasicLightingSample::SetParamsInt paramType = %d, value0 = %d", paramType, value0);
-	GLSampleBase::SetParamsInt(paramType, value0, value1);
-	if (paramType == ROTATE_ANGLE_PARAM_TYPE)
-	{
-		m_AngleX = value0;
-		m_AngleY = value1;
-	}
+	GLSampleBase::UpdateTransformMatrix(rotateX, rotateY, scaleX, scaleY);
+	m_AngleX = static_cast<int>(rotateX);
+	m_AngleY = static_cast<int>(rotateY);
+	m_ScaleX = scaleX;
+	m_ScaleY = scaleY;
 }

@@ -24,7 +24,7 @@ public:
 
 	virtual void Destroy();
 
-	virtual void SetParamsInt(int paramType, int value0, int value1);
+	virtual void UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY);
 
 	void UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio);
 
@@ -47,6 +47,9 @@ private:
 
 	int m_AngleX;
 	int m_AngleY;
+
+	float m_ScaleX;
+	float m_ScaleY;
 };
 
 

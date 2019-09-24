@@ -22,6 +22,8 @@ public:
 
 	void SetParamsInt(int paramType, int value0, int value1);
 
+	void UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY);
+
 	void OnSurfaceCreated();
 
 	void OnSurfaceChanged(int width, int height);

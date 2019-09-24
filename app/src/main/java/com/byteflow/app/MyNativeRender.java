@@ -18,8 +18,6 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_INSTANCING      = SAMPLE_TYPE + 12;
     public static final int SAMPLE_TYPE_STENCIL_TESTING = SAMPLE_TYPE + 13;
 
-    public static final int PARAM_TYPE_ROTATE =  300;
-
     static {
         System.loadLibrary("native-render");
     }
@@ -29,6 +27,8 @@ public class MyNativeRender {
     public native void native_UnInit();
 
     public native void native_SetParamsInt(int paramType, int value0, int value1);
+
+    public native void native_UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY);
 
     public native void native_SetImageData(int format, int width, int height, byte[] bytes);
 

@@ -4,11 +4,11 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import static com.byteflow.app.MyNativeRender.PARAM_TYPE_ROTATE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_BASIC_LIGHTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_COORD_SYSTEM;
@@ -19,7 +19,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_STENCIL_TESTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TRANS_FEEDBACK;
 
-public class MyGLSurfaceView extends GLSurfaceView {
+public class MyGLSurfaceView extends GLSurfaceView implements ScaleGestureDetector.OnScaleGestureListener {
     private static final String TAG = "MyGLSurfaceView";
 
     private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
@@ -39,6 +39,11 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private int mRatioWidth = 0;
     private int mRatioHeight = 0;
 
+    private ScaleGestureDetector mScaleGestureDetector;
+    private float mPreScale = 1.0f;
+    private float mCurScale = 1.0f;
+    private long mLastMultiTouchTime;
+
     public MyGLSurfaceView(Context context) {
         this(context, null);
     }
@@ -52,36 +57,46 @@ public class MyGLSurfaceView extends GLSurfaceView {
         setEGLConfigChooser(8, 8, 8, 8, 16, 8);
         setRenderer(mGLRender);
         setRenderMode(RENDERMODE_WHEN_DIRTY);
+        mScaleGestureDetector = new ScaleGestureDetector(context, this);
+
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        float y = e.getY();
-        float x = e.getX();
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_MOVE:
-                float dy = y - mPreviousY;
-                float dx = x - mPreviousX;
-                mYAngle += dx * TOUCH_SCALE_FACTOR;
-                mXAngle += dy * TOUCH_SCALE_FACTOR;
-        }
-        mPreviousY = y;
-        mPreviousX = x;
+        if (e.getPointerCount() == 1) {
+            long currentTimeMillis = System.currentTimeMillis();
+            if (currentTimeMillis - mLastMultiTouchTime > 200)
+            {
+                float y = e.getY();
+                float x = e.getX();
+                switch (e.getAction()) {
+                    case MotionEvent.ACTION_MOVE:
+                        float dy = y - mPreviousY;
+                        float dx = x - mPreviousX;
+                        mYAngle += dx * TOUCH_SCALE_FACTOR;
+                        mXAngle += dy * TOUCH_SCALE_FACTOR;
+                }
+                mPreviousY = y;
+                mPreviousX = x;
 
-        switch (mGLRender.getSampleType()) {
-            case SAMPLE_TYPE_FBO_LEG:
-            case SAMPLE_TYPE_COORD_SYSTEM:
-            case SAMPLE_TYPE_BASIC_LIGHTING:
-            case SAMPLE_TYPE_TRANS_FEEDBACK:
-            case SAMPLE_TYPE_MULTI_LIGHTS:
-            case SAMPLE_TYPE_DEPTH_TESTING:
-            case SAMPLE_TYPE_INSTANCING:
-            case SAMPLE_TYPE_STENCIL_TESTING:
-                mGLRender.SetParamsInt(PARAM_TYPE_ROTATE, mXAngle, mYAngle);
-                requestRender();
-                break;
-            default:
-                break;
+                switch (mGLRender.getSampleType()) {
+                    case SAMPLE_TYPE_FBO_LEG:
+                    case SAMPLE_TYPE_COORD_SYSTEM:
+                    case SAMPLE_TYPE_BASIC_LIGHTING:
+                    case SAMPLE_TYPE_TRANS_FEEDBACK:
+                    case SAMPLE_TYPE_MULTI_LIGHTS:
+                    case SAMPLE_TYPE_DEPTH_TESTING:
+                    case SAMPLE_TYPE_INSTANCING:
+                    case SAMPLE_TYPE_STENCIL_TESTING:
+                        mGLRender.UpdateTransformMatrix(mXAngle, mYAngle, mCurScale, mCurScale);
+                        requestRender();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        } else {
+            mScaleGestureDetector.onTouchEvent(e);
         }
 
         return true;
@@ -116,6 +131,44 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
     public MyGLRender getGLRender() {
         return mGLRender;
+    }
+
+    @Override
+    public boolean onScale(ScaleGestureDetector detector) {
+        switch (mGLRender.getSampleType()) {
+            case SAMPLE_TYPE_COORD_SYSTEM:
+            case SAMPLE_TYPE_BASIC_LIGHTING:
+            case SAMPLE_TYPE_INSTANCING:
+            {
+                float preSpan = detector.getPreviousSpan();
+                float curSpan = detector.getCurrentSpan();
+                if (curSpan < preSpan) {
+                    mCurScale = mPreScale - (preSpan - curSpan) / 500;
+                } else {
+                    mCurScale = mPreScale + (curSpan - preSpan) / 500;
+                }
+                mCurScale = Math.max(0.1f, Math.min(mCurScale, 5.0f));
+                mGLRender.UpdateTransformMatrix(mXAngle, mYAngle, mCurScale, mCurScale);
+                requestRender();
+            }
+                break;
+            default:
+                break;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onScaleBegin(ScaleGestureDetector detector) {
+        return true;
+    }
+
+    @Override
+    public void onScaleEnd(ScaleGestureDetector detector) {
+        mPreScale = mCurScale;
+        mLastMultiTouchTime = System.currentTimeMillis();
+
     }
 
     public static class MyGLRender implements GLSurfaceView.Renderer {
@@ -165,6 +218,11 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
         public int getSampleType() {
             return mSampleType;
+        }
+
+        public void UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
+        {
+            mNativeRender.native_UpdateTransformMatrix(rotateX, rotateY, scaleX, scaleY);
         }
 
     }

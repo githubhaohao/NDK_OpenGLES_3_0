@@ -60,6 +60,18 @@ JNIEXPORT void JNICALL native_SetParamsInt
 	MyGLRenderContext::GetInstance()->SetParamsInt(paramType, value0, value1);
 }
 
+
+/*
+ * Class:     com_byteflow_app_MyNativeRender
+ * Method:    native_UpdateTransformMatrix
+ * Signature: (FFFF)V
+ */
+JNIEXPORT void JNICALL native_UpdateTransformMatrix
+		(JNIEnv *env, jobject instance, jfloat rotateX, jfloat rotateY, jfloat scaleX, jfloat scaleY)
+{
+	MyGLRenderContext::GetInstance()->UpdateTransformMatrix(rotateX, rotateY, scaleX, scaleY);
+}
+
 /*
  * Class:     com_byteflow_app_MyNativeRender
  * Method:    native_OnSurfaceCreated
@@ -158,13 +170,14 @@ JNIEXPORT void JNICALL natuve_BgRenderUnInit(JNIEnv *env, jobject instance)
 #endif
 
 static JNINativeMethod g_RenderMethods[] = {
-		{"native_Init",               "()V",       (void *)(native_Init)},
-		{"native_UnInit",             "()V",       (void *)(native_UnInit)},
-		{"native_SetImageData",       "(III[B)V",  (void *)(native_SetImageData)},
-		{"native_SetParamsInt",       "(III)V",    (void *)(native_SetParamsInt)},
-		{"native_OnSurfaceCreated",   "()V",       (void *)(native_OnSurfaceCreated)},
-		{"native_OnSurfaceChanged",   "(II)V",     (void *)(native_OnSurfaceChanged)},
-		{"native_OnDrawFrame",        "()V",       (void *)(native_OnDrawFrame)},
+		{"native_Init",                      "()V",       (void *)(native_Init)},
+		{"native_UnInit",                    "()V",       (void *)(native_UnInit)},
+		{"native_SetImageData",              "(III[B)V",  (void *)(native_SetImageData)},
+		{"native_SetParamsInt",              "(III)V",    (void *)(native_SetParamsInt)},
+		{"native_UpdateTransformMatrix",     "(FFFF)V",    (void *)(native_UpdateTransformMatrix)},
+		{"native_OnSurfaceCreated",          "()V",       (void *)(native_OnSurfaceCreated)},
+		{"native_OnSurfaceChanged",          "(II)V",     (void *)(native_OnSurfaceChanged)},
+		{"native_OnDrawFrame",               "()V",       (void *)(native_OnDrawFrame)},
 };
 
 static JNINativeMethod g_BgRenderMethods[] = {

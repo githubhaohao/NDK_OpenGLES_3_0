@@ -149,6 +149,37 @@ const char fShaderStr4[] =
 		"    outColor = vec4(color.rgb, 1.0);\n"
 		"}";
 
+const char fShaderStr5[] =
+		"#version 300 es\n"
+		"precision highp float;\n"
+		"layout(location = 0) out vec4 outColor;\n"
+		"in vec2 v_texCoord;\n"
+		"uniform sampler2D s_TextureMap;\n"
+		"uniform vec2 u_texSize;\n"
+		"\n"
+		"vec2 warpPositionToUse(vec2 centerPostion, vec2 currentPosition, float radius, float scaleRatio, float aspectRatio)\n"
+		"{\n"
+		"    vec2 positionToUse = currentPosition;\n"
+		"    vec2 currentPositionToUse = vec2(currentPosition.x, currentPosition.y * aspectRatio + 0.5 - 0.5 * aspectRatio);\n"
+		"    vec2 centerPostionToUse = vec2(centerPostion.x, centerPostion.y * aspectRatio + 0.5 - 0.5 * aspectRatio);\n"
+		"    //float r = distance(currentPositionToUse, centerPostionToUse);\n"
+        "    float r = distance(currentPosition, centerPostion);\n"
+		"    if(r < radius)\n"
+		"    {\n"
+		"        float alpha = 1.0 - scaleRatio * pow(r / radius - 1.0, 2.0);\n"
+		"        positionToUse = centerPostion + alpha * (currentPosition - centerPostion);\n"
+		"    }\n"
+		"    return positionToUse;\n"
+		"}\n"
+		"\n"
+		"void main() {\n"
+		"    vec2 centerPostion = vec2(0.5, 0.5);\n"
+		"    float radius = 0.2;\n"
+		"    float scaleRatio = 1.0;\n"
+		"    float aspectRatio = u_texSize.x / u_texSize.y;\n"
+		"    outColor = texture(s_TextureMap, warpPositionToUse(centerPostion, v_texCoord, radius, scaleRatio, aspectRatio));\n"
+		"}";
+
 //顶点坐标
 const GLfloat vVertices[] = {
 		-1.0f, -1.0f, 0.0f, // bottom left

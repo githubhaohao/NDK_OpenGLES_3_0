@@ -94,12 +94,15 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 				break;
 		}
 	}
+}
 
-	if (paramType == ROTATE_ANGLE_PARAM_TYPE && m_Sample)
+void MyGLRenderContext::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
+{
+	LOGCATE("MyGLRenderContext::UpdateTransformMatrix [rotateX, rotateY, scaleX, scaleY] = [%f, %f, %f, %f]", rotateX, rotateY, scaleX, scaleY);
+	if (m_Sample)
 	{
-		m_Sample->SetParamsInt(paramType, value0, value1);
+		m_Sample->UpdateTransformMatrix(rotateX, rotateY, scaleX, scaleY);
 	}
-
 }
 
 void MyGLRenderContext::SetImageData(int format, int width, int height, uint8_t *pData)
@@ -179,4 +182,5 @@ void MyGLRenderContext::DestroyInstance()
 	}
 
 }
+
 

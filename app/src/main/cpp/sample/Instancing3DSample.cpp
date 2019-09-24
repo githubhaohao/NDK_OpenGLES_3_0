@@ -19,6 +19,9 @@ Instancing3DSample::Instancing3DSample()
 	m_AngleX = 0;
 	m_AngleY = 0;
 
+	m_ScaleX = 2.0f;
+	m_ScaleY = 2.0f;
+
 	m_ModelMatrix = glm::mat4(0.0f);
 }
 
@@ -104,7 +107,7 @@ void Instancing3DSample::Init()
 			"    float intensity = clamp((theta - light.outerCutOff) / epsilon,0.0, 1.0);\n"
 			"\n"
 			"    // Ambient\n"
-			"    float ambientStrength = 0.25;\n"
+			"    float ambientStrength = 0.4;\n"
 			"    vec3 ambient = ambientStrength * light.color;\n"
 			"\n"
 			"    // Diffuse\n"
@@ -301,7 +304,7 @@ void Instancing3DSample::Draw(int screenW, int screenH)
 	glUniform1f(glGetUniformLocation(m_ProgramObj, "light.linear"),    0.09);
 	glUniform1f(glGetUniformLocation(m_ProgramObj, "light.quadratic"), 0.032);
 
-	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX + 10, m_AngleY + 10, 2.0f, glm::vec3(0.0f, 0.0f, 0.0f), ratio);
+	UpdateMatrix(m_MVPMatrix, m_ModelMatrix, m_AngleX + 10, m_AngleY + 10, m_ScaleX > m_ScaleY ? m_ScaleY : m_ScaleX, glm::vec3(0.0f, 0.0f, 0.0f), ratio);
 	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 	glUniformMatrix4fv(m_ModelMatrixLoc, 1, GL_FALSE, &m_ModelMatrix[0][0]);
 
@@ -365,14 +368,11 @@ void Instancing3DSample::UpdateMatrix(glm::mat4 &mvpMatrix, glm::mat4 &modelMatr
 	mvpMatrix = Projection * View * Model;
 }
 
-void Instancing3DSample::SetParamsInt(int paramType, int value0, int value1)
+void Instancing3DSample::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
 {
-	LOGCATE("Instancing3DSample::SetParamsInt paramType = %d, value0 = %d", paramType, value0);
-	GLSampleBase::SetParamsInt(paramType, value0, value1);
-	//no implement
-	if (paramType == ROTATE_ANGLE_PARAM_TYPE)
-	{
-		m_AngleX = value0;
-		m_AngleY = value1;
-	}
+	GLSampleBase::UpdateTransformMatrix(rotateX, rotateY, scaleX, scaleY);
+	m_AngleX = static_cast<int>(rotateX);
+	m_AngleY = static_cast<int>(rotateY);
+	m_ScaleX = 2 * scaleX;
+	m_ScaleY = 2 * scaleY;
 }
