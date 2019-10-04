@@ -22,3 +22,5 @@
 - [NDK OpenGLES3.0 开发（八）：坐标系统](https://www.jianshu.com/p/aee250678e77)
 
 - [NDK OpenGLES3.0 开发（九）：光照基础](https://www.jianshu.com/p/882bd2b9dfe3)
+
+- [NDK OpenGLES3.0 开发（十）：深度测试](https://www.jianshu.com/p/d024c23570b4)
