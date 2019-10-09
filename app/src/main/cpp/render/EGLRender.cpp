@@ -180,6 +180,100 @@ const char fShaderStr5[] =
 		"    outColor = texture(s_TextureMap, warpPositionToUse(centerPostion, v_texCoord, radius, scaleRatio, aspectRatio));\n"
 		"}";
 
+const char fShaderStr6[] =
+		"#version 300 es\n"
+		"precision highp float;\n"
+		"layout(location = 0) out vec4 outColor;\n"
+		"in vec2 v_texCoord;\n"
+		"uniform sampler2D s_TextureMap;\n"
+		"uniform vec2 u_texSize;\n"
+		"\n"
+		"vec2 reshape(vec2 src, vec2 dst, vec2 curPos, float radius)\n"
+		"{\n"
+		"    vec2 pos = curPos;\n"
+		"\n"
+		"    float r = distance(curPos, src);\n"
+		"\n"
+		"    if (r < radius)\n"
+		"    {\n"
+		"        float alpha = 1.0 -  r / radius;\n"
+		"        vec2 displacementVec = (dst - src) * pow(alpha, 2.0);\n"
+		"        pos = curPos - displacementVec;\n"
+		"\n"
+		"    }\n"
+		"    return pos;\n"
+		"}\n"
+		"\n"
+		"void main() {\n"
+		"    vec2 srcPos = vec2(0.5, 0.5);\n"
+		"    vec2 dstPos = vec2(0.6, 0.5);\n"
+		"    float radius = 0.18;\n"
+		"    float scaleRatio = 1.0;\n"
+		"    float aspectRatio = u_texSize.x / u_texSize.y;\n"
+		"    \n"
+		"    if(radius <= distance(v_texCoord, srcPos) && distance(v_texCoord, srcPos) <= radius + 0.008)\n"
+		"    {\n"
+		"        outColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
+		"    } \n"
+		"    else\n"
+		"    {\n"
+		"        outColor = texture(s_TextureMap, reshape(srcPos, dstPos, v_texCoord, radius));\n"
+		"    }\n"
+		"}";
+
+const char fShaderStr7[] =
+		"#version 300 es\n"
+		"precision highp float;\n"
+		"layout(location = 0) out vec4 outColor;\n"
+		"in vec2 v_texCoord;\n"
+		"uniform sampler2D s_TextureMap;\n"
+		"uniform vec2 u_texSize;\n"
+		"\n"
+		"float distanceTex(vec2 pos0, vec2 pos1, float aspectRatio)\n"
+		"{\n"
+		"    vec2 newPos0 = vec2(pos0.x, pos0.y * aspectRatio + 0.5 - 0.5 * aspectRatio);\n"
+		"    vec2 newPos1 = vec2(pos1.x, pos1.y * aspectRatio + 0.5 - 0.5 * aspectRatio);\n"
+		"    return distance(newPos0, newPos1);\n"
+		"}\n"
+		"\n"
+		"vec2 reshape(vec2 src, vec2 dst, vec2 curPos, float radius, float aspectRatio)\n"
+		"{\n"
+		"    vec2 pos = curPos;\n"
+		"\n"
+		"    vec2 newSrc = vec2(src.x, src.y * aspectRatio + 0.5 - 0.5 * aspectRatio);\n"
+		"    vec2 newDst = vec2(dst.x, dst.y * aspectRatio + 0.5 - 0.5 * aspectRatio);\n"
+		"    vec2 newCur = vec2(curPos.x, curPos.y * aspectRatio + 0.5 - 0.5 * aspectRatio);\n"
+		"\n"
+		"\n"
+		"    float r = distance(newSrc, newCur);\n"
+		"\n"
+		"    if (r < radius)\n"
+		"    {\n"
+		"        float alpha = 1.0 -  r / radius;\n"
+		"        vec2 displacementVec = (dst - src) * pow(alpha, 1.7);\n"
+		"        pos = curPos - displacementVec;\n"
+		"\n"
+		"    }\n"
+		"    return pos;\n"
+		"}\n"
+		"\n"
+		"void main() {\n"
+		"    vec2 srcPos = vec2(0.5, 0.5);\n"
+		"    vec2 dstPos = vec2(0.55, 0.55);\n"
+		"    float radius = 0.30;\n"
+		"    float scaleRatio = 1.0;\n"
+		"    float aspectRatio = u_texSize.y/u_texSize.x;\n"
+		"\n"
+		"    if(radius <= distanceTex(v_texCoord, srcPos, aspectRatio) && distanceTex(v_texCoord, srcPos, aspectRatio) <= radius + 0.008)\n"
+		"    {\n"
+		"        outColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
+		"    }\n"
+		"    else\n"
+		"    {\n"
+		"        outColor = texture(s_TextureMap, reshape(srcPos, dstPos, v_texCoord, radius, aspectRatio));\n"
+		"    }\n"
+		"}";
+
 //顶点坐标
 const GLfloat vVertices[] = {
 		-1.0f, -1.0f, 0.0f, // bottom left
@@ -196,7 +290,7 @@ const GLfloat vTexCoors[] = {
 		1.0f, 0.0f, // top right
 };
 
-//fbo 纹理坐标与正常纹理方向不同
+//fbo 纹理坐标与正常纹理方向不同(上下镜像)
 const GLfloat vFboTexCoors[] = {
 		0.0f, 0.0f,  // bottom left
 		1.0f, 0.0f,  // bottom right
@@ -247,6 +341,8 @@ void EGLRender::Init()
 	m_fShaderStrs[2] = fShaderStr2;
 	m_fShaderStrs[3] = fShaderStr3;
 	m_fShaderStrs[4] = fShaderStr4;
+	m_fShaderStrs[5] = fShaderStr7;
+
 
 	glGenTextures(1, &m_ImageTextureId);
 	glBindTexture(GL_TEXTURE_2D, m_ImageTextureId);
@@ -322,7 +418,7 @@ int EGLRender::CreateGlesEnv()
             EGL_GREEN_SIZE, 8,
             EGL_BLUE_SIZE,  8,
             EGL_ALPHA_SIZE, 8,// if you need the alpha channel
-            EGL_DEPTH_SIZE, 8,// if you need the depth buffer
+            EGL_DEPTH_SIZE, 16,// if you need the depth buffer
             EGL_STENCIL_SIZE,8,
             EGL_NONE
     };
@@ -485,7 +581,7 @@ void EGLRender::SetIntParams(int paramType, int param)
 		{
 			if (param >= 0)
 			{
-				m_ShaderIndex = param % 5;
+				m_ShaderIndex = param % EGL_FEATURE_NUM;
 
 				if (m_ProgramObj)
 				{
@@ -503,7 +599,9 @@ void EGLRender::SetIntParams(int paramType, int param)
 				}
 
 				m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "s_TextureMap");
+				GO_CHECK_GL_ERROR();
 				m_TexSizeLoc = glGetUniformLocation(m_ProgramObj, "u_texSize");
+				GO_CHECK_GL_ERROR();
 			}
 
 		}
@@ -528,12 +626,13 @@ void EGLRender::Draw()
 	glBindTexture(GL_TEXTURE_2D, m_ImageTextureId);
 	glUniform1i(m_SamplerLoc, 0);
 
-	if (m_TexSizeLoc != GL_NONE) {
+	if (m_TexSizeLoc > -1) {
 		GLfloat size[2];
 		size[0] = m_RenderImage.width;
 		size[1] = m_RenderImage.height;
-		glUniform2fv(m_TexSizeLoc, 1, &size[0]);
+		glUniform2f(m_TexSizeLoc, size[0], size[1]);
 	}
+
 
 	//7. 渲染
 	GO_CHECK_GL_ERROR();

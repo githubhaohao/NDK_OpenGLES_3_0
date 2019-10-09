@@ -12,6 +12,8 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
+#define EGL_FEATURE_NUM 6
+
 class EGLRender
 {
 public:
@@ -73,7 +75,7 @@ private:
 	EGLContext m_eglCtx;
 	EGLDisplay m_eglDisplay;
 	bool       m_IsGLContextReady;
-	const char*m_fShaderStrs[5];
+	const char*m_fShaderStrs[EGL_FEATURE_NUM];
 	int        m_ShaderIndex;
 };
 

@@ -98,6 +98,9 @@ public class EGLActivity extends AppCompatActivity {
             case R.id.action_shader4:
                 shaderIndex = 4;
                 break;
+            case R.id.action_shader5:
+                shaderIndex = 5;
+                break;
                 default:
         }
 
