@@ -302,7 +302,7 @@ const GLushort indices[] = { 0, 1, 2, 1, 3, 2 };
 
 EGLRender::EGLRender()
 {
-	m_VaoIds[2] = {GL_NONE};
+	m_VaoIds[1] = {GL_NONE};
 	m_VboIds[3] = {GL_NONE};
 	m_ImageTextureId = GL_NONE;
 	m_FboTextureId = GL_NONE;

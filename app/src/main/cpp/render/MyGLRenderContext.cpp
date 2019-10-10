@@ -16,6 +16,7 @@
 #include <InstancingSample.h>
 #include <Instancing3DSample.h>
 #include <StencilTestingSample.h>
+#include <BlendingSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -90,6 +91,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 			case SAMPLE_TYPE_KEY_STENCIL_TESTING:
 				m_Sample = new StencilTestingSample();
 				break;
+			case SAMPLE_TYPE_KEY_BLENDING:
+				m_Sample = new BlendingSample();
+				break;
 			default:
 				break;
 		}
@@ -103,6 +107,36 @@ void MyGLRenderContext::UpdateTransformMatrix(float rotateX, float rotateY, floa
 	{
 		m_Sample->UpdateTransformMatrix(rotateX, rotateY, scaleX, scaleY);
 	}
+}
+
+void MyGLRenderContext::SetImageDataWithIndex(int index, int format, int width, int height, uint8_t *pData)
+{
+	LOGCATE("MyGLRenderContext::SetImageDataWithIndex index=%d, format=%d, width=%d, height=%d, pData=%p", index, format, width, height, pData);
+	NativeImage nativeImage;
+	nativeImage.format = format;
+	nativeImage.width = width;
+	nativeImage.height = height;
+	nativeImage.ppPlane[0] = pData;
+
+	switch (format)
+	{
+		case IMAGE_FORMAT_NV12:
+		case IMAGE_FORMAT_NV21:
+			nativeImage.ppPlane[1] = nativeImage.ppPlane[0] + width * height;
+			break;
+		case IMAGE_FORMAT_I420:
+			nativeImage.ppPlane[1] = nativeImage.ppPlane[0] + width * height;
+			nativeImage.ppPlane[2] = nativeImage.ppPlane[1] + width * height / 4;
+			break;
+		default:
+			break;
+	}
+
+	if (m_Sample)
+	{
+		m_Sample->LoadMultiImageWithIndex(index, &nativeImage);
+	}
+
 }
 
 void MyGLRenderContext::SetImageData(int format, int width, int height, uint8_t *pData)

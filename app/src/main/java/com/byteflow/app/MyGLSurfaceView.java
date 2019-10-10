@@ -216,6 +216,10 @@ public class MyGLSurfaceView extends GLSurfaceView implements ScaleGestureDetect
             mNativeRender.native_SetImageData(format, width, height, bytes);
         }
 
+        public void SetImageDataWithIndex(int index, int format, int width, int height, byte[] bytes) {
+            mNativeRender.native_SetImageDataWithIndex(index, format, width, height, bytes);
+        }
+
         public int getSampleType() {
             return mSampleType;
         }

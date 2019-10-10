@@ -26,6 +26,8 @@
 #define SAMPLE_TYPE_KEY_DEPTH_TESTING           SAMPLE_TYPE + 11
 #define SAMPLE_TYPE_KEY_INSTANCING              SAMPLE_TYPE + 12
 #define SAMPLE_TYPE_KEY_STENCIL_TESTING         SAMPLE_TYPE + 13
+#define SAMPLE_TYPE_KEY_BLENDING                SAMPLE_TYPE + 14
+
 
 
 class GLSampleBase
@@ -45,6 +47,9 @@ public:
 	}
 
 	virtual void LoadImage(NativeImage *pImage)
+	{};
+
+	virtual void LoadMultiImageWithIndex(int index, NativeImage *pImage)
 	{};
 
 	virtual void SetParamsInt(int paramType, int value0, int value1)

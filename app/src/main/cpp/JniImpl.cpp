@@ -51,6 +51,22 @@ JNIEXPORT void JNICALL native_SetImageData
 
 /*
  * Class:     com_byteflow_app_MyNativeRender
+ * Method:    native_SetImageDataWithIndex
+ * Signature: (IIII[B)V
+ */
+JNIEXPORT void JNICALL native_SetImageDataWithIndex
+		(JNIEnv *env, jobject instance, jint index, jint format, jint width, jint height, jbyteArray imageData)
+{
+	int len = env->GetArrayLength (imageData);
+	uint8_t* buf = new uint8_t[len];
+	env->GetByteArrayRegion(imageData, 0, len, reinterpret_cast<jbyte*>(buf));
+	MyGLRenderContext::GetInstance()->SetImageDataWithIndex(index, format, width, height, buf);
+	delete[] buf;
+	env->DeleteLocalRef(imageData);
+}
+
+/*
+ * Class:     com_byteflow_app_MyNativeRender
  * Method:    native_SetParamsInt
  * Signature: (III)V
  */
@@ -173,8 +189,9 @@ static JNINativeMethod g_RenderMethods[] = {
 		{"native_Init",                      "()V",       (void *)(native_Init)},
 		{"native_UnInit",                    "()V",       (void *)(native_UnInit)},
 		{"native_SetImageData",              "(III[B)V",  (void *)(native_SetImageData)},
+		{"native_SetImageDataWithIndex",     "(IIII[B)V", (void *)(native_SetImageDataWithIndex)},
 		{"native_SetParamsInt",              "(III)V",    (void *)(native_SetParamsInt)},
-		{"native_UpdateTransformMatrix",     "(FFFF)V",    (void *)(native_UpdateTransformMatrix)},
+		{"native_UpdateTransformMatrix",     "(FFFF)V",   (void *)(native_UpdateTransformMatrix)},
 		{"native_OnSurfaceCreated",          "()V",       (void *)(native_OnSurfaceCreated)},
 		{"native_OnSurfaceChanged",          "(II)V",     (void *)(native_OnSurfaceChanged)},
 		{"native_OnDrawFrame",               "()V",       (void *)(native_OnDrawFrame)},

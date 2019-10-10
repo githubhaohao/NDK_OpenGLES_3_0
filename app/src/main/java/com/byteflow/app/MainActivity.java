@@ -32,6 +32,7 @@ import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_NV21;
 import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_RGBA;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_BASIC_LIGHTING;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_BLENDING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_COORD_SYSTEM;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_DEPTH_TESTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_EGL;
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
             "Depth Testing",
             "Instancing",
             "Stencil Testing",
+            "Blending",
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -162,7 +164,12 @@ public class MainActivity extends AppCompatActivity {
                     case SAMPLE_TYPE_DEPTH_TESTING:
                     case SAMPLE_TYPE_INSTANCING:
                     case SAMPLE_TYPE_STENCIL_TESTING:
-                        LoadRGBAImage(R.drawable.dzzz);
+                        LoadRGBAImage(R.drawable.board_texture);
+                        break;
+                    case SAMPLE_TYPE_BLENDING:
+                        LoadRGBAImage(R.drawable.board_texture,0);
+                        LoadRGBAImage(R.drawable.floor,1);
+                        LoadRGBAImage(R.drawable.window,2);
                         break;
                     default:
                         break;
@@ -196,6 +203,32 @@ public class MainActivity extends AppCompatActivity {
                 bitmap.copyPixelsToBuffer(buf);
                 byte[] byteArray = buf.array();
                 mGLSurfaceView.getGLRender().SetImageData(IMAGE_FORMAT_RGBA, bitmap.getWidth(), bitmap.getHeight(), byteArray);
+            }
+        }
+        finally
+        {
+            try
+            {
+                is.close();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void LoadRGBAImage(int resId, int index) {
+        InputStream is = this.getResources().openRawResource(resId);
+        Bitmap bitmap;
+        try {
+            bitmap = BitmapFactory.decodeStream(is);
+            if (bitmap != null) {
+                int bytes = bitmap.getByteCount();
+                ByteBuffer buf = ByteBuffer.allocate(bytes);
+                bitmap.copyPixelsToBuffer(buf);
+                byte[] byteArray = buf.array();
+                mGLSurfaceView.getGLRender().SetImageDataWithIndex(index, IMAGE_FORMAT_RGBA, bitmap.getWidth(), bitmap.getHeight(), byteArray);
             }
         }
         finally

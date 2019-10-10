@@ -17,6 +17,8 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_DEPTH_TESTING   = SAMPLE_TYPE + 11;
     public static final int SAMPLE_TYPE_INSTANCING      = SAMPLE_TYPE + 12;
     public static final int SAMPLE_TYPE_STENCIL_TESTING = SAMPLE_TYPE + 13;
+    public static final int SAMPLE_TYPE_BLENDING = SAMPLE_TYPE + 14;
+
 
     static {
         System.loadLibrary("native-render");
@@ -31,6 +33,8 @@ public class MyNativeRender {
     public native void native_UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY);
 
     public native void native_SetImageData(int format, int width, int height, byte[] bytes);
+
+    public native void native_SetImageDataWithIndex(int index, int format, int width, int height, byte[] bytes);
 
     public native void native_OnSurfaceCreated();
 
