@@ -34,7 +34,7 @@ const char fShaderStr0[] =
 		"{\n"
 		"    outColor = texture(s_TextureMap, v_texCoord);\n"
 		"}";
-
+// 马赛克
 const char fShaderStr1[] =
 		"#version 300 es\n"
 		"precision highp float;\n"
@@ -74,6 +74,7 @@ const char fShaderStr1[] =
 		"    outColor = CrossStitching(v_texCoord);\n"
 		"}";
 
+// 网格
 const char fShaderStr2[] =
 		"#version 300 es\n"
 		"precision highp float;\n"
@@ -97,6 +98,7 @@ const char fShaderStr2[] =
 		"    }\n"
 		"}";
 
+// 旋转
 const char fShaderStr3[] =
 		"#version 300 es\n"
 		"precision highp float;\n"
@@ -122,6 +124,7 @@ const char fShaderStr3[] =
 		"    outColor = texture(s_TextureMap, tc / u_texSize);\n"
 		"}";
 
+// 边缘
 const char fShaderStr4[] =
 		"#version 300 es\n"
 		"precision highp float;\n"
@@ -148,7 +151,7 @@ const char fShaderStr4[] =
 		"    }\n"
 		"    outColor = vec4(color.rgb, 1.0);\n"
 		"}";
-
+// 放大
 const char fShaderStr5[] =
 		"#version 300 es\n"
 		"precision highp float;\n"
@@ -174,7 +177,7 @@ const char fShaderStr5[] =
 		"\n"
 		"void main() {\n"
 		"    vec2 centerPostion = vec2(0.5, 0.5);\n"
-		"    float radius = 0.2;\n"
+		"    float radius = 0.34;\n"
 		"    float scaleRatio = 1.0;\n"
 		"    float aspectRatio = u_texSize.x / u_texSize.y;\n"
 		"    outColor = texture(s_TextureMap, warpPositionToUse(centerPostion, v_texCoord, radius, scaleRatio, aspectRatio));\n"
@@ -221,6 +224,7 @@ const char fShaderStr6[] =
 		"    }\n"
 		"}";
 
+// 形变
 const char fShaderStr7[] =
 		"#version 300 es\n"
 		"precision highp float;\n"
@@ -341,7 +345,8 @@ void EGLRender::Init()
 	m_fShaderStrs[2] = fShaderStr2;
 	m_fShaderStrs[3] = fShaderStr3;
 	m_fShaderStrs[4] = fShaderStr4;
-	m_fShaderStrs[5] = fShaderStr7;
+	m_fShaderStrs[5] = fShaderStr5;
+	m_fShaderStrs[6] = fShaderStr7;
 
 
 	glGenTextures(1, &m_ImageTextureId);

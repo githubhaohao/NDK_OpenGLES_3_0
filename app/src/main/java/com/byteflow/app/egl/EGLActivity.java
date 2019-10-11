@@ -42,7 +42,7 @@ public class EGLActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mBtn.getText().equals(EGLActivity.this.getResources().getString(R.string.btn_txt_reset))) {
-                    mImageView.setImageResource(R.drawable.java);
+                    mImageView.setImageResource(R.drawable.leg);
                     mBtn.setText(R.string.bg_render_txt);
                 } else {
                     startBgRender();
@@ -101,6 +101,9 @@ public class EGLActivity extends AppCompatActivity {
             case R.id.action_shader5:
                 shaderIndex = 5;
                 break;
+            case R.id.action_shader6:
+                shaderIndex = 6;
+                break;
                 default:
         }
 
@@ -112,9 +115,9 @@ public class EGLActivity extends AppCompatActivity {
         return true;
     }
     private void startBgRender() {
-        loadRGBAImage(R.drawable.java, mBgRender);
+        loadRGBAImage(R.drawable.leg, mBgRender);
         mBgRender.native_EglRenderDraw();
-        mImageView.setImageBitmap(createBitmapFromGLSurface(0, 0, 421, 586));
+        mImageView.setImageBitmap(createBitmapFromGLSurface(0, 0, 933, 1400));
     }
 
     private void loadRGBAImage(int resId, NativeEglRender render) {

@@ -35,6 +35,12 @@
     <item
         android:id="@+id/action_shader5"
         android:icon="@drawable/ic_aspect_sample"
+        android:title="放大"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_shader6"
+        android:icon="@drawable/ic_aspect_sample"
         android:title="形变"
         app:showAsAction="never" />
 

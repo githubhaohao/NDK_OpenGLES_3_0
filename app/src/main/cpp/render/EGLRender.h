@@ -12,7 +12,7 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
-#define EGL_FEATURE_NUM 6
+#define EGL_FEATURE_NUM 7
 
 class EGLRender
 {
