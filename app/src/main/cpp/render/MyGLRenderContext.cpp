@@ -17,6 +17,7 @@
 #include <Instancing3DSample.h>
 #include <StencilTestingSample.h>
 #include <BlendingSample.h>
+#include <ParticlesSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -93,6 +94,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 				break;
 			case SAMPLE_TYPE_KEY_BLENDING:
 				m_Sample = new BlendingSample();
+				break;
+			case SAMPLE_TYPE_KEY_PARTICLES:
+				m_Sample = new ParticlesSample();
 				break;
 			default:
 				break;

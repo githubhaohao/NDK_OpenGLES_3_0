@@ -257,7 +257,7 @@ void StencilTestingSample::Draw(int screenW, int screenH)
 	if (m_ProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
 
 	float ratio = (float)screenW / screenH;
-	glClear(GL_STENCIL_BUFFER_BIT);
+	glClear(GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_STENCIL_TEST);
 	GO_CHECK_GL_ERROR();
@@ -312,7 +312,6 @@ void StencilTestingSample::Draw(int screenW, int screenH)
 
 	glStencilMask(0xFF);
 	glEnable(GL_DEPTH_TEST);
-	glDisable(GL_STENCIL_TEST);
 }
 
 void StencilTestingSample::Destroy()

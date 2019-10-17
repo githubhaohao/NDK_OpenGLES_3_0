@@ -17,5 +17,7 @@ public:
 	static void DeleteProgram(GLuint &program);
 
 	static void CheckGLError(const char *pGLOperation);
+
+	static GLuint loadDDS(const char * imagePath);
 };
 #endif // _BYTE_FLOW_GL_UTILS_H_

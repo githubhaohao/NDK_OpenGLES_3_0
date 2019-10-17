@@ -28,6 +28,8 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
+import static android.opengl.GLSurfaceView.RENDERMODE_CONTINUOUSLY;
+import static android.opengl.GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_NV21;
 import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_RGBA;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE;
@@ -40,6 +42,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_PARTICLES;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_STENCIL_TESTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TEXTURE_MAP;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TRANS_FEEDBACK;
@@ -65,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
             "Instancing",
             "Stencil Testing",
             "Blending",
+            "Particles"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -135,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 myPreviewSizeViewAdapter.notifyItemChanged(selectIndex);
                 myPreviewSizeViewAdapter.notifyItemChanged(position);
                 mSampleSelectedIndex = position;
-
+                mGLSurfaceView.setRenderMode(RENDERMODE_WHEN_DIRTY);
                 mGLSurfaceView.getGLRender().SetParamsInt(SAMPLE_TYPE, position + SAMPLE_TYPE, 0);
                 switch (position + SAMPLE_TYPE) {
                     case SAMPLE_TYPE_TRIANGLE:
@@ -170,6 +174,10 @@ public class MainActivity extends AppCompatActivity {
                         LoadRGBAImage(R.drawable.board_texture,0);
                         LoadRGBAImage(R.drawable.floor,1);
                         LoadRGBAImage(R.drawable.window,2);
+                        break;
+                    case SAMPLE_TYPE_PARTICLES:
+                        //mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        LoadRGBAImage(R.drawable.board_texture);
                         break;
                     default:
                         break;
