@@ -24,3 +24,7 @@
 - [NDK OpenGLES3.0 开发（九）：光照基础](https://www.jianshu.com/p/882bd2b9dfe3)
 
 - [NDK OpenGLES3.0 开发（十）：深度测试](https://www.jianshu.com/p/d024c23570b4)
+
+- [NDK OpenGL ES 3.0 开发（十一）：模板测试](https://www.jianshu.com/p/5459bdca9a3b)
+
+- [NDK OpenGL ES 3.0 开发（十二）：混合](https://www.jianshu.com/p/2bc344ef052c)
