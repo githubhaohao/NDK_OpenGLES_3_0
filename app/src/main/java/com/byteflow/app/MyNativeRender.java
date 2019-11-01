@@ -19,6 +19,7 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_STENCIL_TESTING = SAMPLE_TYPE + 13;
     public static final int SAMPLE_TYPE_BLENDING        = SAMPLE_TYPE + 14;
     public static final int SAMPLE_TYPE_PARTICLES       = SAMPLE_TYPE + 15;
+    public static final int SAMPLE_TYPE_SKYBOX          = SAMPLE_TYPE + 16;
 
     static {
         System.loadLibrary("native-render");

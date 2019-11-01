@@ -28,8 +28,7 @@
 #define SAMPLE_TYPE_KEY_STENCIL_TESTING         SAMPLE_TYPE + 13
 #define SAMPLE_TYPE_KEY_BLENDING                SAMPLE_TYPE + 14
 #define SAMPLE_TYPE_KEY_PARTICLES               SAMPLE_TYPE + 15
-
-
+#define SAMPLE_TYPE_KEY_SKYBOX                  SAMPLE_TYPE + 16
 
 
 class GLSampleBase

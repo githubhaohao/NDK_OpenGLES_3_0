@@ -43,6 +43,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_PARTICLES;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_SKYBOX;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_STENCIL_TESTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TEXTURE_MAP;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TRANS_FEEDBACK;
@@ -68,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
             "Instancing",
             "Stencil Testing",
             "Blending",
-            "Particles"
+            "Particles",
+            "SkyBox",
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -178,6 +180,14 @@ public class MainActivity extends AppCompatActivity {
                     case SAMPLE_TYPE_PARTICLES:
                         //mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         LoadRGBAImage(R.drawable.board_texture);
+                        break;
+                    case SAMPLE_TYPE_SKYBOX:
+                        LoadRGBAImage(R.drawable.right,0);
+                        LoadRGBAImage(R.drawable.left,1);
+                        LoadRGBAImage(R.drawable.top,2);
+                        LoadRGBAImage(R.drawable.bottom,3);
+                        LoadRGBAImage(R.drawable.back,4);
+                        LoadRGBAImage(R.drawable.front,5);
                         break;
                     default:
                         break;

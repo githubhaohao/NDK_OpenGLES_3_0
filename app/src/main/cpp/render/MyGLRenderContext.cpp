@@ -18,6 +18,8 @@
 #include <StencilTestingSample.h>
 #include <BlendingSample.h>
 #include <ParticlesSample.h>
+#include <Noise3DSample.h>
+#include <SkyBoxSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -25,16 +27,23 @@ MyGLRenderContext* MyGLRenderContext::m_pContext = nullptr;
 
 MyGLRenderContext::MyGLRenderContext()
 {
-	m_Sample = new TriangleSample();
+	m_pCurSample = new TriangleSample();
+	m_pBeforeSample = nullptr;
 
 }
 
 MyGLRenderContext::~MyGLRenderContext()
 {
-	if (m_Sample)
+	if (m_pCurSample)
 	{
-		delete m_Sample;
-		m_Sample = nullptr;
+		delete m_pCurSample;
+		m_pCurSample = nullptr;
+	}
+
+	if (m_pBeforeSample)
+	{
+		delete m_pBeforeSample;
+		m_pBeforeSample = nullptr;
 	}
 
 }
@@ -46,57 +55,57 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 
 	if (paramType == SAMPLE_TYPE)
 	{
-		if (m_Sample)
-		{
-			delete m_Sample;
-			m_Sample = nullptr;
-		}
+		m_pBeforeSample = m_pCurSample;
+
 		switch (value0)
 		{
 			case SAMPLE_TYPE_KEY_TRIANGLE:
-				m_Sample = new TriangleSample();
+				m_pCurSample = new TriangleSample();
 				break;
 			case SAMPLE_TYPE_KEY_TEXTURE_MAP:
-				m_Sample = new TextureMapSample();
+				m_pCurSample = new TextureMapSample();
 				break;
 			case SAMPLE_TYPE_KEY_YUV_TEXTURE_MAP:
-				m_Sample = new NV21TextureMapSample();
+				m_pCurSample = new NV21TextureMapSample();
 				break;
 			case SAMPLE_TYPE_KEY_VAO:
-				m_Sample = new VaoSample();
+				m_pCurSample = new VaoSample();
 				break;
 			case SAMPLE_TYPE_KEY_FBO:
-				m_Sample = new FBOSample();
+				m_pCurSample = new FBOSample();
 				break;
 			case SAMPLE_TYPE_KEY_FBO_LEG_LENGTHEN:
-				m_Sample = new FBOLegLengthenSample();
+				m_pCurSample = new FBOLegLengthenSample();
 				break;
 			case SAMPLE_TYPE_KEY_COORD_SYSTEM:
-				m_Sample = new CoordSystemSample();
+				m_pCurSample = new CoordSystemSample();
 				break;
 			case SAMPLE_TYPE_KEY_BASIC_LIGHTING:
-				m_Sample = new BasicLightingSample();
+				m_pCurSample = new BasicLightingSample();
 				break;
 			case SAMPLE_TYPE_KEY_TRANSFORM_FEEDBACK:
-				m_Sample = new TransformFeedbackSample();
+				m_pCurSample = new TransformFeedbackSample();
 				break;
 			case SAMPLE_TYPE_KEY_MULTI_LIGHTS:
-				m_Sample = new MultiLightsSample();
+				m_pCurSample = new MultiLightsSample();
 				break;
 			case SAMPLE_TYPE_KEY_DEPTH_TESTING:
-				m_Sample = new DepthTestingSample();
+				m_pCurSample = new DepthTestingSample();
 				break;
 			case SAMPLE_TYPE_KEY_INSTANCING:
-				m_Sample = new Instancing3DSample();
+				m_pCurSample = new Instancing3DSample();
 				break;
 			case SAMPLE_TYPE_KEY_STENCIL_TESTING:
-				m_Sample = new StencilTestingSample();
+				m_pCurSample = new StencilTestingSample();
 				break;
 			case SAMPLE_TYPE_KEY_BLENDING:
-				m_Sample = new BlendingSample();
+				m_pCurSample = new BlendingSample();
 				break;
 			case SAMPLE_TYPE_KEY_PARTICLES:
-				m_Sample = new ParticlesSample();
+				m_pCurSample = new ParticlesSample();
+				break;
+			case SAMPLE_TYPE_KEY_SKYBOX:
+				m_pCurSample = new SkyBoxSample();
 				break;
 			default:
 				break;
@@ -107,9 +116,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 void MyGLRenderContext::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
 {
 	LOGCATE("MyGLRenderContext::UpdateTransformMatrix [rotateX, rotateY, scaleX, scaleY] = [%f, %f, %f, %f]", rotateX, rotateY, scaleX, scaleY);
-	if (m_Sample)
+	if (m_pCurSample)
 	{
-		m_Sample->UpdateTransformMatrix(rotateX, rotateY, scaleX, scaleY);
+		m_pCurSample->UpdateTransformMatrix(rotateX, rotateY, scaleX, scaleY);
 	}
 }
 
@@ -136,9 +145,9 @@ void MyGLRenderContext::SetImageDataWithIndex(int index, int format, int width, 
 			break;
 	}
 
-	if (m_Sample)
+	if (m_pCurSample)
 	{
-		m_Sample->LoadMultiImageWithIndex(index, &nativeImage);
+		m_pCurSample->LoadMultiImageWithIndex(index, &nativeImage);
 	}
 
 }
@@ -166,9 +175,9 @@ void MyGLRenderContext::SetImageData(int format, int width, int height, uint8_t 
 			break;
 	}
 
-	if (m_Sample)
+	if (m_pCurSample)
 	{
-		m_Sample->LoadImage(&nativeImage);
+		m_pCurSample->LoadImage(&nativeImage);
 	}
 
 }
@@ -192,11 +201,17 @@ void MyGLRenderContext::OnDrawFrame()
 	LOGCATE("MyGLRenderContext::OnDrawFrame");
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-	if (m_Sample)
+	if (m_pBeforeSample)
 	{
-		m_Sample->Init();
-		m_Sample->Draw(m_ScreenW, m_ScreenH);
-		m_Sample->Destroy();
+		delete m_pBeforeSample;
+		m_pBeforeSample = nullptr;
+	}
+
+	if (m_pCurSample)
+	{
+		m_pCurSample->Init();
+		m_pCurSample->Draw(m_ScreenW, m_ScreenH);
+		m_pCurSample->Destroy();
 	}
 }
 

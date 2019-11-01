@@ -27,7 +27,7 @@ add_library( # Sets the name of the library.
              SHARED
 
              # Provides a relative path to your source file(s).
-             JniImpl.cpp
+        JniImpl.cpp
         render/MyGLRenderContext.cpp
         render/EGLRender.cpp
         util/GLUtils.cpp
@@ -47,6 +47,8 @@ add_library( # Sets the name of the library.
         sample/StencilTestingSample.cpp
         sample/BlendingSample.cpp
         sample/ParticlesSample.cpp
+        sample/Noise3DSample.cpp
+        sample/SkyBoxSample.cpp
               )
 
 # Searches for a specified prebuilt library and stores the path as a

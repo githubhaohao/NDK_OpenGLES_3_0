@@ -37,7 +37,8 @@ public:
 
 private:
 	static MyGLRenderContext *m_pContext;
-	GLSampleBase *m_Sample;
+	GLSampleBase *m_pBeforeSample;
+	GLSampleBase *m_pCurSample;
 	int m_ScreenW;
 	int m_ScreenH;
 
