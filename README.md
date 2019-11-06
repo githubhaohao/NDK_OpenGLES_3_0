@@ -28,3 +28,7 @@
 - [NDK OpenGL ES 3.0 开发（十一）：模板测试](https://www.jianshu.com/p/5459bdca9a3b)
 
 - [NDK OpenGL ES 3.0 开发（十二）：混合](https://www.jianshu.com/p/2bc344ef052c)
+
+- [NDK OpenGL ES 3.0 开发（十三）：实例化（Instancing）](https://www.jianshu.com/p/7081421966f6)
+
+- [NDK OpenGL ES 3.0 开发（十四）：粒子（Particles）](https://www.jianshu.com/p/9fc0adc3d7d5)
