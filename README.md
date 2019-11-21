@@ -34,3 +34,5 @@
 - [NDK OpenGL ES 3.0 开发（十四）：粒子（Particles）](https://www.jianshu.com/p/9fc0adc3d7d5)
 
 - [NDK OpenGL ES 3.0 开发（十五）：立方体贴图（天空盒）](https://www.jianshu.com/p/51108459934f)
+
+- [NDK OpenGL ES 3.0 开发（十六）：相机预览](https://www.jianshu.com/p/74b0fcff8b66)
