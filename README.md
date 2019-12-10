@@ -36,3 +36,9 @@
 - [NDK OpenGL ES 3.0 开发（十五）：立方体贴图（天空盒）](https://www.jianshu.com/p/51108459934f)
 
 - [NDK OpenGL ES 3.0 开发（十六）：相机预览](https://www.jianshu.com/p/74b0fcff8b66)
+
+- [NDK OpenGL ES 3.0 开发（十七）：相机基础滤镜](https://www.jianshu.com/p/db17b4d48a1e)
+
+- [NDK OpenGL ES 3.0 开发（十八）：相机 LUT 滤镜](https://www.jianshu.com/p/ae8091d321d1)
+
+- [NDK OpenGL ES 3.0 开发（十九）：相机抖音滤镜](https://www.jianshu.com/p/b310559a2716)
