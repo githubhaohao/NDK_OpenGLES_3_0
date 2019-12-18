@@ -28,3 +28,17 @@
 - [NDK OpenGL ES 3.0 开发（十一）：模板测试](https://www.jianshu.com/p/5459bdca9a3b)
 
 - [NDK OpenGL ES 3.0 开发（十二）：混合](https://www.jianshu.com/p/2bc344ef052c)
+
+- [NDK OpenGL ES 3.0 开发（十三）：实例化（Instancing）](https://www.jianshu.com/p/7081421966f6)
+
+- [NDK OpenGL ES 3.0 开发（十四）：粒子（Particles）](https://www.jianshu.com/p/9fc0adc3d7d5)
+
+- [NDK OpenGL ES 3.0 开发（十五）：立方体贴图（天空盒）](https://www.jianshu.com/p/51108459934f)
+
+- [NDK OpenGL ES 3.0 开发（十六）：相机预览](https://www.jianshu.com/p/74b0fcff8b66)
+
+- [NDK OpenGL ES 3.0 开发（十七）：相机基础滤镜](https://www.jianshu.com/p/db17b4d48a1e)
+
+- [NDK OpenGL ES 3.0 开发（十八）：相机 LUT 滤镜](https://www.jianshu.com/p/ae8091d321d1)
+
+- [NDK OpenGL ES 3.0 开发（十九）：相机抖音滤镜](https://www.jianshu.com/p/b310559a2716)
