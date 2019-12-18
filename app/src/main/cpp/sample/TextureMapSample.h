@@ -14,7 +14,7 @@ class TextureMapSample : public GLSampleBase
 public:
 	TextureMapSample();
 
-	~TextureMapSample();
+	virtual ~TextureMapSample();
 
 	void LoadImage(NativeImage *pImage);
 

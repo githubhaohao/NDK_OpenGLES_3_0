@@ -15,7 +15,7 @@ class StencilTestingSample : public GLSampleBase
 public:
 	StencilTestingSample();
 
-	~StencilTestingSample();
+	virtual ~StencilTestingSample();
 
 	virtual void LoadImage(NativeImage *pImage);
 

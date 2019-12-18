@@ -12,7 +12,7 @@ class TriangleSample : public GLSampleBase
 {
 public:
 	TriangleSample();
-	~TriangleSample();
+	virtual ~TriangleSample();
 
 	virtual void LoadImage(NativeImage *pImage);
 

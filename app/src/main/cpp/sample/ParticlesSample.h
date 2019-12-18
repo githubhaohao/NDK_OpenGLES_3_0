@@ -47,7 +47,7 @@ public:
 
 	ParticlesSample();
 
-	~ParticlesSample();
+	virtual ~ParticlesSample();
 	virtual void LoadImage(NativeImage *pImage);
 	virtual void Init();
 	virtual void Draw(int screenW, int screenH);

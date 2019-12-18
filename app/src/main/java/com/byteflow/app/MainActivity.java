@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mGLSurfaceView = findViewById(R.id.my_gl_surface_view);
+        mGLSurfaceView = (MyGLSurfaceView) findViewById(R.id.my_gl_surface_view);
         mGLSurfaceView.getGLRender().Init();
     }
 

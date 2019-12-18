@@ -15,7 +15,7 @@ class SkyBoxSample : public GLSampleBase
 public:
 	SkyBoxSample();
 
-	~SkyBoxSample();
+	virtual ~SkyBoxSample();
 
 	virtual void LoadImage(NativeImage *pImage);
 

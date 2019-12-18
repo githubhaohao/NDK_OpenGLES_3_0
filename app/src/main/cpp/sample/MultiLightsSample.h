@@ -15,7 +15,7 @@ class MultiLightsSample : public GLSampleBase
 public:
 	MultiLightsSample();
 
-	~MultiLightsSample();
+	virtual ~MultiLightsSample();
 
 	virtual void LoadImage(NativeImage *pImage);
 

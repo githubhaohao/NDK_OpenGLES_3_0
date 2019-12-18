@@ -22,7 +22,7 @@ public:
 
 	}
 
-	~NV21TextureMapSample()
+	virtual ~NV21TextureMapSample()
 	{
 		NativeImageUtil::FreeNativeImage(&m_RenderImage);
 	}

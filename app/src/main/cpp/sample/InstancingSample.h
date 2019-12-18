@@ -14,7 +14,7 @@ class InstancingSample : public GLSampleBase
 {
 public:
 	InstancingSample();
-	~InstancingSample();
+	virtual ~InstancingSample();
 
 	virtual void Init();
 

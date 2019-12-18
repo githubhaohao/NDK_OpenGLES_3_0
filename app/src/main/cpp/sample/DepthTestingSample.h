@@ -15,7 +15,7 @@ class DepthTestingSample : public GLSampleBase
 public:
 	DepthTestingSample();
 
-	~DepthTestingSample();
+	virtual ~DepthTestingSample();
 
 	virtual void LoadImage(NativeImage *pImage);
 

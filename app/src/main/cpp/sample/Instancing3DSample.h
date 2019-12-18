@@ -15,7 +15,7 @@ class Instancing3DSample : public GLSampleBase
 public:
 	Instancing3DSample();
 
-	~Instancing3DSample();
+	virtual ~Instancing3DSample();
 
 	virtual void LoadImage(NativeImage *pImage);
 

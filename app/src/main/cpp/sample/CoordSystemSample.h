@@ -15,7 +15,7 @@ class CoordSystemSample : public GLSampleBase
 public:
 	CoordSystemSample();
 
-	~CoordSystemSample();
+	virtual ~CoordSystemSample();
 
 	virtual void LoadImage(NativeImage *pImage);
 

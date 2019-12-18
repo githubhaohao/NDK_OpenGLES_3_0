@@ -14,7 +14,7 @@ class FBOSample : public GLSampleBase
 public:
 	FBOSample();
 
-	~FBOSample();
+	virtual ~FBOSample();
 
 	virtual void LoadImage(NativeImage *pImage);
 

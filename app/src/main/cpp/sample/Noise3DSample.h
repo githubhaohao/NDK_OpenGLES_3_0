@@ -31,7 +31,7 @@ class Noise3DSample : public GLSampleBase
 public:
 	Noise3DSample();
 
-	~Noise3DSample();
+	virtual ~Noise3DSample();
 
 	virtual void LoadImage(NativeImage *pImage);
 

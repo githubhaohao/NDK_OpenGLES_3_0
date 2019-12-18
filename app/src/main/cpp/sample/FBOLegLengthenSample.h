@@ -25,7 +25,7 @@ class FBOLegLengthenSample : public GLSampleBase
 public:
 	FBOLegLengthenSample();
 
-	~FBOLegLengthenSample();
+	virtual ~FBOLegLengthenSample();
 
 	virtual void LoadImage(NativeImage *pImage);
 

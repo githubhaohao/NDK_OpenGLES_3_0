@@ -33,8 +33,8 @@ public class EGLActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_egl);
 
-        mImageView = findViewById(R.id.imageView);
-        mBtn = findViewById(R.id.button);
+        mImageView = (ImageView) findViewById(R.id.imageView);
+        mBtn = (Button) findViewById(R.id.button);
         mBgRender = new NativeEglRender();
         mBgRender.native_EglRenderInit();
 

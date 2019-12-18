@@ -19,7 +19,7 @@ class BlendingSample : public GLSampleBase
 public:
 	BlendingSample();
 
-	~BlendingSample();
+	virtual ~BlendingSample();
 
 	virtual void LoadMultiImageWithIndex(int index, NativeImage *pImage);
 

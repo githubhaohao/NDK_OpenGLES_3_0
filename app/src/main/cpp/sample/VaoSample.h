@@ -13,7 +13,7 @@ class VaoSample : public GLSampleBase
 public:
 	VaoSample();
 
-	~VaoSample();
+	virtual ~VaoSample();
 
 	virtual void LoadImage(NativeImage *pImage);
 
