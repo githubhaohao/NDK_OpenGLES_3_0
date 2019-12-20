@@ -1,0 +1,19 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 31.10.2019 02:06:59
+
+newmtl Apricot_02_material
+	Ns 70.0000
+	Ni 1.6000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.6275 0.6275 0.6275
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures/Apricot_02_diffuse.png
+	map_Kd textures/Apricot_02_diffuse.png
+	map_Ks textures/Apricot_02_specular.png
+	map_bump textures/Apricot_02_normal.png
+	bump textures/Apricot_02_normal.png
