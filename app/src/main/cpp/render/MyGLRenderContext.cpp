@@ -20,6 +20,7 @@
 #include <ParticlesSample.h>
 #include <Noise3DSample.h>
 #include <SkyBoxSample.h>
+#include <Model3DSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -106,6 +107,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 				break;
 			case SAMPLE_TYPE_KEY_SKYBOX:
 				m_pCurSample = new SkyBoxSample();
+				break;
+			case SAMPLE_TYPE_KEY_3D_MODEL:
+				m_pCurSample = new Model3DSample();
 				break;
 			default:
 				break;

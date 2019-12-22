@@ -11,6 +11,8 @@ public:
 	static GLuint CreateProgram(const char *pVertexShaderSource, const char *pFragShaderSource, GLuint &vertexShaderHandle,
 								GLuint &fragShaderHandle);
 
+	static GLuint CreateProgram(const char *pVertexShaderSource, const char *pFragShaderSource);
+
 	static GLuint CreateProgramWithFeedback(const char *pVertexShaderSource, const char *pFragShaderSource, GLuint &vertexShaderHandle,
 											GLuint &fragShaderHandle, const GLchar **varying, int varyingCount);
 
@@ -18,6 +20,5 @@ public:
 
 	static void CheckGLError(const char *pGLOperation);
 
-	static GLuint loadDDS(const char * imagePath);
 };
 #endif // _BYTE_FLOW_GL_UTILS_H_

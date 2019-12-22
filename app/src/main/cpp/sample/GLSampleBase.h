@@ -29,6 +29,8 @@
 #define SAMPLE_TYPE_KEY_BLENDING                SAMPLE_TYPE + 14
 #define SAMPLE_TYPE_KEY_PARTICLES               SAMPLE_TYPE + 15
 #define SAMPLE_TYPE_KEY_SKYBOX                  SAMPLE_TYPE + 16
+#define SAMPLE_TYPE_KEY_3D_MODEL                SAMPLE_TYPE + 17
+
 
 
 class GLSampleBase

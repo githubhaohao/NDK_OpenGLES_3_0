@@ -5,11 +5,18 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
+set(jnilibs "${CMAKE_SOURCE_DIR}/../jniLibs")
+
+
 include_directories(
         util
         render
         sample
         glm
+        inc
+        inc/assimp
+        model
+        opencv_3_0_0
 )
 
 #add_library(cryptopp STATIC IMPORTED )
@@ -49,6 +56,7 @@ add_library( # Sets the name of the library.
         sample/ParticlesSample.cpp
         sample/Noise3DSample.cpp
         sample/SkyBoxSample.cpp
+        sample/Model3DSample.cpp
               )
 
 # Searches for a specified prebuilt library and stores the path as a
@@ -64,6 +72,12 @@ find_library( # Sets the name of the path variable.
               # you want CMake to locate.
               log )
 
+add_library(assimp SHARED IMPORTED )
+set_target_properties(assimp PROPERTIES IMPORTED_LOCATION ${jnilibs}/${ANDROID_ABI}/libassimp.so)
+
+add_library(opencv_java3 SHARED IMPORTED )
+set_target_properties(opencv_java3 PROPERTIES IMPORTED_LOCATION ${jnilibs}/${ANDROID_ABI}/libopencv_java3.so)
+
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
@@ -74,6 +88,8 @@ target_link_libraries( # Specifies the target library.
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib}
+                       assimp
+                       opencv_java3
                        EGL
                        GLESv3
                        )

@@ -1,12 +1,15 @@
 package com.byteflow.app;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.byteflow.app.egl.EGLActivity;
 
@@ -53,6 +57,10 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_YUV_TEXTURE_MAP;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    private static final String[] REQUEST_PERMISSIONS = {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+    };
+    private static final int PERMISSION_REQUEST_CODE = 1;
     private static final String[] SAMPLE_TITLES = {
             "DrawTriangle",
             "TextureMap",
@@ -71,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
             "Blending",
             "Particles",
             "SkyBox",
+            "Assimp Load 3D Model"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -83,6 +92,25 @@ public class MainActivity extends AppCompatActivity {
 
         mGLSurfaceView = (MyGLSurfaceView) findViewById(R.id.my_gl_surface_view);
         mGLSurfaceView.getGLRender().Init();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!hasPermissionsGranted(REQUEST_PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, REQUEST_PERMISSIONS, PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (!hasPermissionsGranted(REQUEST_PERMISSIONS)) {
+                Toast.makeText(this, "We need the permission: WRITE_EXTERNAL_STORAGE", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     @Override
@@ -289,6 +317,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    protected boolean hasPermissionsGranted(String[] permissions) {
+        for (String permission : permissions) {
+            if (ActivityCompat.checkSelfPermission(this, permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.MyViewHolder> implements View.OnClickListener {

@@ -10,6 +10,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_3D_MODEL;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_BASIC_LIGHTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_COORD_SYSTEM;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_DEPTH_TESTING;
@@ -92,6 +93,7 @@ public class MyGLSurfaceView extends GLSurfaceView implements ScaleGestureDetect
                     case SAMPLE_TYPE_STENCIL_TESTING:
                     case SAMPLE_TYPE_PARTICLES:
                     case SAMPLE_TYPE_SKYBOX:
+                    case SAMPLE_TYPE_3D_MODEL:
                         mGLRender.UpdateTransformMatrix(mXAngle, mYAngle, mCurScale, mCurScale);
                         requestRender();
                         break;
@@ -143,15 +145,16 @@ public class MyGLSurfaceView extends GLSurfaceView implements ScaleGestureDetect
             case SAMPLE_TYPE_COORD_SYSTEM:
             case SAMPLE_TYPE_BASIC_LIGHTING:
             case SAMPLE_TYPE_INSTANCING:
+            case SAMPLE_TYPE_3D_MODEL:
             {
                 float preSpan = detector.getPreviousSpan();
                 float curSpan = detector.getCurrentSpan();
                 if (curSpan < preSpan) {
-                    mCurScale = mPreScale - (preSpan - curSpan) / 500;
+                    mCurScale = mPreScale - (preSpan - curSpan) / 200;
                 } else {
-                    mCurScale = mPreScale + (curSpan - preSpan) / 500;
+                    mCurScale = mPreScale + (curSpan - preSpan) / 200;
                 }
-                mCurScale = Math.max(0.1f, Math.min(mCurScale, 5.0f));
+                mCurScale = Math.max(0.05f, Math.min(mCurScale, 80.0f));
                 mGLRender.UpdateTransformMatrix(mXAngle, mYAngle, mCurScale, mCurScale);
                 requestRender();
             }
