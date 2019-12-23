@@ -5,6 +5,8 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/LICENSE.txt)
 ![Build](https://img.shields.io/badge/build-passing-brightgreen)
 
+![cover](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/NDK%20OpenGLES%2030.jpg)
+
 - [NDK OpenGLES3.0 开发（一）：绘制一个三角形](https://www.jianshu.com/p/3f3518194066)
 
 - [NDK OpenGLES3.0 开发（二）：纹理映射](https://www.jianshu.com/p/545e96798c68)
