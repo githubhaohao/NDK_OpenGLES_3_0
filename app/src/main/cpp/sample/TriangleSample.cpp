@@ -74,6 +74,7 @@ void TriangleSample::Destroy()
 	if (m_ProgramObj)
 	{
 		glDeleteProgram(m_ProgramObj);
+		m_ProgramObj = GL_NONE;
 	}
 
 }
