@@ -6,6 +6,7 @@
 ![Build](https://img.shields.io/badge/build-passing-brightgreen)
 
 ![cover](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/NDK%20OpenGLES%2030.jpg)
+![poly_3d_model](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/poly.gif)
 
 - [NDK OpenGLES3.0 开发（一）：绘制一个三角形](https://www.jianshu.com/p/3f3518194066)
 
