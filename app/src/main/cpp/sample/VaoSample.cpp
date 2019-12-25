@@ -133,6 +133,7 @@ void VaoSample::Destroy()
 		glDeleteProgram(m_ProgramObj);
 		glDeleteBuffers(2, m_VboIds);
 		glDeleteVertexArrays(1, &m_VaoId);
+		m_ProgramObj = GL_NONE;
 	}
 
 }
