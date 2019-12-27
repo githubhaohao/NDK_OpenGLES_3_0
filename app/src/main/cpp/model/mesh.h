@@ -94,6 +94,9 @@ public:
 
     void Destroy()
     {
+        for (int i = 0; i < textures.size(); ++i) {
+            glDeleteTextures(1, &textures[i].id);
+        }
         glDeleteBuffers(1, &EBO);
         glDeleteBuffers(1, &VBO);
         glDeleteVertexArrays(1, &VAO);

@@ -314,16 +314,16 @@ void Instancing3DSample::Draw(int screenW, int screenH)
 
 void Instancing3DSample::Destroy()
 {
-//	if (m_ProgramObj)
-//	{
-//		glDeleteProgram(m_ProgramObj);
-//		glDeleteBuffers(3, m_VboIds);
-//		glDeleteVertexArrays(1, &m_VaoId);
-//		glDeleteTextures(1, &m_TextureId);
-//		m_ProgramObj = GL_NONE;
-//		m_VaoId = GL_NONE;
-//		m_TextureId = GL_NONE;
-//	}
+	if (m_ProgramObj)
+	{
+		glDeleteProgram(m_ProgramObj);
+		glDeleteBuffers(2, m_VboIds);
+		glDeleteVertexArrays(1, &m_VaoId);
+		glDeleteTextures(1, &m_TextureId);
+		m_ProgramObj = GL_NONE;
+		m_VaoId = GL_NONE;
+		m_TextureId = GL_NONE;
+	}
 
 }
 

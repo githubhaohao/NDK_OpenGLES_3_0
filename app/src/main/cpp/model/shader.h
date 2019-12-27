@@ -7,6 +7,7 @@
 #include <sstream>
 #include <iostream>
 #include <GLUtils.h>
+#include <LogUtil.h>
 
 class Shader
 {
@@ -16,10 +17,16 @@ public:
     // ------------------------------------------------------------------------
     Shader(const char* vertexStr, const char* fragmentStr)
     {
+        DEBUG_LOGCATE();
         ID = GLUtils::CreateProgram(vertexStr, fragmentStr);
     }
 
     ~Shader()
+    {
+        DEBUG_LOGCATE();
+    }
+
+    void Destroy()
     {
         GLUtils::DeleteProgram(ID);
     }

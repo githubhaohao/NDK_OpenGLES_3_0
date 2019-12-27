@@ -50,7 +50,7 @@ void Model3DSample::Init()
             "    vec3 fragPos = vec3(u_ModelMatrix * position);\n"
             "\n"
             "    // Ambient\n"
-            "    float ambientStrength = 0.4;\n"
+            "    float ambientStrength = 0.25;\n"
             "    ambient = ambientStrength * lightColor;\n"
             "\n"
             "    // Diffuse\n"
@@ -61,7 +61,7 @@ void Model3DSample::Init()
             "    diffuse = diffuseStrength * diff * lightColor;\n"
             "\n"
             "    // Specular\n"
-            "    float specularStrength = 0.4;\n"
+            "    float specularStrength = 0.3;\n"
             "    vec3 viewDir = normalize(viewPos - fragPos);\n"
             "    vec3 reflectDir = reflect(-lightDir, unitNormal);\n"
             "    float spec = pow(max(dot(unitNormal, reflectDir), 0.0), 16.0);\n"
@@ -122,9 +122,8 @@ void Model3DSample::LoadImage(NativeImage *pImage)
 
 void Model3DSample::Draw(int screenW, int screenH)
 {
-	LOGCATE("Model3DSample::Draw()");
-
 	if(m_pModel == nullptr || m_pShader == nullptr) return;
+    LOGCATE("Model3DSample::Draw()");
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
@@ -142,6 +141,7 @@ void Model3DSample::Draw(int screenW, int screenH)
 
 void Model3DSample::Destroy()
 {
+    LOGCATE("Model3DSample::Destroy");
     if (m_pModel != nullptr) {
         m_pModel->Destroy();
         delete m_pModel;
@@ -149,6 +149,7 @@ void Model3DSample::Destroy()
     }
 
     if (m_pShader != nullptr) {
+        m_pShader->Destroy();
         delete m_pShader;
         m_pShader = nullptr;
     }

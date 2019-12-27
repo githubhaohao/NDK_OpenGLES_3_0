@@ -18,6 +18,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_PARTICLES;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_PBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_SKYBOX;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_STENCIL_TESTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TRANS_FEEDBACK;
@@ -94,6 +95,7 @@ public class MyGLSurfaceView extends GLSurfaceView implements ScaleGestureDetect
                     case SAMPLE_TYPE_PARTICLES:
                     case SAMPLE_TYPE_SKYBOX:
                     case SAMPLE_TYPE_3D_MODEL:
+                    case SAMPLE_TYPE_PBO:
                         mGLRender.UpdateTransformMatrix(mXAngle, mYAngle, mCurScale, mCurScale);
                         requestRender();
                         break;

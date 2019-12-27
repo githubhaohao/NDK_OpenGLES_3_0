@@ -432,15 +432,6 @@ Noise3DSample::~Noise3DSample()
 		free(m_VertexData.pVertices);
 	}
 
-	if (m_ProgramObj)
-	{
-		glDeleteProgram(m_ProgramObj);
-		glDeleteTextures(1, &m_TextureId);
-
-		m_ProgramObj = GL_NONE;
-		m_TextureId = GL_NONE;
-	}
-
 }
 
 void Noise3DSample::Init()
@@ -593,12 +584,14 @@ void Noise3DSample::Draw(int screenW, int screenH)
 
 void Noise3DSample::Destroy()
 {
-//	if (m_ProgramObj)
-//	{
-//		glDeleteProgram(m_ProgramObj);
-//		glDeleteBuffers(3, m_SkyBoxVboIds);
-//		glDeleteVertexArrays(1, &m_SkyBoxVaoId);
-//	}
+	if (m_ProgramObj)
+	{
+		glDeleteProgram(m_ProgramObj);
+		glDeleteTextures(1, &m_TextureId);
+
+		m_ProgramObj = GL_NONE;
+		m_TextureId = GL_NONE;
+	}
 
 }
 

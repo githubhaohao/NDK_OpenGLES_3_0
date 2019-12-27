@@ -279,13 +279,16 @@ void ParticlesSample::Draw(int screenW, int screenH)
 
 void ParticlesSample::Destroy()
 {
-//	if (m_ProgramObj)
-//	{
-//		glDeleteProgram(m_ProgramObj);
-//		glDeleteBuffers(3, m_VboIds);
-//		glDeleteVertexArrays(1, &m_VaoId);
-//	}
-
+	if (m_ProgramObj)
+	{
+		glDeleteProgram(m_ProgramObj);
+		glDeleteVertexArrays(1, &m_VaoId);
+		glDeleteTextures(1, &m_TextureId);
+		glDeleteBuffers(1, &m_ParticlesPosVboId);
+		glDeleteBuffers(1, &m_ParticlesVertexVboId);
+		glDeleteBuffers(1, &m_ParticlesPosVboId);
+		m_ProgramObj = GL_NONE;
+	}
 }
 
 

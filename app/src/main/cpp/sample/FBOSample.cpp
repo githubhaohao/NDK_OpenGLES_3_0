@@ -11,7 +11,8 @@
 FBOSample::FBOSample()
 {
 	m_VaoIds[2] = {GL_NONE};
-	m_VboIds[3] = {GL_NONE};
+	m_VboIds[4] = {GL_NONE};
+
 	m_ImageTextureId = GL_NONE;
 	m_FboTextureId = GL_NONE;
 	m_SamplerLoc = GL_NONE;

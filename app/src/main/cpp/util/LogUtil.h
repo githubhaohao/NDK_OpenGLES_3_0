@@ -16,12 +16,12 @@
 #define  LOGCATI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 
 #define FUN_BEGIN_TIME(FUN) {\
-    LOGCATE("%s:%s start", __FILE__, FUN); \
+    LOGCATE("%s:%s func start", __FILE__, FUN); \
     long long t0 = GetSysCurrentTime();
 
 #define FUN_END_TIME(FUN) \
     long long t1 = GetSysCurrentTime(); \
-    LOGCATE("%s:%s cost time %ldms", __FILE__, FUN, (long)(t1-t0));}
+    LOGCATE("%s:%s func cost time %ldms", __FILE__, FUN, (long)(t1-t0));}
 
 static long long GetSysCurrentTime()
 {

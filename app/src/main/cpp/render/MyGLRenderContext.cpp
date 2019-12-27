@@ -21,6 +21,7 @@
 #include <Noise3DSample.h>
 #include <SkyBoxSample.h>
 #include <Model3DSample.h>
+#include <PBOSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -57,6 +58,8 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 	if (paramType == SAMPLE_TYPE)
 	{
 		m_pBeforeSample = m_pCurSample;
+
+		LOGCATE("MyGLRenderContext::SetParamsInt 0 m_pBeforeSample = %p", m_pBeforeSample);
 
 		switch (value0)
 		{
@@ -111,9 +114,15 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 			case SAMPLE_TYPE_KEY_3D_MODEL:
 				m_pCurSample = new Model3DSample();
 				break;
+			case SAMPLE_TYPE_KEY_PBO:
+				m_pCurSample = new PBOSample();
+				break;
 			default:
+			    m_pCurSample = nullptr;
 				break;
 		}
+
+		LOGCATE("MyGLRenderContext::SetParamsInt m_pBeforeSample = %p, m_pCurSample=%p", m_pBeforeSample, m_pCurSample);
 	}
 }
 
@@ -207,6 +216,7 @@ void MyGLRenderContext::OnDrawFrame()
 
 	if (m_pBeforeSample)
 	{
+		m_pBeforeSample->Destroy();
 		delete m_pBeforeSample;
 		m_pBeforeSample = nullptr;
 	}
@@ -215,7 +225,6 @@ void MyGLRenderContext::OnDrawFrame()
 	{
 		m_pCurSample->Init();
 		m_pCurSample->Draw(m_ScreenW, m_ScreenH);
-		m_pCurSample->Destroy();
 	}
 }
 

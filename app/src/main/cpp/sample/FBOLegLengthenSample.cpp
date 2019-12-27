@@ -784,40 +784,40 @@ void FBOLegLengthenSample::Draw(int screenW, int screenH)
 
 void FBOLegLengthenSample::Destroy()
 {
-//	if (m_ProgramObj)
-//	{
-//		glDeleteProgram(m_ProgramObj);
-//	}
-//
-//	if (m_FboProgramObj)
-//	{
-//		glDeleteProgram(m_FboProgramObj);
-//	}
-//
-//	if (m_ImageTextureId)
-//	{
-//		glDeleteTextures(1, &m_ImageTextureId);
-//	}
-//
-//	if (m_FboTextureId)
-//	{
-//		glDeleteTextures(1, &m_FboTextureId);
-//	}
-//
-//	if (m_VboIds[0])
-//	{
-//		glDeleteBuffers(5, m_VboIds);
-//	}
-//
-//	if (m_VaoIds[0])
-//	{
-//		glDeleteVertexArrays(2, m_VaoIds);
-//	}
-//
-//	if (m_FboId)
-//	{
-//		glDeleteFramebuffers(1, &m_FboId);
-//	}
+	if (m_ProgramObj)
+	{
+		glDeleteProgram(m_ProgramObj);
+	}
+
+	if (m_FboProgramObj)
+	{
+		glDeleteProgram(m_FboProgramObj);
+	}
+
+	if (m_ImageTextureId)
+	{
+		glDeleteTextures(1, &m_ImageTextureId);
+	}
+
+	if (m_FboTextureId)
+	{
+		glDeleteTextures(1, &m_FboTextureId);
+	}
+
+	if (m_VboIds[0])
+	{
+		glDeleteBuffers(6, m_VboIds);
+	}
+
+	if (m_VaoIds[0])
+	{
+		glDeleteVertexArrays(2, m_VaoIds);
+	}
+
+	if (m_FboId)
+	{
+		glDeleteFramebuffers(1, &m_FboId);
+	}
 
 }
 

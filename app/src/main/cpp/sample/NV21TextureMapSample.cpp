@@ -141,6 +141,7 @@ void NV21TextureMapSample::Destroy()
 		glDeleteProgram(m_ProgramObj);
 		glDeleteTextures(1, &m_yTextureId);
 		glDeleteTextures(1, &m_uvTextureId);
+		m_ProgramObj = GL_NONE;
 	}
 
 }
