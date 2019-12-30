@@ -45,3 +45,5 @@
 - [NDK OpenGL ES 3.0 开发（十八）：相机 LUT 滤镜](https://www.jianshu.com/p/ae8091d321d1)
 
 - [NDK OpenGL ES 3.0 开发（十九）：相机抖音滤镜](https://www.jianshu.com/p/b310559a2716)
+
+- [NDK OpenGL ES 3.0 开发（二十）：3D 模型](https://www.jianshu.com/p/a07eaeb6824e)
