@@ -1,21 +1,21 @@
 //
-// Created by ByteFlow on 2019/7/30.
+// Created by ByteFlow on 2020/1/1.
 //
 
-#ifndef NDK_OPENGLES_3_0_COORDSYSTEMSAMPLE_H
-#define NDK_OPENGLES_3_0_COORDSYSTEMSAMPLE_H
+#ifndef NDK_OPENGLES_3_0_HEART_H
+#define NDK_OPENGLES_3_0_HEART_H
 
 
 #include <detail/type_mat.hpp>
 #include <detail/type_mat4x4.hpp>
 #include "GLSampleBase.h"
 
-class CoordSystemSample : public GLSampleBase
+class BeatingHeartSample : public GLSampleBase
 {
 public:
-	CoordSystemSample();
+	BeatingHeartSample();
 
-	virtual ~CoordSystemSample();
+	virtual ~BeatingHeartSample();
 
 	virtual void LoadImage(NativeImage *pImage);
 
@@ -31,6 +31,8 @@ public:
 private:
 	GLuint m_TextureId;
 	GLint m_SamplerLoc;
+	GLint m_TimeLoc;
+	GLint m_SizeLoc;
 	GLint m_MVPMatLoc;
 	GLuint m_VaoId;
 	GLuint m_VboIds[3];
@@ -45,4 +47,4 @@ private:
 };
 
 
-#endif //NDK_OPENGLES_3_0_COORDSYSTEMSAMPLE_H
+#endif //NDK_OPENGLES_3_0_HEART_H

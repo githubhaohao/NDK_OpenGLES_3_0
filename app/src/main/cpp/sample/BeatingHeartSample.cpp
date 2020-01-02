@@ -3,10 +3,10 @@
 //
 
 #include <gtc/matrix_transform.hpp>
-#include "CoordSystemSample.h"
+#include "BeatingHeartSample.h"
 #include "../util/GLUtils.h"
 
-CoordSystemSample::CoordSystemSample()
+BeatingHeartSample::BeatingHeartSample()
 {
 
 	m_SamplerLoc = GL_NONE;
@@ -22,13 +22,13 @@ CoordSystemSample::CoordSystemSample()
 	m_ScaleY = 1.0f;
 }
 
-CoordSystemSample::~CoordSystemSample()
+BeatingHeartSample::~BeatingHeartSample()
 {
 	NativeImageUtil::FreeNativeImage(&m_RenderImage);
 
 }
 
-void CoordSystemSample::Init()
+void BeatingHeartSample::Init()
 {
 	if(m_ProgramObj)
 		return;
@@ -44,35 +44,70 @@ void CoordSystemSample::Init()
 	char vShaderStr[] =
             "#version 300 es\n"
             "layout(location = 0) in vec4 a_position;\n"
-            "layout(location = 1) in vec2 a_texCoord;\n"
             "uniform mat4 u_MVPMatrix;\n"
-            "out vec2 v_texCoord;\n"
             "void main()\n"
             "{\n"
             "    gl_Position = u_MVPMatrix * a_position;\n"
-            "    v_texCoord = a_texCoord;\n"
             "}";
 
 	char fShaderStr[] =
-			"#version 300 es                                     \n"
-			"precision mediump float;                            \n"
-			"in vec2 v_texCoord;                                 \n"
-			"layout(location = 0) out vec4 outColor;             \n"
-			"uniform sampler2D s_TextureMap;                     \n"
-			"void main()                                         \n"
-			"{                                                   \n"
-			"  outColor = texture(s_TextureMap, v_texCoord);     \n"
-			"}                                                   \n";
+			"#version 300 es\n"
+			"precision mediump float;\n"
+			"layout(location = 0) out vec4 outColor;\n"
+			"uniform float u_time;\n"
+			"uniform vec2 u_screenSize;\n"
+			"void main()\n"
+			"{\n"
+			"    vec2 fragCoord = gl_FragCoord.xy;\n"
+			"    vec2 p = (2.0*fragCoord-u_screenSize.xy)/min(u_screenSize.y,u_screenSize.x);\n"
+			"\n"
+			"    // background color\n"
+			"    vec3 bcol = vec3(1.0,0.8,0.7-0.07*p.y)*(1.0-0.25*length(p));\n"
+			"\n"
+			"    // animate\n"
+			"    //float tt = mod(u_time,1.5)/1.5;\n"
+			"    float tt = u_time;\n"
+			"    float ss = pow(tt,.2)*0.5 + 0.5;\n"
+			"    ss = 1.0 + ss*0.5*sin(tt*6.2831*3.0 + p.y*0.5)*exp(-tt*4.0);\n"
+			"    p *= vec2(0.5,1.5) + ss*vec2(0.5,-0.5);\n"
+			"\n"
+			"    // shape\n"
+			"    #if 0\n"
+			"    p *= 0.8;\n"
+			"    p.y = -0.1 - p.y*1.2 + abs(p.x)*(1.0-abs(p.x));\n"
+			"    float r = length(p);\n"
+			"    float d = 0.5;\n"
+			"    #else\n"
+			"    p.y -= 0.25;\n"
+			"    float a = atan(p.x,p.y)/3.141593;\n"
+			"    float r = length(p);\n"
+			"    float h = abs(a);\n"
+			"    float d = (13.0*h - 22.0*h*h + 10.0*h*h*h)/(6.0-5.0*h);\n"
+			"    #endif\n"
+			"\n"
+			"    // color\n"
+			"    float s = 0.75 + 0.75*p.x;\n"
+			"    s *= 1.0-0.4*r;\n"
+			"    s = 0.3 + 0.7*s;\n"
+			"    s *= 0.5+0.5*pow( 1.0-clamp(r/d, 0.0, 1.0 ), 0.1 );\n"
+			"    vec3 hcol = vec3(1.0,0.5*r,0.3)*s;\n"
+			"\n"
+			"    vec3 col = mix( bcol, hcol, smoothstep( -0.01, 0.01, d-r) );\n"
+			"\n"
+			"    outColor = vec4(col,1.0);\n"
+			"}";
 
 	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr, m_VertexShader, m_FragmentShader);
 	if (m_ProgramObj)
 	{
-		m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "s_TextureMap");
+		//m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "s_TextureMap");
 		m_MVPMatLoc = glGetUniformLocation(m_ProgramObj, "u_MVPMatrix");
+		m_SizeLoc = glGetUniformLocation(m_ProgramObj, "u_screenSize");
+		m_TimeLoc = glGetUniformLocation(m_ProgramObj, "u_time");
 	}
 	else
 	{
-		LOGCATE("CoordSystemSample::Init create program fail");
+		LOGCATE("BeatingHeartSample::Init create program fail");
 	}
 
 	GLfloat verticesCoords[] = {
@@ -96,8 +131,8 @@ void CoordSystemSample::Init()
 	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesCoords), verticesCoords, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(textureCoords), textureCoords, GL_STATIC_DRAW);
+//	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[1]);
+//	glBufferData(GL_ARRAY_BUFFER, sizeof(textureCoords), textureCoords, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VboIds[2]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
@@ -111,10 +146,10 @@ void CoordSystemSample::Init()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (const void *)0);
 	glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[1]);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (const void *)0);
-	glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+//	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[1]);
+//	glEnableVertexAttribArray(1);
+//	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (const void *)0);
+//	glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VboIds[2]);
 
@@ -122,9 +157,9 @@ void CoordSystemSample::Init()
 
 }
 
-void CoordSystemSample::LoadImage(NativeImage *pImage)
+void BeatingHeartSample::LoadImage(NativeImage *pImage)
 {
-	LOGCATE("CoordSystemSample::LoadImage pImage = %p", pImage->ppPlane[0]);
+	LOGCATE("BeatingHeartSample::LoadImage pImage = %p", pImage->ppPlane[0]);
 	if (pImage)
 	{
 		m_RenderImage.width = pImage->width;
@@ -135,19 +170,19 @@ void CoordSystemSample::LoadImage(NativeImage *pImage)
 
 }
 
-void CoordSystemSample::Draw(int screenW, int screenH)
+void BeatingHeartSample::Draw(int screenW, int screenH)
 {
-	LOGCATE("CoordSystemSample::Draw()");
+	LOGCATE("BeatingHeartSample::Draw()");
 
-	if(m_ProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
+	if(m_ProgramObj == GL_NONE) return;
 
 	UpdateMVPMatrix(m_MVPMatrix, m_AngleX, m_AngleY, (float)screenW / screenH);
 
-	//upload RGBA image data
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_TextureId);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderImage.width, m_RenderImage.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_RenderImage.ppPlane[0]);
-	glBindTexture(GL_TEXTURE_2D, GL_NONE);
+//	//upload RGBA image data
+//	glActiveTexture(GL_TEXTURE0);
+//	glBindTexture(GL_TEXTURE_2D, m_TextureId);
+//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderImage.width, m_RenderImage.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_RenderImage.ppPlane[0]);
+//	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
 	// Use the program object
 	glUseProgram (m_ProgramObj);
@@ -155,17 +190,20 @@ void CoordSystemSample::Draw(int screenW, int screenH)
 	glBindVertexArray(m_VaoId);
 
 	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
-
-	// Bind the RGBA map
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_TextureId);
-	glUniform1i(m_SamplerLoc, 0);
+	float time = static_cast<float>(fmod(GetSysCurrentTime(), 2000) / 2000);
+    LOGCATE("BeatingHeartSample::Draw() time=%f",time);
+	glUniform1f(m_TimeLoc, time);
+    glUniform2f(m_SizeLoc, screenW, screenH);
+//	// Bind the RGBA map
+//	glActiveTexture(GL_TEXTURE0);
+//	glBindTexture(GL_TEXTURE_2D, m_TextureId);
+//	glUniform1i(m_SamplerLoc, 0);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const void *)0);
 
 }
 
-void CoordSystemSample::Destroy()
+void BeatingHeartSample::Destroy()
 {
 	if (m_ProgramObj)
 	{
@@ -176,15 +214,9 @@ void CoordSystemSample::Destroy()
 	}
 }
 
-
-/**
- * @param angleX 绕X轴旋转度数
- * @param angleY 绕Y轴旋转度数
- * @param ratio 宽高比
- * */
-void CoordSystemSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio)
+void BeatingHeartSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio)
 {
-	LOGCATE("CoordSystemSample::UpdateMVPMatrix angleX = %d, angleY = %d, ratio = %f", angleX, angleY, ratio);
+	LOGCATE("BeatingHeartSample::UpdateMVPMatrix angleX = %d, angleY = %d, ratio = %f", angleX, angleY, ratio);
 	angleX = angleX % 360;
 	angleY = angleY % 360;
 
@@ -216,7 +248,7 @@ void CoordSystemSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int an
 
 }
 
-void CoordSystemSample::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
+void BeatingHeartSample::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
 {
 	GLSampleBase::UpdateTransformMatrix(rotateX, rotateY, scaleX, scaleY);
 	m_AngleX = static_cast<int>(rotateX);
