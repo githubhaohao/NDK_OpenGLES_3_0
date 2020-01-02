@@ -58,6 +58,7 @@ add_library( # Sets the name of the library.
         sample/SkyBoxSample.cpp
         sample/Model3DSample.cpp
         sample/PBOSample.cpp
+        sample/BeatingHeartSample.cpp
               )
 
 # Searches for a specified prebuilt library and stores the path as a

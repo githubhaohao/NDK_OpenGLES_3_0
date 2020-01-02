@@ -31,6 +31,8 @@
 #define SAMPLE_TYPE_KEY_SKYBOX                  SAMPLE_TYPE + 16
 #define SAMPLE_TYPE_KEY_3D_MODEL                SAMPLE_TYPE + 17
 #define SAMPLE_TYPE_KEY_PBO                     SAMPLE_TYPE + 18
+#define SAMPLE_TYPE_KEY_BEATING_HEART           SAMPLE_TYPE + 19
+
 
 class GLSampleBase
 {
