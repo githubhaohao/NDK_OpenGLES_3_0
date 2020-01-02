@@ -45,6 +45,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_EGL;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEATING_HEART;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_PARTICLES;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_PBO;
@@ -81,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
             "Particles",
             "SkyBox",
             "Assimp Load 3D Model",
-            "PBO"
+            "PBO",
+            "Beating Heart"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -222,6 +224,9 @@ public class MainActivity extends AppCompatActivity {
                     case SAMPLE_TYPE_PBO:
                         LoadRGBAImage(R.drawable.front);
                         //mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        break;
+                    case SAMPLE_TYPE_KEY_BEATING_HEART:
+                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;
                     default:
                         break;
