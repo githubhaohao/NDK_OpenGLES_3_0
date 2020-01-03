@@ -62,8 +62,9 @@ void BeatingHeartSample::Init()
 			"    vec2 p = (2.0*fragCoord-u_screenSize.xy)/min(u_screenSize.y,u_screenSize.x);\n"
 			"\n"
 			"    // background color\n"
-			"    vec3 bcol = vec3(1.0,0.8,0.7-0.07*p.y)*(1.0-0.25*length(p));\n"
-			"\n"
+			"    //vec3 bcol = vec3(1.0,0.8,0.7-0.07*p.y)*(1.0-0.25*length(p));\n"
+            "    vec3 bcol = vec3(1.0,0.8,0.7)*(1.0-0.38*length(p));\n"
+            "\n"
 			"    // animate\n"
 			"    //float tt = mod(u_time,1.5)/1.5;\n"
 			"    float tt = u_time;\n"
@@ -92,7 +93,7 @@ void BeatingHeartSample::Init()
 			"    s *= 0.5+0.5*pow( 1.0-clamp(r/d, 0.0, 1.0 ), 0.1 );\n"
 			"    vec3 hcol = vec3(1.0,0.5*r,0.3)*s;\n"
 			"\n"
-			"    vec3 col = mix( bcol, hcol, smoothstep( -0.01, 0.01, d-r) );\n"
+			"    vec3 col = mix( bcol, hcol, smoothstep( -0.08, 0.08, d-r) );\n"
 			"\n"
 			"    outColor = vec4(col,1.0);\n"
 			"}";
@@ -226,9 +227,9 @@ void BeatingHeartSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int a
 
 
 	// Projection matrix
-	//glm::mat4 Projection = glm::ortho(-ratio, ratio, -1.0f, 1.0f, 0.1f, 100.0f);
+	glm::mat4 Projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
 	//glm::mat4 Projection = glm::frustum(-ratio, ratio, -1.0f, 1.0f, 4.0f, 100.0f);
-	glm::mat4 Projection = glm::perspective(45.0f,ratio, 0.1f,100.f);
+	//glm::mat4 Projection = glm::perspective(45.0f,ratio, 0.1f,100.f);
 
 	// View matrix
 	glm::mat4 View = glm::lookAt(
