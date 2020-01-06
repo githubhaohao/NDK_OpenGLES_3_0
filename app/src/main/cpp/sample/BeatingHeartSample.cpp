@@ -52,7 +52,7 @@ void BeatingHeartSample::Init()
 
 	char fShaderStr[] =
 			"#version 300 es\n"
-			"precision mediump float;\n"
+			"precision highp float;\n"
 			"layout(location = 0) out vec4 outColor;\n"
 			"uniform float u_time;\n"
 			"uniform vec2 u_screenSize;\n"
@@ -80,7 +80,7 @@ void BeatingHeartSample::Init()
 			"    float d = 0.5;\n"
 			"    #else\n"
 			"    p.y -= 0.25;\n"
-			"    float a = atan(p.x,p.y)/3.141593;\n"
+			"    float a = atan(p.x,p.y)/3.141592653;\n"
 			"    float r = length(p);\n"
 			"    float h = abs(a);\n"
 			"    float d = (13.0*h - 22.0*h*h + 10.0*h*h*h)/(6.0-5.0*h);\n"
@@ -93,7 +93,7 @@ void BeatingHeartSample::Init()
 			"    s *= 0.5+0.5*pow( 1.0-clamp(r/d, 0.0, 1.0 ), 0.1 );\n"
 			"    vec3 hcol = vec3(1.0,0.5*r,0.3)*s;\n"
 			"\n"
-			"    vec3 col = mix( bcol, hcol, smoothstep( -0.08, 0.08, d-r) );\n"
+			"    vec3 col = mix( bcol, hcol, smoothstep( -0.06, 0.06, d-r) );\n"
 			"\n"
 			"    outColor = vec4(col,1.0);\n"
 			"}";
