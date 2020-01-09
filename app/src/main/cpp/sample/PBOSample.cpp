@@ -8,6 +8,9 @@
 #include <opencv2/opencv.hpp>
 #include "PBOSample.h"
 
+//#define PBO_UPLOAD
+#define PBO_DOWNLOAD
+
 #define VERTEX_POS_INDX  0
 #define TEXTURE_POS_INDX 1
 
@@ -401,57 +404,66 @@ void PBOSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, fl
 
 void PBOSample::UploadPixels() {
     LOGCATE("PBOSample::UploadPixels");
+	int dataSize = m_RenderImage.width * m_RenderImage.height * 4;
 
-    FUN_BEGIN_TIME("Normal UploadPixels")
+#ifdef PBO_UPLOAD
+	int index = m_FrameIndex % 2;
+	int nextIndex = (index + 1) % 2;
+	BEGIN_TIME("PBOSample::UploadPixels Copy Pixels from PBO to Textrure Obj")
+		glBindTexture(GL_TEXTURE_2D, m_ImageTextureId);
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER, m_UploadPboIds[index]);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_RenderImage.width, m_RenderImage.height, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	END_TIME("PBOSample::UploadPixels Copy Pixels from PBO to Textrure Obj")
+#else
+	BEGIN_TIME("PBOSample::UploadPixels Copy Pixels from System Mem to Textrure Obj")
     glBindTexture(GL_TEXTURE_2D, m_ImageTextureId);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_RenderImage.width, m_RenderImage.height, GL_RGBA, GL_UNSIGNED_BYTE, m_RenderImage.ppPlane[0]);
-    FUN_END_TIME("Normal UploadPixels")
+    END_TIME("PBOSample::UploadPixels Copy Pixels from System Mem to Textrure Obj")
+#endif
 
-    int index = m_FrameIndex % 2;
-    int nextIndex = (index + 1) % 2;
-    FUN_BEGIN_TIME("FBO UploadPixels")
-    glBindTexture(GL_TEXTURE_2D, m_ImageTextureId);
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, m_UploadPboIds[index]);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_RenderImage.width, m_RenderImage.height, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-    FUN_END_TIME("FBO UploadPixels")
-
-    int dataSize = m_RenderImage.width * m_RenderImage.height * 4;
-
-    FUN_BEGIN_TIME("FBO glMapBufferRange")
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, m_UploadPboIds[nextIndex]);
-    glBufferData(GL_PIXEL_UNPACK_BUFFER, dataSize, nullptr, GL_STREAM_DRAW);
-    GLubyte *bufPtr = (GLubyte *) glMapBufferRange(GL_PIXEL_UNPACK_BUFFER, 0,
-                                                dataSize,
-                                                GL_MAP_WRITE_BIT |
-                                                GL_MAP_INVALIDATE_BUFFER_BIT);
-    GO_CHECK_GL_ERROR();
-    LOGCATE("PBOSample::UploadPixels bufPtr=%p",bufPtr);
-    if(bufPtr)
-    {
-        GO_CHECK_GL_ERROR();
-        //update image data
-        memcpy(bufPtr, m_RenderImage.ppPlane[0], static_cast<size_t>(dataSize));
+#ifdef PBO_UPLOAD
+	BEGIN_TIME("PBOSample::UploadPixels Update Image data")
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, m_UploadPboIds[nextIndex]);
+	glBufferData(GL_PIXEL_UNPACK_BUFFER, dataSize, nullptr, GL_STREAM_DRAW);
+	GLubyte *bufPtr = (GLubyte *) glMapBufferRange(GL_PIXEL_UNPACK_BUFFER, 0,
+												   dataSize,
+												   GL_MAP_WRITE_BIT |
+												   GL_MAP_INVALIDATE_BUFFER_BIT);
+	GO_CHECK_GL_ERROR();
+	LOGCATE("PBOSample::UploadPixels bufPtr=%p",bufPtr);
+	if(bufPtr)
+	{
+		GO_CHECK_GL_ERROR();
+		memcpy(bufPtr, m_RenderImage.ppPlane[0], static_cast<size_t>(dataSize));
 		int randomRow = rand() % (m_RenderImage.height - 5);
 		memset(bufPtr + randomRow * m_RenderImage.width * 4, 188,
-               static_cast<size_t>(m_RenderImage.width * 4 * 5));
-        glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
-    }
-    FUN_END_TIME("FBO glMapBufferRange")
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+        static_cast<size_t>(m_RenderImage.width * 4 * 5));
+		glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
+	}
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+	END_TIME("PBOSample::UploadPixels Update Image data")
+
+#else
+	BEGIN_TIME("PBOSample::UploadPixels Update Image data")
+		//update image data
+		int randomRow = rand() % (m_RenderImage.height - 5);
+		memset(m_RenderImage.ppPlane[0] + randomRow * m_RenderImage.width * 4, 188,
+		static_cast<size_t>(m_RenderImage.width * 4 * 5));
+	END_TIME("PBOSample::UploadPixels Update Image data")
+#endif
 
 }
 
 void PBOSample::DownloadPixels() {
     int dataSize = m_RenderImage.width * m_RenderImage.height * 4;
-
-    uint8_t *pBuffer = new uint8_t[dataSize];
-
 	NativeImage nativeImage = m_RenderImage;
 	nativeImage.format = IMAGE_FORMAT_RGBA;
+
+
+	uint8_t *pBuffer = new uint8_t[dataSize];
 	nativeImage.ppPlane[0] = pBuffer;
-	FUN_BEGIN_TIME("DownloadPixels Normal glReadPixels")
+	BEGIN_TIME("DownloadPixels glReadPixels without PBO")
 		glReadPixels(0, 0, nativeImage.width, nativeImage.height, GL_RGBA, GL_UNSIGNED_BYTE, pBuffer);
-	FUN_END_TIME("DownloadPixels Normal glReadPixels")
 
 //    cv::Mat image(m_RenderImage.height, m_RenderImage.width, CV_8UC4);
 //	memcpy(image.data, pBuffer, dataSize);
@@ -461,18 +473,19 @@ void PBOSample::DownloadPixels() {
 //    compression_params.push_back(9);
 //
 //    cv::imwrite("/sdcard/DCIM/DUMP_Image.png", image, compression_params);
-	NativeImageUtil::DumpNativeImage(&nativeImage, "/sdcard/DCIM", "Normal");
+	//NativeImageUtil::DumpNativeImage(&nativeImage, "/sdcard/DCIM", "Normal");
 	delete []pBuffer;
+	END_TIME("DownloadPixels glReadPixels without PBO")
 
     int index = m_FrameIndex % 2;
     int nextIndex = (index + 1) % 2;
 
-    FUN_BEGIN_TIME("DownloadPixels PBO glReadPixels")
+    BEGIN_TIME("DownloadPixels glReadPixels with PBO")
     glBindBuffer(GL_PIXEL_PACK_BUFFER, m_DownloadPboIds[index]);
     glReadPixels(0, 0, m_RenderImage.width, m_RenderImage.height, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    FUN_END_TIME("DownloadPixels PBO glReadPixels")
+    END_TIME("DownloadPixels glReadPixels with PBO")
 
-    FUN_BEGIN_TIME("DownloadPixels PBO glMapBufferRange")
+    BEGIN_TIME("DownloadPixels PBO glMapBufferRange")
     glBindBuffer(GL_PIXEL_PACK_BUFFER, m_DownloadPboIds[nextIndex]);
     GLubyte *bufPtr = static_cast<GLubyte *>(glMapBufferRange(GL_PIXEL_PACK_BUFFER, 0,
                                                            dataSize,
@@ -480,10 +493,10 @@ void PBOSample::DownloadPixels() {
 
     if (bufPtr) {
         nativeImage.ppPlane[0] = bufPtr;
-        NativeImageUtil::DumpNativeImage(&nativeImage, "/sdcard/DCIM", "PBO");
+        //NativeImageUtil::DumpNativeImage(&nativeImage, "/sdcard/DCIM", "PBO");
         glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
     }
-    FUN_END_TIME("DownloadPixels PBO glMapBufferRange")
+    END_TIME("DownloadPixels PBO glMapBufferRange")
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
 }
