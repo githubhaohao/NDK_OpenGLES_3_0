@@ -444,12 +444,16 @@ void PBOSample::UploadPixels() {
 	END_TIME("PBOSample::UploadPixels Update Image data")
 
 #else
+    NativeImage nativeImage = m_RenderImage;
+	NativeImageUtil::AllocNativeImage(&nativeImage);
 	BEGIN_TIME("PBOSample::UploadPixels Update Image data")
 		//update image data
 		int randomRow = rand() % (m_RenderImage.height - 5);
 		memset(m_RenderImage.ppPlane[0] + randomRow * m_RenderImage.width * 4, 188,
 		static_cast<size_t>(m_RenderImage.width * 4 * 5));
+        NativeImageUtil::CopyNativeImage(&m_RenderImage, &nativeImage);
 	END_TIME("PBOSample::UploadPixels Update Image data")
+	NativeImageUtil::FreeNativeImage(&nativeImage);
 #endif
 
 }
@@ -464,18 +468,9 @@ void PBOSample::DownloadPixels() {
 	nativeImage.ppPlane[0] = pBuffer;
 	BEGIN_TIME("DownloadPixels glReadPixels without PBO")
 		glReadPixels(0, 0, nativeImage.width, nativeImage.height, GL_RGBA, GL_UNSIGNED_BYTE, pBuffer);
-
-//    cv::Mat image(m_RenderImage.height, m_RenderImage.width, CV_8UC4);
-//	memcpy(image.data, pBuffer, dataSize);
-//
-//    std::vector<int> compression_params;
-//    compression_params.push_back(cv::IMWRITE_PNG_COMPRESSION);
-//    compression_params.push_back(9);
-//
-//    cv::imwrite("/sdcard/DCIM/DUMP_Image.png", image, compression_params);
 	//NativeImageUtil::DumpNativeImage(&nativeImage, "/sdcard/DCIM", "Normal");
-	delete []pBuffer;
 	END_TIME("DownloadPixels glReadPixels without PBO")
+    delete []pBuffer;
 
     int index = m_FrameIndex % 2;
     int nextIndex = (index + 1) % 2;
