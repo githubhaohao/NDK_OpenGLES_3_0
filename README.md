@@ -49,3 +49,5 @@
 - [NDK OpenGL ES 3.0 开发（二十）：3D 模型](https://www.jianshu.com/p/a07eaeb6824e)
 
 - [NDK OpenGL ES 3.0 开发（二十一）：3D 模型加载和渲染](https://www.jianshu.com/p/c690872a036f)
+
+- [NDK OpenGL ES 3.0 开发（二十二）：PBO](https://www.jianshu.com/p/80f0d0d83fb2)
