@@ -5,6 +5,9 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/LICENSE.txt)
 ![Build](https://img.shields.io/badge/build-passing-brightgreen)
 
+加载 3D 模型时，需要把 model 目录整个直接拷贝到手机文件根目录下，方便程序运行的时候读取加载模型和纹理。
+目前代码是写死的，可以到 Model3DSample.cpp 中去修改要加载的模型。
+
 ![beating_heart](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/beating_heart.gif)
 ![poly_3d_model](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/poly.gif)
 
