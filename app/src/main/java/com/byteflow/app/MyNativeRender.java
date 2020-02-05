@@ -23,6 +23,9 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_3D_MODEL                = SAMPLE_TYPE + 17;
     public static final int SAMPLE_TYPE_PBO                     = SAMPLE_TYPE + 18;
     public static final int SAMPLE_TYPE_KEY_BEATING_HEART       = SAMPLE_TYPE + 19;
+    public static final int SAMPLE_TYPE_KEY_CLOUD               = SAMPLE_TYPE + 20;
+    public static final int SAMPLE_TYPE_KEY_SHOCK_WAVE          = SAMPLE_TYPE + 21;
+
 
     static {
         System.loadLibrary("native-render");

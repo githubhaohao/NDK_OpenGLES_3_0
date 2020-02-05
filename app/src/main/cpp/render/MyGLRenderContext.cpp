@@ -23,6 +23,8 @@
 #include <Model3DSample.h>
 #include <PBOSample.h>
 #include <BeatingHeartSample.h>
+#include <CloudSample.h>
+#include <ShockWaveSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -121,6 +123,12 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
             case SAMPLE_TYPE_KEY_BEATING_HEART:
                 m_pCurSample = new BeatingHeartSample();
                 break;
+            case SAMPLE_TYPE_KEY_CLOUD:
+                m_pCurSample = new CloudSample();
+                break;
+			case SAMPLE_TYPE_KEY_SHOCK_WAVE:
+				m_pCurSample = new ShockWaveSample();
+				break;
 			default:
 			    m_pCurSample = nullptr;
 				break;

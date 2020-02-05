@@ -46,6 +46,8 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEATING_HEART;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_CLOUD;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SHOCK_WAVE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_PARTICLES;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_PBO;
@@ -83,7 +85,9 @@ public class MainActivity extends AppCompatActivity {
             "SkyBox",
             "Assimp Load 3D Model",
             "PBO",
-            "Beating Heart"
+            "Beating Heart",
+            "Cloud",
+            "Shock Wave",
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -223,9 +227,17 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case SAMPLE_TYPE_PBO:
                         LoadRGBAImage(R.drawable.front);
-                        //mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;
                     case SAMPLE_TYPE_KEY_BEATING_HEART:
+                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        break;
+                    case SAMPLE_TYPE_KEY_CLOUD:
+                        LoadRGBAImage(R.drawable.noise);
+                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        break;
+                    case SAMPLE_TYPE_KEY_SHOCK_WAVE:
+                        LoadRGBAImage(R.drawable.front);
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;
                     default:
