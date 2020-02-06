@@ -95,7 +95,7 @@ void Model3DSample::Init()
             "    vec3 finalColor = (ambient + diffuse + specular) * vec3(objectColor);\n"
             "    outColor = vec4(finalColor, 1.0);\n"
             "}";
-
+    //TODO 先把 model 文件夹拷贝到 /sdcard 路径下，然后可以选择你要加载的模型
 	//m_pModel = new Model("/sdcard/model/nanosuit/nanosuit.obj");
     m_pModel = new Model("/sdcard/model/poly/Apricot_02_hi_poly.obj");
     //m_pModel = new Model("/sdcard/model/tank/Abrams_BF3.obj");
