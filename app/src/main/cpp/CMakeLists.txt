@@ -86,6 +86,11 @@ set_target_properties(opencv_java3 PROPERTIES IMPORTED_LOCATION ${jnilibs}/${AND
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
 
+#target_compile_options(native-render PUBLIC -fsanitize=address -fno-omit-frame-pointer)
+#set_target_properties(native-render PROPERTIES LINK_FLAGS -fsanitize=address)
+
+#SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fno-rtti -fno-exceptions")
+
 target_link_libraries( # Specifies the target library.
                        native-render
 
