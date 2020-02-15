@@ -7,7 +7,6 @@ cmake_minimum_required(VERSION 3.4.1)
 
 set(jnilibs "${CMAKE_SOURCE_DIR}/../jniLibs")
 
-
 include_directories(
         util
         render
@@ -86,6 +85,7 @@ set_target_properties(opencv_java3 PROPERTIES IMPORTED_LOCATION ${jnilibs}/${AND
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
 
+#ASAN 需要 NDK20 编译，Android P 以上运行
 #target_compile_options(native-render PUBLIC -fsanitize=address -fno-omit-frame-pointer)
 #set_target_properties(native-render PROPERTIES LINK_FLAGS -fsanitize=address)
 
