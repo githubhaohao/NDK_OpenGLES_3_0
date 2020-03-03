@@ -97,11 +97,11 @@ void Model3DSample::Init()
             "}";
     //TODO 先把 model 文件夹拷贝到 /sdcard 路径下，然后可以选择你要加载的模型
 	//m_pModel = new Model("/sdcard/model/nanosuit/nanosuit.obj");
-    //m_pModel = new Model("/sdcard/model/poly/Apricot_02_hi_poly.obj");
+    m_pModel = new Model("/sdcard/model/poly/Apricot_02_hi_poly.obj");
     //m_pModel = new Model("/sdcard/model/tank/Abrams_BF3.obj");
     //m_pModel = new Model("/sdcard/model/girl/091_W_Aya_10K.obj");//2000 1500
     //m_pModel = new Model("/sdcard/model/new/camaro.obj");
-    m_pModel = new Model("/sdcard/model/bird/12214_Bird_v1max_l3.obj");
+    //m_pModel = new Model("/sdcard/model/bird/12214_Bird_v1max_l3.obj");
 
     if (m_pModel->ContainsTextures())
     {

@@ -37,6 +37,7 @@ import static android.opengl.GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_NV21;
 import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_RGBA;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_3D_MODEL;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_BASIC_LIGHTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_BLENDING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_COORD_SYSTEM;
@@ -97,9 +98,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mGLSurfaceView = (MyGLSurfaceView) findViewById(R.id.my_gl_surface_view);
         mGLSurfaceView.getGLRender().Init();
+
+        CommonUtils.copyAssetsDirToSDCard(MainActivity.this, "poly", "/sdcard/model");
     }
 
     @Override
