@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/LICENSE.txt)
 ![Build](https://img.shields.io/badge/build-passing-brightgreen)
 
-[加载 3D 模型](https://www.jianshu.com/p/a07eaeb6824e)时，需要把整个 model 目录直接拷贝到手机文件根目录下(注意 Android Q 的文件权限)，方便程序运行的时候加载模型及相关纹理，另外可以在文件 Model3DSample.cpp 中选择需要加载的模型。
+PS: 坐标系统 Sample 之后的 3D 效果，是通过手势触发（转动和缩放）。
 
 ![beating_heart](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/beating_heart.gif)
 ![poly_3d_model](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/poly.gif)
