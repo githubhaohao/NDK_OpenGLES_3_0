@@ -255,6 +255,8 @@ void ShockWaveSample::Draw(int screenW, int screenH)
 {
 	// 离屏渲染
 	//glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+	glClear(GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glViewport(0, 0, m_RenderImage.width, m_RenderImage.height);
 
 	glBindTexture(GL_TEXTURE_2D, m_ImageTextureId);
