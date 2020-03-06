@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NDK\nOpenGLES 3.0</string>
+    <string name="app_name">OpenGLES\n3.0</string>
     <string name="select_sample">Select Sample</string>
     <string name="egl_render">EGL 后台渲染</string>
     <string name="bg_render_txt">后台渲染</string>
