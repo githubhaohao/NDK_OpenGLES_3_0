@@ -190,6 +190,8 @@ void DepthTestingSample::Draw(int screenW, int screenH)
 	LOGCATE("DepthTestingSample::Draw()");
 
 	if (m_ProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
 
 	float ratio = (float)screenW / screenH;
