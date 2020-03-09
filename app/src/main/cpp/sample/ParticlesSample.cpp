@@ -273,7 +273,7 @@ void ParticlesSample::Draw(int screenW, int screenH)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_TextureId);
 	glUniform1i(m_SamplerLoc, 0);
-
+	
 	glDrawArraysInstanced(GL_TRIANGLES, 0, 36, particleCount);
 }
 

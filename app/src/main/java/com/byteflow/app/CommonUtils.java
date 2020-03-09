@@ -11,44 +11,43 @@ public class CommonUtils {
     private static final String TAG = "CommonUtils";
 
     public static void copyAssetsDirToSDCard(Context context, String assetsDirName, String sdCardPath) {
-        Log.d(TAG, "copyAssetsDirToSDCard() called with: context = [" + context + "], assetsPath = [" + assetsDirName + "], sdCardPath = [" + sdCardPath + "]");
+        Log.d(TAG, "copyAssetsDirToSDCard() called with: context = [" + context + "], assetsDirName = [" + assetsDirName + "], sdCardPath = [" + sdCardPath + "]");
         try {
             String list[] = context.getAssets().list(assetsDirName);
-            if (list.length == 0) { // 说明assetsPath为空,或者assetsPath是一个文件
-                InputStream mIs = context.getAssets().open(assetsDirName); // 读取流
+            if (list.length == 0) {
+                InputStream inputStream = context.getAssets().open(assetsDirName);
                 byte[] mByte = new byte[1024];
                 int bt = 0;
                 File file = new File(sdCardPath + File.separator
                         + assetsDirName.substring(assetsDirName.lastIndexOf('/')));
                 if (!file.exists()) {
-                    file.createNewFile(); // 创建文件
+                    file.createNewFile();
                 } else {
-                    return;//已经存在直接退出
+                    return;
                 }
-                FileOutputStream fos = new FileOutputStream(file); // 写入流
-                while ((bt = mIs.read(mByte)) != -1) { // assets为文件,从文件中读取流
-                    fos.write(mByte, 0, bt);// 写入流到文件中
+                FileOutputStream fos = new FileOutputStream(file);
+                while ((bt = inputStream.read(mByte)) != -1) {
+                    fos.write(mByte, 0, bt);
                 }
-                fos.flush();// 刷新缓冲区
-                mIs.close();// 关闭读取流
-                fos.close();// 关闭写入流
-            } else { // 当mString长度大于0,说明其为文件夹
+                fos.flush();
+                inputStream.close();
+                fos.close();
+            } else {
                 String subDirName = assetsDirName;
-                if(assetsDirName.contains("/")) {
-                    subDirName = assetsDirName.substring(assetsDirName.lastIndexOf('/')+1);
+                if (assetsDirName.contains("/")) {
+                    subDirName = assetsDirName.substring(assetsDirName.lastIndexOf('/') + 1);
                 }
                 sdCardPath = sdCardPath + File.separator + subDirName;
                 File file = new File(sdCardPath);
                 if (!file.exists())
-                    file.mkdirs(); // 在sd下创建目录
-                for (String stringFile : list) { // 进行递归
-                    copyAssetsDirToSDCard(context, assetsDirName + File.separator + stringFile, sdCardPath);
+                    file.mkdirs();
+                for (String s : list) {
+                    copyAssetsDirToSDCard(context, assetsDirName + File.separator + s, sdCardPath);
                 }
             }
         } catch (
                 Exception e) {
             e.printStackTrace();
         }
-
     }
 }

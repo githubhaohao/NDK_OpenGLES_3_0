@@ -47,6 +47,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEATING_HEART;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEZIER_CURVE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_CLOUD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SHOCK_WAVE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
@@ -89,10 +90,11 @@ public class MainActivity extends AppCompatActivity {
             "Beating Heart",
             "Cloud",
             "Shock Wave",
+            "Bezier Curve",
     };
 
     private MyGLSurfaceView mGLSurfaceView;
-    private int mSampleSelectedIndex = 0;
+    private int mSampleSelectedIndex = SAMPLE_TYPE_KEY_BEATING_HEART - SAMPLE_TYPE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mGLSurfaceView = (MyGLSurfaceView) findViewById(R.id.my_gl_surface_view);
         mGLSurfaceView.getGLRender().Init();
-
+        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
         CommonUtils.copyAssetsDirToSDCard(MainActivity.this, "poly", "/sdcard/model");
     }
 
@@ -242,6 +244,10 @@ public class MainActivity extends AppCompatActivity {
                         LoadRGBAImage(R.drawable.front);
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;
+                    case SAMPLE_TYPE_KEY_BEZIER_CURVE:
+                        //LoadRGBAImage(R.drawable.board_texture);
+                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        break;
                     default:
                         break;
                 }
@@ -257,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
         resolutionsListView.setLayoutManager(manager);
 
         resolutionsListView.setAdapter(myPreviewSizeViewAdapter);
+        resolutionsListView.scrollToPosition(mSampleSelectedIndex);
 
         dialog.show();
         dialog.getWindow().setContentView(rootView);

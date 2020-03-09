@@ -34,6 +34,7 @@
 #define SAMPLE_TYPE_KEY_BEATING_HEART           SAMPLE_TYPE + 19
 #define SAMPLE_TYPE_KEY_CLOUD                   SAMPLE_TYPE + 20
 #define SAMPLE_TYPE_KEY_SHOCK_WAVE              SAMPLE_TYPE + 21
+#define SAMPLE_TYPE_KEY_BEZIER_CURVE            SAMPLE_TYPE + 22
 
 
 

@@ -25,6 +25,7 @@
 #include <BeatingHeartSample.h>
 #include <CloudSample.h>
 #include <ShockWaveSample.h>
+#include <BezierCurveSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -32,7 +33,7 @@ MyGLRenderContext* MyGLRenderContext::m_pContext = nullptr;
 
 MyGLRenderContext::MyGLRenderContext()
 {
-	m_pCurSample = new TriangleSample();
+	m_pCurSample = new BeatingHeartSample();
 	m_pBeforeSample = nullptr;
 
 }
@@ -128,6 +129,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
                 break;
 			case SAMPLE_TYPE_KEY_SHOCK_WAVE:
 				m_pCurSample = new ShockWaveSample();
+				break;
+			case SAMPLE_TYPE_KEY_BEZIER_CURVE:
+				m_pCurSample = new BezierCurveSample();
 				break;
 			default:
 			    m_pCurSample = nullptr;
