@@ -48,7 +48,9 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEATING_HEART;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEZIER_CURVE;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BIG_EYES;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_CLOUD;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FACE_SLENDER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SHOCK_WAVE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_PARTICLES;
@@ -91,19 +93,22 @@ public class MainActivity extends AppCompatActivity {
             "Cloud",
             "Shock Wave",
             "Bezier Curve",
+            "Big Eyes",
+            "Face Slender"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
+    private ViewGroup mRootView;
     private int mSampleSelectedIndex = SAMPLE_TYPE_KEY_BEATING_HEART - SAMPLE_TYPE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mRootView = (ViewGroup) findViewById(R.id.rootView);
         mGLSurfaceView = (MyGLSurfaceView) findViewById(R.id.my_gl_surface_view);
         mGLSurfaceView.getGLRender().Init();
         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
-        CommonUtils.copyAssetsDirToSDCard(MainActivity.this, "poly", "/sdcard/model");
     }
 
     @Override
@@ -112,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         if (!hasPermissionsGranted(REQUEST_PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, REQUEST_PERMISSIONS, PERMISSION_REQUEST_CODE);
         }
+        CommonUtils.copyAssetsDirToSDCard(MainActivity.this, "poly", "/sdcard/model");
     }
 
     @Override
@@ -182,7 +188,14 @@ public class MainActivity extends AppCompatActivity {
                 myPreviewSizeViewAdapter.notifyItemChanged(position);
                 mSampleSelectedIndex = position;
                 mGLSurfaceView.setRenderMode(RENDERMODE_WHEN_DIRTY);
+
+                if (mRootView.getWidth() != mGLSurfaceView.getWidth()
+                        || mRootView.getHeight() != mGLSurfaceView.getHeight()) {
+                    mGLSurfaceView.setAspectRatio(mRootView.getWidth(), mRootView.getHeight());
+                }
+
                 mGLSurfaceView.getGLRender().SetParamsInt(SAMPLE_TYPE, position + SAMPLE_TYPE, 0);
+
                 switch (position + SAMPLE_TYPE) {
                     case SAMPLE_TYPE_TRIANGLE:
                         break;
@@ -248,6 +261,12 @@ public class MainActivity extends AppCompatActivity {
                         //LoadRGBAImage(R.drawable.board_texture);
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;
+                    case SAMPLE_TYPE_KEY_BIG_EYES:
+                    case SAMPLE_TYPE_KEY_FACE_SLENDER:
+                        Bitmap bitmap = LoadRGBAImage(R.drawable.yifei);
+                        mGLSurfaceView.setAspectRatio(bitmap.getWidth(), bitmap.getHeight());
+                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        break;
                     default:
                         break;
                 }
@@ -270,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void LoadRGBAImage(int resId) {
+    private Bitmap LoadRGBAImage(int resId) {
         InputStream is = this.getResources().openRawResource(resId);
         Bitmap bitmap;
         try {
@@ -294,6 +313,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+        return bitmap;
     }
 
     private void LoadRGBAImage(int resId, int index) {
