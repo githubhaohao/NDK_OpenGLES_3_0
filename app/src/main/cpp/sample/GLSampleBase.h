@@ -8,6 +8,7 @@
 #include "stdint.h"
 #include <GLES3/gl3.h>
 #include <ImageDef.h>
+#include <ByteFlowLock.h>
 
 //For PI define
 #define MATH_PI 3.1415926535897932384626433832802
@@ -35,6 +36,8 @@
 #define SAMPLE_TYPE_KEY_CLOUD                   SAMPLE_TYPE + 20
 #define SAMPLE_TYPE_KEY_SHOCK_WAVE              SAMPLE_TYPE + 21
 #define SAMPLE_TYPE_KEY_BEZIER_CURVE            SAMPLE_TYPE + 22
+#define SAMPLE_TYPE_KEY_BIG_EYES                SAMPLE_TYPE + 23
+#define SAMPLE_TYPE_KEY_FACE_SLENDER            SAMPLE_TYPE + 24
 
 
 
@@ -75,6 +78,7 @@ protected:
 	GLuint m_VertexShader;
 	GLuint m_FragmentShader;
 	GLuint m_ProgramObj;
+	MySyncLock m_Lock;
 };
 
 
