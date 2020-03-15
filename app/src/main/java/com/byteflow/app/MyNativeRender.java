@@ -26,6 +26,9 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_KEY_CLOUD               = SAMPLE_TYPE + 20;
     public static final int SAMPLE_TYPE_KEY_SHOCK_WAVE          = SAMPLE_TYPE + 21;
     public static final int SAMPLE_TYPE_KEY_BEZIER_CURVE        = SAMPLE_TYPE + 22;
+    public static final int SAMPLE_TYPE_KEY_BIG_EYES            = SAMPLE_TYPE + 23;
+    public static final int SAMPLE_TYPE_KEY_FACE_SLENDER        = SAMPLE_TYPE + 24;
+
 
 
     static {

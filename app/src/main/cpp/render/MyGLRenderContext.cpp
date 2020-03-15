@@ -26,6 +26,8 @@
 #include <CloudSample.h>
 #include <ShockWaveSample.h>
 #include <BezierCurveSample.h>
+#include <BigEyesSample.h>
+#include <FaceSlenderSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -132,6 +134,12 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 				break;
 			case SAMPLE_TYPE_KEY_BEZIER_CURVE:
 				m_pCurSample = new BezierCurveSample();
+				break;
+            case SAMPLE_TYPE_KEY_BIG_EYES:
+                m_pCurSample = new BigEyesSample();
+                break;
+			case SAMPLE_TYPE_KEY_FACE_SLENDER:
+				m_pCurSample = new FaceSlenderSample();
 				break;
 			default:
 			    m_pCurSample = nullptr;
