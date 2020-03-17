@@ -25,14 +25,7 @@ include_directories(
 # or SHARED, and provides the relative paths to its source code.
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
-
-add_library( # Sets the name of the library.
-             native-render
-
-             # Sets the library as a shared library.
-             SHARED
-
-             # Provides a relative path to your source file(s).
+set(src-files
         JniImpl.cpp
         render/MyGLRenderContext.cpp
         render/EGLRender.cpp
@@ -62,7 +55,16 @@ add_library( # Sets the name of the library.
         sample/ShockWaveSample.cpp
         sample/BezierCurveSample.cpp
         sample/BigEyesSample.cpp
-        sample/FaceSlenderSample.cpp
+        sample/FaceSlenderSample.cpp)
+
+add_library( # Sets the name of the library.
+             native-render
+
+             # Sets the library as a shared library.
+             SHARED
+
+             # Provides a relative path to your source file(s).
+             ${src-files}
         )
 
 # Searches for a specified prebuilt library and stores the path as a
@@ -93,6 +95,9 @@ set_target_properties(opencv_java3 PROPERTIES IMPORTED_LOCATION ${jnilibs}/${AND
 #set_target_properties(native-render PROPERTIES LINK_FLAGS -fsanitize=address)
 
 #SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fno-rtti -fno-exceptions")
+set(third-party-libs
+        assimp
+        opencv_java3)
 
 target_link_libraries( # Specifies the target library.
                        native-render
@@ -100,8 +105,7 @@ target_link_libraries( # Specifies the target library.
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib}
-                       assimp
-                       opencv_java3
+                       ${third-party-libs}
                        EGL
                        GLESv3
                        )
