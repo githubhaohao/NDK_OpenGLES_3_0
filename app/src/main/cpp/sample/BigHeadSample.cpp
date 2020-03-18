@@ -3,17 +3,29 @@
 //
 
 #include <gtc/matrix_transform.hpp>
-#include "FaceSlenderSample.h"
+#include "BigHeadSample.h"
 #include "../util/GLUtils.h"
 #include "CommonDef.h"
 
-float LeftCheekKeyPoint[] = {211, 363};//左脸颊关键点
-float ChinKeyPoint[] = {336, 565};//下巴关键点
-float RightCheekPoint[] = {471, 365};//右脸颊关键点
-float LeftSlenderCtlPoint[] = {211, 512};//左侧控制点
-float RightSlenderCtlPoint[] = {477, 509};//右侧控制点
+float KEY_POINTS[KEY_POINTS_COUNT * 2] =
+        {
+           213, 383,//0
+           236, 251,//1
+           339, 214,//2
+           435, 251,//3
+           472, 387,//4
+           444, 493,//5
+           341, 562,//6
+           240, 487,//7
+           338, 381,//8
+        };
 
-FaceSlenderSample::FaceSlenderSample()
+float DotProduct(vec2 a, vec2 b)
+{
+	return a.x * b.x + a.y * b.y;
+}
+
+BigHeadSample::BigHeadSample()
 {
 
 	m_SamplerLoc = GL_NONE;
@@ -31,13 +43,13 @@ FaceSlenderSample::FaceSlenderSample()
 	m_FrameIndex = 0;
 }
 
-FaceSlenderSample::~FaceSlenderSample()
+BigHeadSample::~BigHeadSample()
 {
 	NativeImageUtil::FreeNativeImage(&m_RenderImage);
 
 }
 
-void FaceSlenderSample::Init()
+void BigHeadSample::Init()
 {
 	if(m_ProgramObj)
 		return;
@@ -60,64 +72,16 @@ void FaceSlenderSample::Init()
             "layout(location = 0) out vec4 outColor;\n"
             "in vec2 v_texCoord;\n"
             "uniform sampler2D s_TextureMap;\n"
-            "uniform vec2 u_texSize;\n"
-            "uniform vec4 u_preCtrlPoints;\n"
-            "uniform vec4 u_curCtrlPoints;\n"
-            "uniform float u_reshapeRadius;\n"
-            "uniform float u_reshapeRatio;\n"
-            "\n"
-            "vec2 face_slender_1(vec2 prePoint, vec2 curPoint, vec2 texCoord, float radius, vec2 texSize)\n"
-            "{\n"
-            "    vec2 pos = texCoord;\n"
-            "\n"
-            "    vec2 newSrc = prePoint * texSize;\n"
-            "    vec2 newDst = curPoint * texSize;\n"
-            "    vec2 newTex = texCoord * texSize;\n"
-            "    float newRadius = radius;\n"
-            "    float r = distance(newSrc, newTex);\n"
-            "\n"
-            "    if (r < newRadius)\n"
+			"uniform float u_type;\n"
+            "void main() {\n\""
+			"    if(u_type == 0.0)\n"
             "    {\n"
-            "        float alpha = 1.0 -  r / newRadius;\n"
-            "        vec2 displacementVec = (newDst - newSrc) * pow(alpha, 2.0) * 0.5 * u_reshapeRatio;\n"
-            "        pos = (newTex - displacementVec) / texSize;\n"
-            "\n"
-            "    }\n"
-            "    return pos;\n"
-            "}\n"
-            "\n"
-            "vec2 face_slender_2(vec2 prePoint, vec2 curPoint, vec2 texCoord, float radius, vec2 texSize)\n"
-            "{\n"
-            "    vec2 pos = texCoord;\n"
-            "\n"
-            "    vec2 newSrc = prePoint * texSize;\n"
-            "    vec2 newDst = curPoint * texSize;\n"
-            "    vec2 newTex = texCoord * texSize;\n"
-            "    float newRadius = radius;\n"
-            "    float r = distance(newSrc, newTex);\n"
-            "\n"
-            "    if(r < newRadius)\n"
+			"        outColor = texture(s_TextureMap, v_texCoord);\n"
+            "     }\n"
+			"    else if(u_type == 1.0)\n"
             "    {\n"
-            "        float gamma = (pow(newRadius, 2.0) - pow(r, 2.0)) / (pow(newRadius, 2.0) - pow(r, 2.0) + pow(distance(newDst, newSrc), 2.0));\n"
-            "        float sigma = pow(gamma, 2.0);\n"
-            "        vec2 displacementVec = (newDst - newSrc) * sigma * u_reshapeRatio;\n"
-            "        pos = (newTex - displacementVec) / texSize;\n"
+			"        outColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
             "    }\n"
-            "\n"
-            "    return pos;\n"
-            "}\n"
-            "\n"
-            "void main() {\n"
-            "    vec2 leftPreCtrl = u_preCtrlPoints.xy;\n"
-            "    vec2 rightPreCtrl = u_preCtrlPoints.zw;\n"
-            "\n"
-            "    vec2 leftCurCtrl = u_curCtrlPoints.xy;\n"
-            "    vec2 rightCurCtrl = u_curCtrlPoints.zw;\n"
-            "\n"
-            "    vec2 newTexCoord = face_slender_1(leftPreCtrl, leftCurCtrl, v_texCoord, u_reshapeRadius, u_texSize);\n"
-            "    newTexCoord = face_slender_1(rightPreCtrl, rightCurCtrl, newTexCoord, u_reshapeRadius, u_texSize);\n"
-            "\n"
-            "    outColor = texture(s_TextureMap, newTexCoord);\n"
             "}";
 
 	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr, m_VertexShader, m_FragmentShader);
@@ -128,7 +92,7 @@ void FaceSlenderSample::Init()
 	}
 	else
 	{
-		LOGCATE("FaceSlenderSample::Init create program fail");
+		LOGCATE("BigHeadSample::Init create program fail");
 	}
 
 	GLfloat verticesCoords[] = {
@@ -175,11 +139,37 @@ void FaceSlenderSample::Init()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VboIds[2]);
 	glBindVertexArray(GL_NONE);
 
+	// Generate VBO Ids and load the VBOs with data
+	glGenBuffers(2, m_HeadVbos);
+	glBindBuffer(GL_ARRAY_BUFFER, m_HeadVbos[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_Vertices), m_Vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_HeadVbos[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_TexCoord), m_TexCoord, GL_STATIC_DRAW);
+
+	CalculateMesh();
+
+	// Generate VAO Id
+	glGenVertexArrays(1, &m_HeadVao);
+	glBindVertexArray(m_HeadVao);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_HeadVbos[0]);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (const void *)0);
+	glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_HeadVbos[1]);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (const void *)0);
+	glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+
+	glBindVertexArray(GL_NONE);
+
 }
 
-void FaceSlenderSample::LoadImage(NativeImage *pImage)
+void BigHeadSample::LoadImage(NativeImage *pImage)
 {
-	LOGCATE("FaceSlenderSample::LoadImage pImage = %p", pImage->ppPlane[0]);
+	LOGCATE("BigHeadSample::LoadImage pImage = %p", pImage->ppPlane[0]);
 	if (pImage)
 	{
         ScopedSyncLock lock(&m_Lock);
@@ -191,9 +181,9 @@ void FaceSlenderSample::LoadImage(NativeImage *pImage)
 
 }
 
-void FaceSlenderSample::Draw(int screenW, int screenH)
+void BigHeadSample::Draw(int screenW, int screenH)
 {
-	LOGCATE("FaceSlenderSample::Draw() [w,h]=[%d,%d]", screenW, screenH);
+	LOGCATE("BigHeadSample::Draw() [w,h]=[%d,%d]", screenW, screenH);
 
 	if(m_ProgramObj == GL_NONE) return;
 
@@ -216,6 +206,7 @@ void FaceSlenderSample::Draw(int screenW, int screenH)
 
 	glViewport(0, 0, screenW, screenH);
 
+
 	m_FrameIndex ++;
 	UpdateMVPMatrix(m_MVPMatrix, m_AngleX, m_AngleY, (float)screenW / screenH);
 
@@ -234,30 +225,26 @@ void FaceSlenderSample::Draw(int screenW, int screenH)
     float ratio = (m_FrameIndex % 100) * 1.0f / 100;
     ratio = (m_FrameIndex / 100) % 2 == 1 ? (1 - ratio) : ratio;
 
-    float effectRadius = PointUtil::Distance(PointF(LeftCheekKeyPoint[0], LeftCheekKeyPoint[1]), PointF(ChinKeyPoint[0], ChinKeyPoint[1])) / 2;
-    LOGCATE("FaceSlenderSample::Draw() ratio=%f, effectRadius=%f", ratio, effectRadius);
-	GLUtils::setFloat(m_ProgramObj, "u_reshapeRatio", ratio);
-	GLUtils::setFloat(m_ProgramObj, "u_reshapeRadius", effectRadius);
-	GLUtils::setVec4(m_ProgramObj, "u_preCtrlPoints",
-	        LeftSlenderCtlPoint[0] / m_RenderImage.width, LeftSlenderCtlPoint[1] / m_RenderImage.height,
-	        RightSlenderCtlPoint[0] / m_RenderImage.width, RightSlenderCtlPoint[1] / m_RenderImage.height);
-
-	PointF leftCurPoint = PointUtil::PointAdd(PointF(LeftCheekKeyPoint[0], LeftCheekKeyPoint[1]), PointF(ChinKeyPoint[0], ChinKeyPoint[1]));
-	leftCurPoint = PointUtil::PointDivide(leftCurPoint, 2);
-
-	PointF rightCurPoint = PointUtil::PointAdd(PointF(RightCheekPoint[0], RightCheekPoint[1]), PointF(ChinKeyPoint[0], ChinKeyPoint[1]));
-    rightCurPoint = PointUtil::PointDivide(rightCurPoint, 2);
-
-    GLUtils::setVec4(m_ProgramObj, "u_curCtrlPoints",
-            leftCurPoint.x / m_RenderImage.width, leftCurPoint.y / m_RenderImage.height,
-            rightCurPoint.x / m_RenderImage.width, rightCurPoint.y / m_RenderImage.height);
-    GLUtils::setVec2(m_ProgramObj, "u_texSize", m_RenderImage.width, m_RenderImage.height);
+    GLUtils::setFloat(m_ProgramObj, "u_type", 0);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const void *)0);
 
+
+	glBindVertexArray(m_HeadVao);
+	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
+
+	// Bind the RGBA map
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_TextureId);
+	glUniform1i(m_SamplerLoc, 0);
+
+	GLUtils::setFloat(m_ProgramObj, "u_type", 1);
+
+	glDrawArrays(GL_TRIANGLES, 0, TRIANGLE_COUNT * 3);
+
 }
 
-void FaceSlenderSample::Destroy()
+void BigHeadSample::Destroy()
 {
 	if (m_ProgramObj)
 	{
@@ -265,6 +252,9 @@ void FaceSlenderSample::Destroy()
 		glDeleteBuffers(3, m_VboIds);
 		glDeleteVertexArrays(1, &m_VaoId);
 		glDeleteTextures(1, &m_TextureId);
+
+		glDeleteBuffers(2, m_HeadVbos);
+		glDeleteVertexArrays(1, &m_HeadVao);
 	}
 }
 
@@ -274,9 +264,9 @@ void FaceSlenderSample::Destroy()
  * @param angleY 绕Y轴旋转度数
  * @param ratio 宽高比
  * */
-void FaceSlenderSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio)
+void BigHeadSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio)
 {
-	LOGCATE("FaceSlenderSample::UpdateMVPMatrix angleX = %d, angleY = %d, ratio = %f", angleX, angleY, ratio);
+	LOGCATE("BigHeadSample::UpdateMVPMatrix angleX = %d, angleY = %d, ratio = %f", angleX, angleY, ratio);
 	angleX = angleX % 360;
 	angleY = angleY % 360;
 
@@ -308,11 +298,170 @@ void FaceSlenderSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int an
 
 }
 
-void FaceSlenderSample::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
+void BigHeadSample::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
 {
 	GLSampleBase::UpdateTransformMatrix(rotateX, rotateY, scaleX, scaleY);
 	m_AngleX = static_cast<int>(rotateX);
 	m_AngleY = static_cast<int>(rotateY);
 	m_ScaleX = scaleX;
 	m_ScaleY = scaleY;
+}
+
+void BigHeadSample::CalculateMesh() {
+
+	vec2 centerPoint(KEY_POINTS[16] / m_RenderImage.width, KEY_POINTS[17] / m_RenderImage.height);
+	m_KeyPointsInts[8] = centerPoint;
+	m_KeyPoints[8] = centerPoint;
+	for (int i = 0; i < KEY_POINTS_COUNT - 1; ++i) {
+		vec2 inputPoint(KEY_POINTS[i * 2] / m_RenderImage.width, KEY_POINTS[i * 2 + 1] / m_RenderImage.height);
+		m_KeyPoints[i] = inputPoint;
+		m_KeyPointsInts[i] = CalculateIntersection(inputPoint, centerPoint);
+		LOGCATE("BigHeadSample::CalculateMesh index=%d, input[x,y]=[%f, %f], interscet[x, y]=[%f, %f]", i,
+				m_KeyPoints[i].x, m_KeyPoints[i].y, m_KeyPointsInts[i].x, m_KeyPointsInts[i].y);
+	}
+
+	m_MeshPoints[0] = m_KeyPointsInts[0];
+	m_MeshPoints[1] = m_KeyPoints[0];
+	if(m_KeyPointsInts[1].y == 0)
+	{
+		m_MeshPoints[2] = vec2(0,0);
+		m_MeshPoints[3] = m_KeyPoints[1];
+		m_MeshPoints[4] = m_KeyPointsInts[1];
+
+	} else {
+		m_MeshPoints[2] = m_KeyPointsInts[1];
+		m_MeshPoints[3] = m_KeyPoints[1];
+		m_MeshPoints[4] = vec2(0,0);
+	}
+	m_MeshPoints[5] = m_KeyPoints[2];
+	m_MeshPoints[6] = m_KeyPointsInts[2];
+	m_MeshPoints[7] = m_KeyPoints[3];
+
+	if(m_KeyPointsInts[3].y == 0)
+	{
+		m_MeshPoints[8] = m_KeyPointsInts[3];
+		m_MeshPoints[9] = vec2(1,0);
+		m_MeshPoints[10] = m_KeyPoints[3];
+
+
+
+	} else {
+		m_MeshPoints[8] = vec2(1,0);
+		m_MeshPoints[9] = m_KeyPointsInts[3];
+		m_MeshPoints[10] = m_KeyPoints[3];
+
+	}
+	m_MeshPoints[11] = m_KeyPointsInts[4];
+	m_MeshPoints[12] = m_KeyPoints[4];
+
+	if(m_KeyPointsInts[5].y == 1)
+	{
+		m_MeshPoints[13] = vec2(1,1);
+		m_MeshPoints[14] = m_KeyPoints[5];
+		m_MeshPoints[15] = m_KeyPointsInts[5];
+
+	} else {
+		m_MeshPoints[13] = m_KeyPointsInts[5];
+		m_MeshPoints[14] = m_KeyPoints[5];
+		m_MeshPoints[15] = vec2(1,1);
+	}
+	m_MeshPoints[16] = m_KeyPoints[6];
+	m_MeshPoints[17] = m_KeyPointsInts[6];
+	m_MeshPoints[18] = m_KeyPoints[7];
+
+	if(m_KeyPointsInts[7].y == 1)
+	{
+		m_MeshPoints[19] = m_KeyPointsInts[7];
+		m_MeshPoints[20] = vec2(0,1);
+		m_MeshPoints[21] = m_KeyPoints[7];
+	} else {
+		m_MeshPoints[19] = vec2(0,1);
+		m_MeshPoints[20] = m_KeyPointsInts[7];
+		m_MeshPoints[21] = m_KeyPoints[7];
+	}
+	m_MeshPoints[22] = m_KeyPointsInts[0];
+	m_MeshPoints[23] = m_KeyPoints[0];
+
+	for (int i = 2; i < 24; ++i) {
+		m_TexCoord[(i-2) * 3] = m_MeshPoints[i-2];
+		m_TexCoord[(i-2) * 3 + 1] = m_MeshPoints[i-1];
+		m_TexCoord[(i-2) * 3 + 2] = m_MeshPoints[i];
+	}
+
+	for (int i = 0; i < 7; ++i) {
+		m_TexCoord[(i + 22) * 3] = m_KeyPoints[i];
+		m_TexCoord[(i + 22) * 3 + 1] = m_KeyPoints[i+1];
+		m_TexCoord[(i + 22) * 3 + 2] = m_KeyPoints[8];
+	}
+	m_TexCoord[29 * 3] = m_KeyPoints[7];
+	m_TexCoord[29 * 3 + 1] = m_KeyPoints[0];
+	m_TexCoord[29 * 3 + 2] = m_KeyPoints[8];
+
+	for (int i = 0; i < TRIANGLE_COUNT; ++i) {
+		m_Vertices[i] = vec3( m_TexCoord[i].x * 2 - 1, 1 - 2 * m_TexCoord[i].y, 0);
+	}
+}
+
+vec2 BigHeadSample::CalculateIntersection(vec2 inputPoint, vec2 centerPoint) {
+	vec2 outputPoint;
+	if(inputPoint.x == centerPoint.x) //直线与 y 轴平行
+	{
+		vec2 pointA(inputPoint.x, 0);
+		vec2 pointB(inputPoint.x, 1);
+
+		float dA = distance(inputPoint, pointA);
+		float dB = distance(inputPoint, pointB);
+		outputPoint = dA > dB ? pointB : pointA;
+		return outputPoint;
+	}
+
+	if(inputPoint.y == centerPoint.y) //直线与 x 轴平行
+	{
+		vec2 pointA(0, inputPoint.y);
+		vec2 pointB(1, inputPoint.y);
+
+		float dA = distance(inputPoint, pointA);
+		float dB = distance(inputPoint, pointB);
+		outputPoint = dA > dB ? pointB : pointA;
+		return outputPoint;
+	}
+
+	// y = a*x + c
+	float a=0, c=0;
+
+	a = (inputPoint.y - centerPoint.y) / (inputPoint.x - centerPoint.x);
+
+	c = inputPoint.y - a * inputPoint.x;
+
+	//x=0, x=1, y=0, y=1 四条线交点
+
+	//x=0
+	vec2 point_0(0, c);
+	float d0 = DotProduct((centerPoint - inputPoint),(centerPoint - point_0));
+
+	if(c >= 0 && c <= 1 && d0 > 0)
+		outputPoint = point_0;
+
+	//x=1
+	vec2 point_1(1, a + c);
+	float d1 = DotProduct((centerPoint - inputPoint),(centerPoint - point_1));
+
+	if((a + c) >= 0 && (a + c) <= 1 && d1 > 0)
+		outputPoint = point_1;
+
+	//y=0
+	vec2 point_2(-c / a, 0);
+	float d2 = DotProduct((centerPoint - inputPoint),(centerPoint - point_2));
+
+	if((-c / a) >= 0 && (-c / a) <= 1 && d2 > 0)
+		outputPoint = point_2;
+
+	//y=1
+	vec2 point_3((1-c) / a, 1);
+	float d3 = DotProduct((centerPoint - inputPoint),(centerPoint - point_3));
+
+	if(((1-c) / a) >= 0 && ((1-c) / a) <= 1 && d3 > 0)
+		outputPoint = point_3;
+
+	return outputPoint;
 }

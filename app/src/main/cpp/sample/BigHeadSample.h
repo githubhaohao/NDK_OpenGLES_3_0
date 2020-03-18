@@ -2,21 +2,27 @@
 // Created by ByteFlow on 2020/2/30.
 //
 
-#ifndef NDK_OPENGLES_3_0_FACESLENDERSAMPLE_H
-#define NDK_OPENGLES_3_0_FACESLENDERSAMPLE_H
+#ifndef NDK_OPENGLES_3_0_BIGHEAD_SAMPLE_H
+#define NDK_OPENGLES_3_0_BIGHEAD_SAMPLE_H
 
 
 #include <detail/type_mat.hpp>
 #include <detail/type_mat4x4.hpp>
 #include <ByteFlowLock.h>
+#include <CommonDef.h>
 #include "GLSampleBase.h"
 
-class FaceSlenderSample : public GLSampleBase
+using namespace glm;
+
+#define TRIANGLE_COUNT           30
+#define KEY_POINTS_COUNT         9
+
+class BigHeadSample : public GLSampleBase
 {
 public:
-	FaceSlenderSample();
+	BigHeadSample();
 
-	virtual ~FaceSlenderSample();
+	virtual ~BigHeadSample();
 
 	virtual void LoadImage(NativeImage *pImage);
 
@@ -28,6 +34,10 @@ public:
 	virtual void UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY);
 
 	void UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio);
+
+	void CalculateMesh();
+
+	glm::vec2 CalculateIntersection(glm::vec2 inputPoint, glm::vec2 centerPoint);
 
 private:
 	GLuint m_TextureId;
@@ -45,7 +55,15 @@ private:
 
 	int m_FrameIndex;
 
+	vec3 m_Vertices[TRIANGLE_COUNT * 3]; //28个三角形
+    vec2 m_TexCoord[TRIANGLE_COUNT * 3]; //28个三角形
+	vec2 m_MeshPoints[24];
+	vec2 m_KeyPointsInts[KEY_POINTS_COUNT]; //关键点对应的交点
+    vec2 m_KeyPoints[KEY_POINTS_COUNT]; //关键点归一化
+    GLuint m_HeadVao;
+    GLuint m_HeadVbos[2];
+
 };
 
 
-#endif //NDK_OPENGLES_3_0_FACESLENDERSAMPLE_H
+#endif //NDK_OPENGLES_3_0_BIGHEAD_SAMPLE_H
