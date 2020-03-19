@@ -64,7 +64,8 @@ void BigHeadSample::Init()
             "{\n"
             "    gl_Position = u_MVPMatrix * a_position;\n"
             "    v_texCoord = a_texCoord;\n"
-            "}";
+			"    gl_PointSize = 8.0;\n"
+			"}";
 
 	char fShaderStr[] =
 			"#version 300 es\n"
@@ -73,7 +74,7 @@ void BigHeadSample::Init()
             "in vec2 v_texCoord;\n"
             "uniform sampler2D s_TextureMap;\n"
 			"uniform float u_type;\n"
-            "void main() {\n\""
+            "void main() { \n"
 			"    if(u_type == 0.0)\n"
             "    {\n"
 			"        outColor = texture(s_TextureMap, v_texCoord);\n"
@@ -139,15 +140,15 @@ void BigHeadSample::Init()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VboIds[2]);
 	glBindVertexArray(GL_NONE);
 
+	CalculateMesh(0);
+
 	// Generate VBO Ids and load the VBOs with data
 	glGenBuffers(2, m_HeadVbos);
 	glBindBuffer(GL_ARRAY_BUFFER, m_HeadVbos[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(m_Vertices), m_Vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_Vertices), m_Vertices, GL_DYNAMIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_HeadVbos[1]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(m_TexCoord), m_TexCoord, GL_STATIC_DRAW);
-
-	CalculateMesh();
 
 	// Generate VAO Id
 	glGenVertexArrays(1, &m_HeadVao);
@@ -157,11 +158,13 @@ void BigHeadSample::Init()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (const void *)0);
 	glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+	GO_CHECK_GL_ERROR();
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_HeadVbos[1]);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (const void *)0);
 	glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+	GO_CHECK_GL_ERROR();
 
 	glBindVertexArray(GL_NONE);
 
@@ -213,22 +216,13 @@ void BigHeadSample::Draw(int screenW, int screenH)
 	// Use the program object
 	glUseProgram (m_ProgramObj);
 
-	glBindVertexArray(m_VaoId);
-
-	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
-
-	// Bind the RGBA map
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_TextureId);
-	glUniform1i(m_SamplerLoc, 0);
-
     float ratio = (m_FrameIndex % 100) * 1.0f / 100;
     ratio = (m_FrameIndex / 100) % 2 == 1 ? (1 - ratio) : ratio;
 
-    GLUtils::setFloat(m_ProgramObj, "u_type", 0);
+    CalculateMesh(ratio - 0.5f);
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const void *)0);
-
+	glBindBuffer(GL_ARRAY_BUFFER, m_HeadVbos[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_Vertices), m_Vertices, GL_DYNAMIC_DRAW);
 
 	glBindVertexArray(m_HeadVao);
 	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
@@ -238,10 +232,11 @@ void BigHeadSample::Draw(int screenW, int screenH)
 	glBindTexture(GL_TEXTURE_2D, m_TextureId);
 	glUniform1i(m_SamplerLoc, 0);
 
-	GLUtils::setFloat(m_ProgramObj, "u_type", 1);
-
+	GLUtils::setFloat(m_ProgramObj, "u_type", 0);
 	glDrawArrays(GL_TRIANGLES, 0, TRIANGLE_COUNT * 3);
 
+	GLUtils::setFloat(m_ProgramObj, "u_type", 1);
+	glDrawArrays(GL_LINE_STRIP, 0, TRIANGLE_COUNT * 3);
 }
 
 void BigHeadSample::Destroy()
@@ -307,14 +302,14 @@ void BigHeadSample::UpdateTransformMatrix(float rotateX, float rotateY, float sc
 	m_ScaleY = scaleY;
 }
 
-void BigHeadSample::CalculateMesh() {
+void BigHeadSample::CalculateMesh(float warpLevel) {
 
 	vec2 centerPoint(KEY_POINTS[16] / m_RenderImage.width, KEY_POINTS[17] / m_RenderImage.height);
 	m_KeyPointsInts[8] = centerPoint;
 	m_KeyPoints[8] = centerPoint;
 	for (int i = 0; i < KEY_POINTS_COUNT - 1; ++i) {
 		vec2 inputPoint(KEY_POINTS[i * 2] / m_RenderImage.width, KEY_POINTS[i * 2 + 1] / m_RenderImage.height);
-		m_KeyPoints[i] = inputPoint;
+		m_KeyPoints[i] = WarpKeyPoint(inputPoint, centerPoint, warpLevel);
 		m_KeyPointsInts[i] = CalculateIntersection(inputPoint, centerPoint);
 		LOGCATE("BigHeadSample::CalculateMesh index=%d, input[x,y]=[%f, %f], interscet[x, y]=[%f, %f]", i,
 				m_KeyPoints[i].x, m_KeyPoints[i].y, m_KeyPointsInts[i].x, m_KeyPointsInts[i].y);
@@ -342,9 +337,6 @@ void BigHeadSample::CalculateMesh() {
 		m_MeshPoints[8] = m_KeyPointsInts[3];
 		m_MeshPoints[9] = vec2(1,0);
 		m_MeshPoints[10] = m_KeyPoints[3];
-
-
-
 	} else {
 		m_MeshPoints[8] = vec2(1,0);
 		m_MeshPoints[9] = m_KeyPointsInts[3];
@@ -397,7 +389,8 @@ void BigHeadSample::CalculateMesh() {
 	m_TexCoord[29 * 3 + 1] = m_KeyPoints[0];
 	m_TexCoord[29 * 3 + 2] = m_KeyPoints[8];
 
-	for (int i = 0; i < TRIANGLE_COUNT; ++i) {
+	for (int i = 0; i < TRIANGLE_COUNT * 3; ++i) {
+		LOGCATE("m_TexCoord[%d]=(%f, %f)", i, m_TexCoord[i].x, m_TexCoord[i].y);
 		m_Vertices[i] = vec3( m_TexCoord[i].x * 2 - 1, 1 - 2 * m_TexCoord[i].y, 0);
 	}
 }
@@ -464,4 +457,11 @@ vec2 BigHeadSample::CalculateIntersection(vec2 inputPoint, vec2 centerPoint) {
 		outputPoint = point_3;
 
 	return outputPoint;
+}
+
+vec2 BigHeadSample::WarpKeyPoint(vec2 input, vec2 centerPoint, float level) {
+	vec2 output;
+	vec2 direct_vec = centerPoint - input;
+	output = input + level * direct_vec * 0.24f;
+	return output;
 }

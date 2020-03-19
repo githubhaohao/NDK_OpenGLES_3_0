@@ -35,9 +35,11 @@ public:
 
 	void UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio);
 
-	void CalculateMesh();
+	void CalculateMesh(float warpLevel);
 
-	glm::vec2 CalculateIntersection(glm::vec2 inputPoint, glm::vec2 centerPoint);
+	vec2 CalculateIntersection(vec2 inputPoint, vec2 centerPoint);
+
+	vec2 WarpKeyPoint(vec2 input, vec2 centerPoint, float level);
 
 private:
 	GLuint m_TextureId;
@@ -46,7 +48,7 @@ private:
 	GLuint m_VaoId;
 	GLuint m_VboIds[3];
 	NativeImage m_RenderImage;
-	glm::mat4 m_MVPMatrix;
+	mat4 m_MVPMatrix;
 
 	int m_AngleX;
 	int m_AngleY;
