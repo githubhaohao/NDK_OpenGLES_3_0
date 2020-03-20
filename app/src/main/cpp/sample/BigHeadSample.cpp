@@ -168,6 +168,19 @@ void BigHeadSample::Init()
 
 	glBindVertexArray(GL_NONE);
 
+    ScopedSyncLock lock(&m_Lock);
+    if(m_RenderImage.ppPlane[0] != nullptr)
+    {
+        glGenTextures(1, &m_TextureId);
+        glBindTexture(GL_TEXTURE_2D, m_TextureId);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderImage.width, m_RenderImage.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_RenderImage.ppPlane[0]);
+        glBindTexture(GL_TEXTURE_2D, GL_NONE);
+    }
+
 }
 
 void BigHeadSample::LoadImage(NativeImage *pImage)
@@ -390,7 +403,7 @@ void BigHeadSample::CalculateMesh(float warpLevel) {
 	m_TexCoord[29 * 3 + 2] = m_KeyPoints[8];
 
 	for (int i = 0; i < TRIANGLE_COUNT * 3; ++i) {
-		LOGCATE("m_TexCoord[%d]=(%f, %f)", i, m_TexCoord[i].x, m_TexCoord[i].y);
+		//LOGCATE("m_TexCoord[%d]=(%f, %f)", i, m_TexCoord[i].x, m_TexCoord[i].y);
 		m_Vertices[i] = vec3( m_TexCoord[i].x * 2 - 1, 1 - 2 * m_TexCoord[i].y, 0);
 	}
 }
