@@ -328,79 +328,62 @@ void BigHeadSample::CalculateMesh(float warpLevel) {
 				m_KeyPoints[i].x, m_KeyPoints[i].y, m_KeyPointsInts[i].x, m_KeyPointsInts[i].y);
 	}
 
-	m_MeshPoints[0] = m_KeyPointsInts[0];
-	m_MeshPoints[1] = m_KeyPoints[0];
-	if(m_KeyPointsInts[1].y == 0)
-	{
-		m_MeshPoints[2] = vec2(0,0);
-		m_MeshPoints[3] = m_KeyPoints[1];
-		m_MeshPoints[4] = m_KeyPointsInts[1];
+    for (int i = 0; i < KEY_POINTS_COUNT - 1; ++i) {
+        m_MeshPoints[i * 2] = m_KeyPointsInts[i];
+        m_MeshPoints[i * 2 + 1] = m_KeyPoints[i];
+    }
+    m_MeshPoints[16] = m_KeyPointsInts[0];
+    m_MeshPoints[17] = m_KeyPoints[0];
 
-	} else {
-		m_MeshPoints[2] = m_KeyPointsInts[1];
-		m_MeshPoints[3] = m_KeyPoints[1];
-		m_MeshPoints[4] = vec2(0,0);
-	}
-	m_MeshPoints[5] = m_KeyPoints[2];
-	m_MeshPoints[6] = m_KeyPointsInts[2];
-	m_MeshPoints[7] = m_KeyPoints[3];
-
-	if(m_KeyPointsInts[3].y == 0)
-	{
-		m_MeshPoints[8] = m_KeyPointsInts[3];
-		m_MeshPoints[9] = vec2(1,0);
-		m_MeshPoints[10] = m_KeyPoints[3];
-	} else {
-		m_MeshPoints[8] = vec2(1,0);
-		m_MeshPoints[9] = m_KeyPointsInts[3];
-		m_MeshPoints[10] = m_KeyPoints[3];
-
-	}
-	m_MeshPoints[11] = m_KeyPointsInts[4];
-	m_MeshPoints[12] = m_KeyPoints[4];
-
-	if(m_KeyPointsInts[5].y == 1)
-	{
-		m_MeshPoints[13] = vec2(1,1);
-		m_MeshPoints[14] = m_KeyPoints[5];
-		m_MeshPoints[15] = m_KeyPointsInts[5];
-
-	} else {
-		m_MeshPoints[13] = m_KeyPointsInts[5];
-		m_MeshPoints[14] = m_KeyPoints[5];
-		m_MeshPoints[15] = vec2(1,1);
-	}
-	m_MeshPoints[16] = m_KeyPoints[6];
-	m_MeshPoints[17] = m_KeyPointsInts[6];
-	m_MeshPoints[18] = m_KeyPoints[7];
-
-	if(m_KeyPointsInts[7].y == 1)
-	{
-		m_MeshPoints[19] = m_KeyPointsInts[7];
-		m_MeshPoints[20] = vec2(0,1);
-		m_MeshPoints[21] = m_KeyPoints[7];
-	} else {
-		m_MeshPoints[19] = vec2(0,1);
-		m_MeshPoints[20] = m_KeyPointsInts[7];
-		m_MeshPoints[21] = m_KeyPoints[7];
-	}
-	m_MeshPoints[22] = m_KeyPointsInts[0];
-	m_MeshPoints[23] = m_KeyPoints[0];
-
-	for (int i = 2; i < 24; ++i) {
+    //周围
+	for (int i = 2; i < KEY_POINTS_COUNT * 2; ++i) {
 		m_TexCoord[(i-2) * 3] = m_MeshPoints[i-2];
 		m_TexCoord[(i-2) * 3 + 1] = m_MeshPoints[i-1];
 		m_TexCoord[(i-2) * 3 + 2] = m_MeshPoints[i];
 	}
 
-	for (int i = 0; i < 7; ++i) {
-		m_TexCoord[(i + 22) * 3] = m_KeyPoints[i];
-		m_TexCoord[(i + 22) * 3 + 1] = m_KeyPoints[i+1];
-		m_TexCoord[(i + 22) * 3 + 2] = m_KeyPoints[8];
+	//中心
+	for (int i = 0; i < KEY_POINTS_COUNT - 2; ++i) {
+		m_TexCoord[(i + 16) * 3] = m_KeyPoints[i];
+		m_TexCoord[(i + 16) * 3 + 1] = m_KeyPoints[i+1];
+		m_TexCoord[(i + 16) * 3 + 2] = m_KeyPoints[8];
 	}
-	m_TexCoord[29 * 3] = m_KeyPoints[7];
-	m_TexCoord[29 * 3 + 1] = m_KeyPoints[0];
-	m_TexCoord[29 * 3 + 2] = m_KeyPoints[8];
+	m_TexCoord[23 * 3 + 2] = m_KeyPoints[7];
+	m_TexCoord[23 * 3 + 1] = m_KeyPoints[8];
+	m_TexCoord[23 * 3 + 0] = m_KeyPoints[0];
+
+	//处理四个角
+    m_TexCoord[24 * 3]     = vec2(0,0);
+    m_TexCoord[24 * 3 + 1] = m_KeyPointsInts[0];
+    m_TexCoord[24 * 3 + 2] = m_KeyPointsInts[1];
+
+    m_TexCoord[25 * 3]     = vec2(0,0);
+    m_TexCoord[25 * 3 + 1] = m_KeyPointsInts[1];
+    m_TexCoord[25 * 3 + 2] = m_KeyPointsInts[2];
+
+    m_TexCoord[26 * 3]     = vec2(1,0);
+    m_TexCoord[26 * 3 + 1] = m_KeyPointsInts[2];
+    m_TexCoord[26 * 3 + 2] = m_KeyPointsInts[3];
+
+    m_TexCoord[27 * 3]     = vec2(1,0);
+    m_TexCoord[27 * 3 + 1] = m_KeyPointsInts[3];
+    m_TexCoord[27 * 3 + 2] = m_KeyPointsInts[4];
+
+    m_TexCoord[28 * 3]     = vec2(1,1);
+    m_TexCoord[28 * 3 + 1] = m_KeyPointsInts[4];
+    m_TexCoord[28 * 3 + 2] = m_KeyPointsInts[5];
+
+    m_TexCoord[29 * 3]     = vec2(1,1);
+    m_TexCoord[29 * 3 + 1] = m_KeyPointsInts[5];
+    m_TexCoord[29 * 3 + 2] = m_KeyPointsInts[6];
+
+    m_TexCoord[30 * 3]     = vec2(0,1);
+    m_TexCoord[30 * 3 + 1] = m_KeyPointsInts[6];
+    m_TexCoord[30 * 3 + 2] = m_KeyPointsInts[7];
+
+    m_TexCoord[31 * 3]     = vec2(0,1);
+    m_TexCoord[31 * 3 + 1] = m_KeyPointsInts[7];
+    m_TexCoord[31 * 3 + 2] = m_KeyPointsInts[0];
 
 	for (int i = 0; i < TRIANGLE_COUNT * 3; ++i) {
 		//LOGCATE("m_TexCoord[%d]=(%f, %f)", i, m_TexCoord[i].x, m_TexCoord[i].y);

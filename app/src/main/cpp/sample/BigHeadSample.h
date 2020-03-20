@@ -14,7 +14,7 @@
 
 using namespace glm;
 
-#define TRIANGLE_COUNT           30
+#define TRIANGLE_COUNT           32
 #define KEY_POINTS_COUNT         9
 
 class BigHeadSample : public GLSampleBase
