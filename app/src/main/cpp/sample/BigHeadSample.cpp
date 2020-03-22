@@ -7,7 +7,7 @@
 #include "../util/GLUtils.h"
 #include "CommonDef.h"
 
-float KEY_POINTS[KEY_POINTS_COUNT * 2] =
+static float KEY_POINTS[KEY_POINTS_COUNT * 2] =
         {
            213, 383,//0
            236, 251,//1
@@ -20,7 +20,7 @@ float KEY_POINTS[KEY_POINTS_COUNT * 2] =
            338, 381,//8
         };
 
-float DotProduct(vec2 a, vec2 b)
+static float DotProduct(vec2 a, vec2 b)
 {
 	return a.x * b.x + a.y * b.y;
 }
@@ -32,7 +32,6 @@ BigHeadSample::BigHeadSample()
 	m_MVPMatLoc = GL_NONE;
 
 	m_TextureId = GL_NONE;
-	m_VaoId = GL_NONE;
 
 	m_AngleX = 0;
 	m_AngleY = 0;
@@ -96,32 +95,15 @@ void BigHeadSample::Init()
 		LOGCATE("BigHeadSample::Init create program fail");
 	}
 
-	GLfloat verticesCoords[] = {
-			-1.0f,  1.0f, 0.0f,  // Position 0
-			-1.0f, -1.0f, 0.0f,  // Position 1
-			1.0f,  -1.0f, 0.0f,  // Position 2
-			1.0f,   1.0f, 0.0f,  // Position 3
-	};
-
-	GLfloat textureCoords[] = {
-			0.0f,  0.0f,        // TexCoord 0
-			0.0f,  1.0f,        // TexCoord 1
-			1.0f,  1.0f,        // TexCoord 2
-			1.0f,  0.0f         // TexCoord 3
-	};
-
-	GLushort indices[] = { 0, 1, 2, 0, 2, 3 };
+	CalculateMesh(0);
 
 	// Generate VBO Ids and load the VBOs with data
-	glGenBuffers(3, m_VboIds);
+	glGenBuffers(2, m_VboIds);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesCoords), verticesCoords, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_Vertices), m_Vertices, GL_DYNAMIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(textureCoords), textureCoords, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VboIds[2]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_TexCoords), m_TexCoords, GL_STATIC_DRAW);
 
 	// Generate VAO Id
 	glGenVertexArrays(1, &m_VaoId);
@@ -131,56 +113,15 @@ void BigHeadSample::Init()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (const void *)0);
 	glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+	GO_CHECK_GL_ERROR();
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[1]);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (const void *)0);
 	glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VboIds[2]);
-	glBindVertexArray(GL_NONE);
-
-	CalculateMesh(0);
-
-	// Generate VBO Ids and load the VBOs with data
-	glGenBuffers(2, m_HeadVbos);
-	glBindBuffer(GL_ARRAY_BUFFER, m_HeadVbos[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(m_Vertices), m_Vertices, GL_DYNAMIC_DRAW);
-
-	glBindBuffer(GL_ARRAY_BUFFER, m_HeadVbos[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(m_TexCoord), m_TexCoord, GL_STATIC_DRAW);
-
-	// Generate VAO Id
-	glGenVertexArrays(1, &m_HeadVao);
-	glBindVertexArray(m_HeadVao);
-
-	glBindBuffer(GL_ARRAY_BUFFER, m_HeadVbos[0]);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (const void *)0);
-	glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
-	GO_CHECK_GL_ERROR();
-
-	glBindBuffer(GL_ARRAY_BUFFER, m_HeadVbos[1]);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (const void *)0);
-	glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 	GO_CHECK_GL_ERROR();
 
 	glBindVertexArray(GL_NONE);
-
-    ScopedSyncLock lock(&m_Lock);
-    if(m_RenderImage.ppPlane[0] != nullptr)
-    {
-        glGenTextures(1, &m_TextureId);
-        glBindTexture(GL_TEXTURE_2D, m_TextureId);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderImage.width, m_RenderImage.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_RenderImage.ppPlane[0]);
-        glBindTexture(GL_TEXTURE_2D, GL_NONE);
-    }
-
 }
 
 void BigHeadSample::LoadImage(NativeImage *pImage)
@@ -219,28 +160,25 @@ void BigHeadSample::Draw(int screenW, int screenH)
         }
         return;
     }
-
 	glViewport(0, 0, screenW, screenH);
-
 
 	m_FrameIndex ++;
 	UpdateMVPMatrix(m_MVPMatrix, m_AngleX, m_AngleY, (float)screenW / screenH);
 
-	// Use the program object
-	glUseProgram (m_ProgramObj);
 
-    float ratio = (m_FrameIndex % 100) * 1.0f / 100;
-    ratio = (m_FrameIndex / 100) % 2 == 1 ? (1 - ratio) : ratio;
+	float ratio = (m_FrameIndex % 100) * 1.0f / 100;
+	ratio = (m_FrameIndex / 100) % 2 == 1 ? (1 - ratio) : ratio;
 
-    CalculateMesh(ratio - 0.5f);
+	CalculateMesh(ratio - 0.5f);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_HeadVbos[0]);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(m_Vertices), m_Vertices, GL_DYNAMIC_DRAW);
 
-	glBindVertexArray(m_HeadVao);
+	glUseProgram (m_ProgramObj);
+
+	glBindVertexArray(m_VaoId);
 	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 
-	// Bind the RGBA map
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_TextureId);
 	glUniform1i(m_SamplerLoc, 0);
@@ -250,6 +188,7 @@ void BigHeadSample::Draw(int screenW, int screenH)
 
 	GLUtils::setFloat(m_ProgramObj, "u_type", 1);
 	glDrawArrays(GL_LINE_STRIP, 0, TRIANGLE_COUNT * 3);
+
 }
 
 void BigHeadSample::Destroy()
@@ -257,12 +196,10 @@ void BigHeadSample::Destroy()
 	if (m_ProgramObj)
 	{
 		glDeleteProgram(m_ProgramObj);
-		glDeleteBuffers(3, m_VboIds);
-		glDeleteVertexArrays(1, &m_VaoId);
 		glDeleteTextures(1, &m_TextureId);
-
-		glDeleteBuffers(2, m_HeadVbos);
-		glDeleteVertexArrays(1, &m_HeadVao);
+		glDeleteBuffers(2, m_VboIds);
+		glDeleteVertexArrays(1, &m_VaoId);
+		m_ProgramObj = GL_NONE;
 	}
 }
 
@@ -337,57 +274,57 @@ void BigHeadSample::CalculateMesh(float warpLevel) {
 
     //周围
 	for (int i = 2; i < KEY_POINTS_COUNT * 2; ++i) {
-		m_TexCoord[(i-2) * 3] = m_MeshPoints[i-2];
-		m_TexCoord[(i-2) * 3 + 1] = m_MeshPoints[i-1];
-		m_TexCoord[(i-2) * 3 + 2] = m_MeshPoints[i];
+		m_TexCoords[(i-2) * 3] = m_MeshPoints[i-2];
+		m_TexCoords[(i-2) * 3 + 1] = m_MeshPoints[i-1];
+		m_TexCoords[(i-2) * 3 + 2] = m_MeshPoints[i];
 	}
 
 	//中心
 	for (int i = 0; i < KEY_POINTS_COUNT - 2; ++i) {
-		m_TexCoord[(i + 16) * 3] = m_KeyPoints[i];
-		m_TexCoord[(i + 16) * 3 + 1] = m_KeyPoints[i+1];
-		m_TexCoord[(i + 16) * 3 + 2] = m_KeyPoints[8];
+		m_TexCoords[(i + 16) * 3] = m_KeyPoints[i];
+		m_TexCoords[(i + 16) * 3 + 1] = m_KeyPoints[i+1];
+		m_TexCoords[(i + 16) * 3 + 2] = m_KeyPoints[8];
 	}
-	m_TexCoord[23 * 3 + 2] = m_KeyPoints[7];
-	m_TexCoord[23 * 3 + 1] = m_KeyPoints[8];
-	m_TexCoord[23 * 3 + 0] = m_KeyPoints[0];
+	m_TexCoords[23 * 3 + 2] = m_KeyPoints[7];
+	m_TexCoords[23 * 3 + 1] = m_KeyPoints[8];
+	m_TexCoords[23 * 3 + 0] = m_KeyPoints[0];
 
 	//处理四个角
-    m_TexCoord[24 * 3]     = vec2(0,0);
-    m_TexCoord[24 * 3 + 1] = m_KeyPointsInts[0];
-    m_TexCoord[24 * 3 + 2] = m_KeyPointsInts[1];
+    m_TexCoords[24 * 3]     = vec2(0,0);
+    m_TexCoords[24 * 3 + 1] = m_KeyPointsInts[0];
+    m_TexCoords[24 * 3 + 2] = m_KeyPointsInts[1];
 
-    m_TexCoord[25 * 3]     = vec2(0,0);
-    m_TexCoord[25 * 3 + 1] = m_KeyPointsInts[1];
-    m_TexCoord[25 * 3 + 2] = m_KeyPointsInts[2];
+    m_TexCoords[25 * 3]     = vec2(0,0);
+    m_TexCoords[25 * 3 + 1] = m_KeyPointsInts[1];
+    m_TexCoords[25 * 3 + 2] = m_KeyPointsInts[2];
 
-    m_TexCoord[26 * 3]     = vec2(1,0);
-    m_TexCoord[26 * 3 + 1] = m_KeyPointsInts[2];
-    m_TexCoord[26 * 3 + 2] = m_KeyPointsInts[3];
+    m_TexCoords[26 * 3]     = vec2(1,0);
+    m_TexCoords[26 * 3 + 1] = m_KeyPointsInts[2];
+    m_TexCoords[26 * 3 + 2] = m_KeyPointsInts[3];
 
-    m_TexCoord[27 * 3]     = vec2(1,0);
-    m_TexCoord[27 * 3 + 1] = m_KeyPointsInts[3];
-    m_TexCoord[27 * 3 + 2] = m_KeyPointsInts[4];
+    m_TexCoords[27 * 3]     = vec2(1,0);
+    m_TexCoords[27 * 3 + 1] = m_KeyPointsInts[3];
+    m_TexCoords[27 * 3 + 2] = m_KeyPointsInts[4];
 
-    m_TexCoord[28 * 3]     = vec2(1,1);
-    m_TexCoord[28 * 3 + 1] = m_KeyPointsInts[4];
-    m_TexCoord[28 * 3 + 2] = m_KeyPointsInts[5];
+    m_TexCoords[28 * 3]     = vec2(1,1);
+    m_TexCoords[28 * 3 + 1] = m_KeyPointsInts[4];
+    m_TexCoords[28 * 3 + 2] = m_KeyPointsInts[5];
 
-    m_TexCoord[29 * 3]     = vec2(1,1);
-    m_TexCoord[29 * 3 + 1] = m_KeyPointsInts[5];
-    m_TexCoord[29 * 3 + 2] = m_KeyPointsInts[6];
+    m_TexCoords[29 * 3]     = vec2(1,1);
+    m_TexCoords[29 * 3 + 1] = m_KeyPointsInts[5];
+    m_TexCoords[29 * 3 + 2] = m_KeyPointsInts[6];
 
-    m_TexCoord[30 * 3]     = vec2(0,1);
-    m_TexCoord[30 * 3 + 1] = m_KeyPointsInts[6];
-    m_TexCoord[30 * 3 + 2] = m_KeyPointsInts[7];
+    m_TexCoords[30 * 3]     = vec2(0,1);
+    m_TexCoords[30 * 3 + 1] = m_KeyPointsInts[6];
+    m_TexCoords[30 * 3 + 2] = m_KeyPointsInts[7];
 
-    m_TexCoord[31 * 3]     = vec2(0,1);
-    m_TexCoord[31 * 3 + 1] = m_KeyPointsInts[7];
-    m_TexCoord[31 * 3 + 2] = m_KeyPointsInts[0];
+    m_TexCoords[31 * 3]     = vec2(0,1);
+    m_TexCoords[31 * 3 + 1] = m_KeyPointsInts[7];
+    m_TexCoords[31 * 3 + 2] = m_KeyPointsInts[0];
 
 	for (int i = 0; i < TRIANGLE_COUNT * 3; ++i) {
-		//LOGCATE("m_TexCoord[%d]=(%f, %f)", i, m_TexCoord[i].x, m_TexCoord[i].y);
-		m_Vertices[i] = vec3( m_TexCoord[i].x * 2 - 1, 1 - 2 * m_TexCoord[i].y, 0);
+		//LOGCATE("m_TexCoords[%d]=(%f, %f)", i, m_TexCoords[i].x, m_TexCoords[i].y);
+		m_Vertices[i] = vec3( m_TexCoords[i].x * 2 - 1, 1 - 2 * m_TexCoords[i].y, 0);
 	}
 }
 

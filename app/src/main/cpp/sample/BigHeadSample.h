@@ -45,8 +45,6 @@ private:
 	GLuint m_TextureId;
 	GLint m_SamplerLoc;
 	GLint m_MVPMatLoc;
-	GLuint m_VaoId;
-	GLuint m_VboIds[3];
 	NativeImage m_RenderImage;
 	mat4 m_MVPMatrix;
 
@@ -58,12 +56,12 @@ private:
 	int m_FrameIndex;
 
 	vec3 m_Vertices[TRIANGLE_COUNT * 3]; //28个三角形
-    vec2 m_TexCoord[TRIANGLE_COUNT * 3]; //28个三角形
+    vec2 m_TexCoords[TRIANGLE_COUNT * 3]; //28个三角形
 	vec2 m_MeshPoints[24];
 	vec2 m_KeyPointsInts[KEY_POINTS_COUNT]; //关键点对应的交点
     vec2 m_KeyPoints[KEY_POINTS_COUNT]; //关键点归一化
-    GLuint m_HeadVao;
-    GLuint m_HeadVbos[2];
+    GLuint m_VaoId;
+    GLuint m_VboIds[2];
 
 };
 
