@@ -9,15 +9,24 @@
 
 static float KEY_POINTS[KEY_POINTS_COUNT * 2] =
         {
-           213, 383,//0
-           236, 251,//1
-           339, 214,//2
-           435, 251,//3
-           472, 387,//4
-           444, 493,//5
-           341, 562,//6
-           240, 487,//7
-           338, 381,//8
+//           213, 383,//0
+//           236, 251,//1
+//           339, 214,//2
+//           435, 251,//3
+//           472, 387,//4
+//           444, 493,//5
+//           341, 562,//6
+//           240, 487,//7
+//           338, 381,//8
+				146, 101,//0
+				174, 36, //1
+				232, 6,  //2
+				307, 38, //3
+				335, 105,//4
+				305, 218,//5
+				250, 267,//6
+				191, 218,//7
+				237, 160,//8
         };
 
 static float DotProduct(vec2 a, vec2 b)
@@ -172,7 +181,7 @@ void BigHeadSample::Draw(int screenW, int screenH)
 	CalculateMesh(ratio - 0.5f);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(m_Vertices), m_Vertices, GL_DYNAMIC_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(m_Vertices), m_Vertices);
 
 	glUseProgram (m_ProgramObj);
 
@@ -257,6 +266,8 @@ void BigHeadSample::CalculateMesh(float warpLevel) {
 	vec2 centerPoint(KEY_POINTS[16] / m_RenderImage.width, KEY_POINTS[17] / m_RenderImage.height);
 	m_KeyPointsInts[8] = centerPoint;
 	m_KeyPoints[8] = centerPoint;
+	vec2 warpKeyPoints[KEY_POINTS_COUNT];
+	warpKeyPoints[8] = centerPoint;
 	for (int i = 0; i < KEY_POINTS_COUNT - 1; ++i) {
 		vec2 inputPoint(KEY_POINTS[i * 2] / m_RenderImage.width, KEY_POINTS[i * 2 + 1] / m_RenderImage.height);
 		m_KeyPoints[i] = WarpKeyPoint(inputPoint, centerPoint, warpLevel);
@@ -395,6 +406,6 @@ vec2 BigHeadSample::CalculateIntersection(vec2 inputPoint, vec2 centerPoint) {
 vec2 BigHeadSample::WarpKeyPoint(vec2 input, vec2 centerPoint, float level) {
 	vec2 output;
 	vec2 direct_vec = centerPoint - input;
-	output = input + level * direct_vec * 0.24f;
+	output = input + level * direct_vec * 0.3f;
 	return output;
 }
