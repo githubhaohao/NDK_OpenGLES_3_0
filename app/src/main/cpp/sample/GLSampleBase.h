@@ -39,7 +39,7 @@
 #define SAMPLE_TYPE_KEY_BIG_EYES                SAMPLE_TYPE + 23
 #define SAMPLE_TYPE_KEY_FACE_SLENDER            SAMPLE_TYPE + 24
 #define SAMPLE_TYPE_KEY_BIG_HEAD                SAMPLE_TYPE + 25
-
+#define SAMPLE_TYPE_KEY_RATARY_HEAD             SAMPLE_TYPE + 26
 
 
 class GLSampleBase
