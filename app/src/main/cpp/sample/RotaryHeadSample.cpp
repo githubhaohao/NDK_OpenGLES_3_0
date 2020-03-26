@@ -3,29 +3,29 @@
 //
 
 #include <gtc/matrix_transform.hpp>
-#include "BigHeadSample.h"
+#include "RotaryHeadSample.h"
 #include "../util/GLUtils.h"
 #include "CommonDef.h"
 
-float KEY_POINTS[KEY_POINTS_COUNT * 2] =
+static float KEY_POINTS[KEY_POINTS_COUNT * 2] =
         {
-           213, 383,//0
-           236, 251,//1
-           339, 214,//2
-           435, 251,//3
-           472, 387,//4
-           444, 493,//5
-           341, 562,//6
-           240, 487,//7
-           338, 381,//8
+           146, 101,//0
+           174, 36, //1
+           232, 6,  //2
+           307, 38, //3
+           335, 105,//4
+           305, 218,//5
+           250, 267,//6
+           191, 218,//7
+           237, 160,//8
         };
 
-float DotProduct(vec2 a, vec2 b)
+static float DotProduct(vec2 a, vec2 b)
 {
 	return a.x * b.x + a.y * b.y;
 }
 
-BigHeadSample::BigHeadSample()
+RotaryHeadSample::RotaryHeadSample()
 {
 
 	m_SamplerLoc = GL_NONE;
@@ -42,13 +42,13 @@ BigHeadSample::BigHeadSample()
 	m_FrameIndex = 0;
 }
 
-BigHeadSample::~BigHeadSample()
+RotaryHeadSample::~RotaryHeadSample()
 {
 	NativeImageUtil::FreeNativeImage(&m_RenderImage);
 
 }
 
-void BigHeadSample::Init()
+void RotaryHeadSample::Init()
 {
 	if(m_ProgramObj)
 		return;
@@ -92,7 +92,7 @@ void BigHeadSample::Init()
 	}
 	else
 	{
-		LOGCATE("BigHeadSample::Init create program fail");
+		LOGCATE("RotaryHeadSample::Init create program fail");
 	}
 
 	CalculateMesh(0);
@@ -124,9 +124,9 @@ void BigHeadSample::Init()
 	glBindVertexArray(GL_NONE);
 }
 
-void BigHeadSample::LoadImage(NativeImage *pImage)
+void RotaryHeadSample::LoadImage(NativeImage *pImage)
 {
-	LOGCATE("BigHeadSample::LoadImage pImage = %p", pImage->ppPlane[0]);
+	LOGCATE("RotaryHeadSample::LoadImage pImage = %p", pImage->ppPlane[0]);
 	if (pImage)
 	{
         ScopedSyncLock lock(&m_Lock);
@@ -138,9 +138,9 @@ void BigHeadSample::LoadImage(NativeImage *pImage)
 
 }
 
-void BigHeadSample::Draw(int screenW, int screenH)
+void RotaryHeadSample::Draw(int screenW, int screenH)
 {
-	LOGCATE("BigHeadSample::Draw() [w,h]=[%d,%d]", screenW, screenH);
+	LOGCATE("RotaryHeadSample::Draw() [w,h]=[%d,%d]", screenW, screenH);
 
 	if(m_ProgramObj == GL_NONE) return;
 
@@ -157,6 +157,7 @@ void BigHeadSample::Draw(int screenW, int screenH)
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderImage.width, m_RenderImage.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_RenderImage.ppPlane[0]);
             glBindTexture(GL_TEXTURE_2D, GL_NONE);
+            GO_CHECK_GL_ERROR();
         }
         return;
     }
@@ -167,16 +168,13 @@ void BigHeadSample::Draw(int screenW, int screenH)
 
 
 	float ratio = (m_FrameIndex % 100) * 1.0f / 100;
-	ratio = (m_FrameIndex / 100) % 2 == 1 ? (1 - ratio) : ratio;
+	//ratio = (m_FrameIndex / 100) % 2 == 1 ? (1 - ratio) : ratio;
 
-	CalculateMesh(ratio - 0.5f);
-
-	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(m_Vertices), m_Vertices, GL_DYNAMIC_DRAW);
-
+	CalculateMesh(static_cast<float>(ratio * 2 * MATH_PI));
 	glUseProgram (m_ProgramObj);
-
 	glBindVertexArray(m_VaoId);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(m_Vertices), m_Vertices);
 	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 
 	glActiveTexture(GL_TEXTURE0);
@@ -191,7 +189,7 @@ void BigHeadSample::Draw(int screenW, int screenH)
 
 }
 
-void BigHeadSample::Destroy()
+void RotaryHeadSample::Destroy()
 {
 	if (m_ProgramObj)
 	{
@@ -209,9 +207,9 @@ void BigHeadSample::Destroy()
  * @param angleY 绕Y轴旋转度数
  * @param ratio 宽高比
  * */
-void BigHeadSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio)
+void RotaryHeadSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio)
 {
-	LOGCATE("BigHeadSample::UpdateMVPMatrix angleX = %d, angleY = %d, ratio = %f", angleX, angleY, ratio);
+	LOGCATE("RotaryHeadSample::UpdateMVPMatrix angleX = %d, angleY = %d, ratio = %f", angleX, angleY, ratio);
 	angleX = angleX % 360;
 	angleY = angleY % 360;
 
@@ -243,7 +241,7 @@ void BigHeadSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY
 
 }
 
-void BigHeadSample::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
+void RotaryHeadSample::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
 {
 	GLSampleBase::UpdateTransformMatrix(rotateX, rotateY, scaleX, scaleY);
 	m_AngleX = static_cast<int>(rotateX);
@@ -252,16 +250,18 @@ void BigHeadSample::UpdateTransformMatrix(float rotateX, float rotateY, float sc
 	m_ScaleY = scaleY;
 }
 
-void BigHeadSample::CalculateMesh(float warpLevel) {
+void RotaryHeadSample::CalculateMesh(float rotaryAngle) {
 
 	vec2 centerPoint(KEY_POINTS[16] / m_RenderImage.width, KEY_POINTS[17] / m_RenderImage.height);
+	//centerPoint = RotaryKeyPoint(centerPoint, rotaryAngle);
 	m_KeyPointsInts[8] = centerPoint;
-	m_KeyPoints[8] = centerPoint;
+	m_KeyPoints[8] = RotaryKeyPoint(centerPoint, rotaryAngle);
 	for (int i = 0; i < KEY_POINTS_COUNT - 1; ++i) {
 		vec2 inputPoint(KEY_POINTS[i * 2] / m_RenderImage.width, KEY_POINTS[i * 2 + 1] / m_RenderImage.height);
-		m_KeyPoints[i] = WarpKeyPoint(inputPoint, centerPoint, warpLevel);
+		//inputPoint = RotaryKeyPoint(inputPoint, rotaryAngle);
+		m_KeyPoints[i] = RotaryKeyPoint(inputPoint, rotaryAngle);;
 		m_KeyPointsInts[i] = CalculateIntersection(inputPoint, centerPoint);
-		LOGCATE("BigHeadSample::CalculateMesh index=%d, input[x,y]=[%f, %f], interscet[x, y]=[%f, %f]", i,
+		LOGCATE("RotaryHeadSample::CalculateMesh index=%d, input[x,y]=[%f, %f], interscet[x, y]=[%f, %f]", i,
 				m_KeyPoints[i].x, m_KeyPoints[i].y, m_KeyPointsInts[i].x, m_KeyPointsInts[i].y);
 	}
 
@@ -328,7 +328,7 @@ void BigHeadSample::CalculateMesh(float warpLevel) {
 	}
 }
 
-vec2 BigHeadSample::CalculateIntersection(vec2 inputPoint, vec2 centerPoint) {
+vec2 RotaryHeadSample::CalculateIntersection(vec2 inputPoint, vec2 centerPoint) {
 	vec2 outputPoint;
 	if(inputPoint.x == centerPoint.x) //直线与 y 轴平行
 	{
@@ -392,9 +392,13 @@ vec2 BigHeadSample::CalculateIntersection(vec2 inputPoint, vec2 centerPoint) {
 	return outputPoint;
 }
 
-vec2 BigHeadSample::WarpKeyPoint(vec2 input, vec2 centerPoint, float level) {
-	vec2 output;
-	vec2 direct_vec = centerPoint - input;
-	output = input + level * direct_vec * 0.24f;
-	return output;
+vec2 RotaryHeadSample::RotaryKeyPoint(vec2 input, float rotaryAngle) {
+	return input + vec2(cos(rotaryAngle), sin(rotaryAngle)) * 0.02f;
 }
+
+//vec2 RotaryHeadSample::WarpKeyPoint(vec2 input, vec2 centerPoint, float level) {
+//	vec2 output;
+//	vec2 direct_vec = centerPoint - input;
+//	output = input + level * direct_vec * 0.24f;
+//	return output;
+//}
