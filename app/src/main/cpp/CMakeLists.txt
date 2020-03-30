@@ -55,7 +55,10 @@ set(src-files
         sample/ShockWaveSample.cpp
         sample/BezierCurveSample.cpp
         sample/BigEyesSample.cpp
-        sample/FaceSlenderSample.cpp)
+        sample/FaceSlenderSample.cpp
+        sample/BigHeadSample.cpp
+        sample/RotaryHeadSample.cpp
+        )
 
 add_library( # Sets the name of the library.
              native-render
