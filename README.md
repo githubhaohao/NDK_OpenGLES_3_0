@@ -60,13 +60,13 @@
 
 ## 应用篇
 
-- [OpenGL ES 实现心动特效](https://blog.csdn.net/Kennethdroid/article/details/104536532)
+- [Android OpenGL ES 实现心动特效](https://blog.csdn.net/Kennethdroid/article/details/104536532)
 
-- [OpenGL ES 实现瘦身大长腿效果](https://blog.csdn.net/Kennethdroid/article/details/104546234)
+- [Android OpenGL ES 实现瘦身大长腿效果](https://blog.csdn.net/Kennethdroid/article/details/104546234)
 
-- [OpenGL ES 绘制贝塞尔曲线](https://blog.csdn.net/Kennethdroid/article/details/104721096)
+- [Android OpenGL ES 绘制贝塞尔曲线](https://blog.csdn.net/Kennethdroid/article/details/104721096)
 
-- [OpenGL ES 实现瘦脸大眼效果](https://blog.csdn.net/Kennethdroid/article/details/104907763)
+- [Android OpenGL ES 实现瘦脸大眼效果](https://blog.csdn.net/Kennethdroid/article/details/104907763)
 
-- [OpenGL ES 实现头部形变和头部晃动效果](https://blog.csdn.net/Kennethdroid/article/details/105208054)
+- [Android OpenGL ES 实现头部形变和头部晃动效果](https://blog.csdn.net/Kennethdroid/article/details/105208054)
 
