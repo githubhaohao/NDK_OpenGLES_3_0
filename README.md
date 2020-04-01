@@ -10,6 +10,8 @@
 ![beating_heart](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/beating_heart.gif)
 ![poly_3d_model](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/poly.gif)
 
+## 教程篇
+
 - [NDK OpenGL ES 3.0 开发（一）：绘制一个三角形](https://www.jianshu.com/p/3f3518194066)
 
 - [NDK OpenGL ES 3.0 开发（二）：纹理映射](https://www.jianshu.com/p/545e96798c68)
@@ -53,3 +55,16 @@
 - [NDK OpenGL ES 3.0 开发（二十一）：3D 模型加载和渲染](https://www.jianshu.com/p/c690872a036f)
 
 - [NDK OpenGL ES 3.0 开发（二十二）：PBO](https://www.jianshu.com/p/80f0d0d83fb2)
+
+## 应用篇
+
+- [OpenGL ES 实现心动特效](https://blog.csdn.net/Kennethdroid/article/details/104536532)
+
+- [OpenGL ES 实现瘦身大长腿效果](https://blog.csdn.net/Kennethdroid/article/details/104546234)
+
+- [OpenGL ES 绘制贝塞尔曲线](https://blog.csdn.net/Kennethdroid/article/details/104721096)
+
+- [OpenGL ES 实现瘦脸大眼效果](https://blog.csdn.net/Kennethdroid/article/details/104907763)
+
+- [OpenGL ES 实现头部形变和头部晃动效果](https://blog.csdn.net/Kennethdroid/article/details/105208054)
+
