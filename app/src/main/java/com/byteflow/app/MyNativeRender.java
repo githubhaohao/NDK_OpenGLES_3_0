@@ -28,8 +28,8 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_KEY_BEZIER_CURVE        = SAMPLE_TYPE + 22;
     public static final int SAMPLE_TYPE_KEY_BIG_EYES            = SAMPLE_TYPE + 23;
     public static final int SAMPLE_TYPE_KEY_FACE_SLENDER        = SAMPLE_TYPE + 24;
-
-
+    public static final int SAMPLE_TYPE_KEY_BIG_HEAD            = SAMPLE_TYPE + 25;
+    public static final int SAMPLE_TYPE_KEY_ROTARY_HEAD         = SAMPLE_TYPE + 26;
 
     static {
         System.loadLibrary("native-render");
