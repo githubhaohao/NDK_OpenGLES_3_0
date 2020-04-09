@@ -49,8 +49,10 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEATING_HEART;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEZIER_CURVE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BIG_EYES;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BIG_HEAD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_CLOUD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FACE_SLENDER;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_ROTARY_HEAD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SHOCK_WAVE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_PARTICLES;
@@ -94,7 +96,9 @@ public class MainActivity extends AppCompatActivity {
             "Shock Wave",
             "Bezier Curve",
             "Big Eyes",
-            "Face Slender"
+            "Face Slender",
+            "Big Head",
+            "Rotary Head"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -265,6 +269,12 @@ public class MainActivity extends AppCompatActivity {
                     case SAMPLE_TYPE_KEY_FACE_SLENDER:
                         Bitmap bitmap = LoadRGBAImage(R.drawable.yifei);
                         mGLSurfaceView.setAspectRatio(bitmap.getWidth(), bitmap.getHeight());
+                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        break;
+                    case SAMPLE_TYPE_KEY_BIG_HEAD:
+                    case SAMPLE_TYPE_KEY_ROTARY_HEAD:
+                        Bitmap b = LoadRGBAImage(R.drawable.huge);
+                        mGLSurfaceView.setAspectRatio(b.getWidth(), b.getHeight());
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;
                     default:
