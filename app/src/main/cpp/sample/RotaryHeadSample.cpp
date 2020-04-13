@@ -185,7 +185,7 @@ void RotaryHeadSample::Draw(int screenW, int screenH)
 	glDrawArrays(GL_TRIANGLES, 0, TRIANGLE_COUNT * 3);
 
 	GLUtils::setFloat(m_ProgramObj, "u_type", 1);
-	glDrawArrays(GL_LINE_STRIP, 0, TRIANGLE_COUNT * 3);
+	//glDrawArrays(GL_LINE_STRIP, 0, TRIANGLE_COUNT * 3);
 
 }
 

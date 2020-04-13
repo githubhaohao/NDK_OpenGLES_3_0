@@ -9,15 +9,6 @@
 
 static float KEY_POINTS[KEY_POINTS_COUNT * 2] =
         {
-//           213, 383,//0
-//           236, 251,//1
-//           339, 214,//2
-//           435, 251,//3
-//           472, 387,//4
-//           444, 493,//5
-//           341, 562,//6
-//           240, 487,//7
-//           338, 381,//8
 				146, 101,//0
 				174, 36, //1
 				232, 6,  //2
@@ -196,7 +187,7 @@ void BigHeadSample::Draw(int screenW, int screenH)
 	glDrawArrays(GL_TRIANGLES, 0, TRIANGLE_COUNT * 3);
 
 	GLUtils::setFloat(m_ProgramObj, "u_type", 1);
-	glDrawArrays(GL_LINE_STRIP, 0, TRIANGLE_COUNT * 3);
+	//glDrawArrays(GL_LINE_STRIP, 0, TRIANGLE_COUNT * 3);
 
 }
 
