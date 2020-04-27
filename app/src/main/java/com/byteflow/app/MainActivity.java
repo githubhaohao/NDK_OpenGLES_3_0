@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final String[] REQUEST_PERMISSIONS = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.RECORD_AUDIO,
     };
     private static final int PERMISSION_REQUEST_CODE = 1;
     private static final String[] SAMPLE_TITLES = {
