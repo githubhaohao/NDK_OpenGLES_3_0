@@ -15,7 +15,7 @@ public class AudioRecorderWrapper implements AudioRecord.OnRecordPositionUpdateL
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     private AudioRecord mAudioRecord;
     private Thread mThread;
-    private byte[] mAudioBuffer;
+    private short[] mAudioBuffer;
     private Handler mHandler;
     private int mBufferSize;
     private Callback mCallback;
@@ -33,7 +33,7 @@ public class AudioRecorderWrapper implements AudioRecord.OnRecordPositionUpdateL
             @Override
             public void run() {
                 super.run();
-                mAudioBuffer = new byte[mBufferSize];
+                mAudioBuffer = new short[mBufferSize];
                 Looper.prepare();
                 mHandler = new Handler(Looper.myLooper());
                 mAudioRecord.setRecordPositionUpdateListener(AudioRecorderWrapper.this, mHandler);
@@ -74,6 +74,6 @@ public class AudioRecorderWrapper implements AudioRecord.OnRecordPositionUpdateL
 
 
     interface Callback {
-        void onAudioBufferCallback(byte[] buffer); //little-endian
+        void onAudioBufferCallback(short[] buffer); //little-endian
     }
 }
