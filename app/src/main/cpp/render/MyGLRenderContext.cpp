@@ -158,6 +158,15 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 	}
 }
 
+void MyGLRenderContext::SetParamsShortArr(short *const pShortArr, int arrSize) {
+	LOGCATE("MyGLRenderContext::SetParamsShortArr pShortArr=%p, arrSize=%d, pShortArr[0]=%d", pShortArr, arrSize, pShortArr[0]);
+	if(m_pCurSample)
+	{
+		m_pCurSample->SetParamsShortArr(pShortArr, arrSize);
+	}
+
+}
+
 void MyGLRenderContext::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
 {
 	LOGCATE("MyGLRenderContext::UpdateTransformMatrix [rotateX, rotateY, scaleX, scaleY] = [%f, %f, %f, %f]", rotateX, rotateY, scaleX, scaleY);

@@ -24,6 +24,8 @@ public:
 
 	void SetParamsInt(int paramType, int value0, int value1);
 
+	void SetParamsShortArr(short *const pShortArr, int arrSize);
+
 	void UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY);
 
 	void OnSurfaceCreated();

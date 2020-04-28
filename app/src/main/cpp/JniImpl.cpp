@@ -79,11 +79,26 @@ JNIEXPORT void JNICALL native_SetParamsInt
 
 /*
  * Class:     com_byteflow_app_MyNativeRender
+ * Method:    native_SetAudioData
+ * Signature: ([B)V
+ */
+JNIEXPORT void JNICALL native_SetAudioData
+		(JNIEnv *env, jobject instance, jshortArray data)
+{
+    int len = env->GetArrayLength(data);
+    short *pShortBuf = new short[len];
+    env->GetShortArrayRegion(data, 0, len, reinterpret_cast<jshort*>(pShortBuf));
+	MyGLRenderContext::GetInstance()->SetParamsShortArr(pShortBuf, len);
+    delete[] pShortBuf;
+    env->DeleteLocalRef(data);
+}
+
+/*
+ * Class:     com_byteflow_app_MyNativeRender
  * Method:    native_UpdateTransformMatrix
  * Signature: (FFFF)V
  */
-JNIEXPORT void JNICALL native_UpdateTransformMatrix
-		(JNIEnv *env, jobject instance, jfloat rotateX, jfloat rotateY, jfloat scaleX, jfloat scaleY)
+JNIEXPORT void JNICALL native_UpdateTransformMatrix(JNIEnv *env, jobject instance, jfloat rotateX, jfloat rotateY, jfloat scaleX, jfloat scaleY)
 {
 	MyGLRenderContext::GetInstance()->UpdateTransformMatrix(rotateX, rotateY, scaleX, scaleY);
 }
@@ -191,6 +206,7 @@ static JNINativeMethod g_RenderMethods[] = {
 		{"native_SetImageData",              "(III[B)V",  (void *)(native_SetImageData)},
 		{"native_SetImageDataWithIndex",     "(IIII[B)V", (void *)(native_SetImageDataWithIndex)},
 		{"native_SetParamsInt",              "(III)V",    (void *)(native_SetParamsInt)},
+		{"native_SetAudioData",              "([S)V",     (void *)(native_SetAudioData)},
 		{"native_UpdateTransformMatrix",     "(FFFF)V",   (void *)(native_UpdateTransformMatrix)},
 		{"native_OnSurfaceCreated",          "()V",       (void *)(native_OnSurfaceCreated)},
 		{"native_OnSurfaceChanged",          "(II)V",     (void *)(native_OnSurfaceChanged)},

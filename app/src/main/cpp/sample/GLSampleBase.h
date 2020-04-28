@@ -67,6 +67,9 @@ public:
 	virtual void SetParamsInt(int paramType, int value0, int value1)
 	{};
 
+	virtual void SetParamsShortArr(short *const pShortArr, int arrSize)
+	{}
+
 	virtual void UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
 	{}
 

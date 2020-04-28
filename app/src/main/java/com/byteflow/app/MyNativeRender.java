@@ -47,6 +47,8 @@ public class MyNativeRender {
 
     public native void native_SetImageDataWithIndex(int index, int format, int width, int height, byte[] bytes);
 
+    public native void native_SetAudioData(short[] audioData);
+
     public native void native_OnSurfaceCreated();
 
     public native void native_OnSurfaceChanged(int width, int height);
