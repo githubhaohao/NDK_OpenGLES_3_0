@@ -18,47 +18,15 @@ include_directories(
         opencv_3_0_0
 )
 
-#add_library(cryptopp STATIC IMPORTED )
-#set_target_properties(cryptopp PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/libs/libcryptopp.a)
-
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
-set(src-files
-        JniImpl.cpp
-        render/MyGLRenderContext.cpp
-        render/EGLRender.cpp
-        util/GLUtils.cpp
-        sample/TriangleSample.cpp
-        sample/TextureMapSample.cpp
-        sample/NV21TextureMapSample.cpp
-        sample/VaoSample.cpp
-        sample/FBOSample.cpp
-        sample/FBOLegLengthenSample.cpp
-        sample/CoordSystemSample.cpp
-        sample/BasicLightingSample.cpp
-        sample/TransformFeedbackSample.cpp
-        sample/MultiLightsSample.cpp
-        sample/DepthTestingSample.cpp
-        sample/InstancingSample.cpp
-        sample/Instancing3DSample.cpp
-        sample/StencilTestingSample.cpp
-        sample/BlendingSample.cpp
-        sample/ParticlesSample.cpp
-        sample/Noise3DSample.cpp
-        sample/SkyBoxSample.cpp
-        sample/Model3DSample.cpp
-        sample/PBOSample.cpp
-        sample/BeatingHeartSample.cpp
-        sample/CloudSample.cpp
-        sample/ShockWaveSample.cpp
-        sample/BezierCurveSample.cpp
-        sample/BigEyesSample.cpp
-        sample/FaceSlenderSample.cpp
-        sample/BigHeadSample.cpp
-        sample/RotaryHeadSample.cpp
-        )
+file(GLOB src-files
+        ${CMAKE_SOURCE_DIR}/*.cpp
+        ${CMAKE_SOURCE_DIR}/render/*.cpp
+        ${CMAKE_SOURCE_DIR}/util/*.cpp
+        ${CMAKE_SOURCE_DIR}/sample/*.cpp)
 
 add_library( # Sets the name of the library.
              native-render
