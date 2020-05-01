@@ -30,6 +30,7 @@
 #include <FaceSlenderSample.h>
 #include <BigHeadSample.h>
 #include <RotaryHeadSample.h>
+#include <VisualizeAudioSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -149,6 +150,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 			case SAMPLE_TYPE_KEY_RATARY_HEAD:
 				m_pCurSample = new RotaryHeadSample();
 				break;
+			case SAMPLE_TYPE_KEY_VISUALIZE_AUDIO:
+				m_pCurSample = new VisualizeAudioSample();
+				break;
 			default:
 			    m_pCurSample = nullptr;
 				break;
@@ -162,7 +166,7 @@ void MyGLRenderContext::SetParamsShortArr(short *const pShortArr, int arrSize) {
 	LOGCATE("MyGLRenderContext::SetParamsShortArr pShortArr=%p, arrSize=%d, pShortArr[0]=%d", pShortArr, arrSize, pShortArr[0]);
 	if(m_pCurSample)
 	{
-		m_pCurSample->SetParamsShortArr(pShortArr, arrSize);
+		m_pCurSample->LoadShortArrData(pShortArr, arrSize);
 	}
 
 }

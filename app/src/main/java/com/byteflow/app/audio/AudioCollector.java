@@ -5,9 +5,8 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
-public class AudioRecorderWrapper implements AudioRecord.OnRecordPositionUpdateListener{
+public class AudioCollector implements AudioRecord.OnRecordPositionUpdateListener{
     private static final String TAG = "AudioRecorderWrapper";
     private static final int RECORDER_SAMPLE_RATE = 44100;
     private static final int RECORDER_CHANNELS = 1;
@@ -20,14 +19,14 @@ public class AudioRecorderWrapper implements AudioRecord.OnRecordPositionUpdateL
     private int mBufferSize;
     private Callback mCallback;
 
-    public AudioRecorderWrapper() {
+    public AudioCollector() {
         mBufferSize = 2 * AudioRecord.getMinBufferSize(RECORDER_SAMPLE_RATE,
                 RECORDER_CHANNELS, RECORDER_AUDIO_ENCODING);
-        mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, RECORDER_SAMPLE_RATE,
-                RECORDER_CHANNELS, RECORDER_AUDIO_ENCODING, mBufferSize);
     }
 
-    public void initWrapper() {
+    public void init() {
+        mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, RECORDER_SAMPLE_RATE,
+                RECORDER_CHANNELS, RECORDER_AUDIO_ENCODING, mBufferSize);
         mAudioRecord.startRecording();
         mThread = new Thread("Audio-Recorder") {
             @Override
@@ -36,7 +35,7 @@ public class AudioRecorderWrapper implements AudioRecord.OnRecordPositionUpdateL
                 mAudioBuffer = new short[mBufferSize];
                 Looper.prepare();
                 mHandler = new Handler(Looper.myLooper());
-                mAudioRecord.setRecordPositionUpdateListener(AudioRecorderWrapper.this, mHandler);
+                mAudioRecord.setRecordPositionUpdateListener(AudioCollector.this, mHandler);
                 int bytePerSample = RECORDER_ENCODING_BIT / 8;
                 float samplesToDraw = mBufferSize / bytePerSample;
                 mAudioRecord.setPositionNotificationPeriod((int) samplesToDraw);
@@ -47,9 +46,13 @@ public class AudioRecorderWrapper implements AudioRecord.OnRecordPositionUpdateL
         mThread.start();
     }
 
-    public void uninitWrapper() {
-        mAudioRecord.release();
-        mHandler.getLooper().quitSafely();
+    public void uninit() {
+        if(mAudioRecord != null) {
+            mAudioRecord.stop();
+            mAudioRecord.release();
+            mHandler.getLooper().quitSafely();
+            mAudioRecord = null;
+        }
     }
 
     public void addCallback(Callback callback) {
@@ -72,8 +75,7 @@ public class AudioRecorderWrapper implements AudioRecord.OnRecordPositionUpdateL
 
     }
 
-
-    interface Callback {
+    public interface Callback {
         void onAudioBufferCallback(short[] buffer); //little-endian
     }
 }

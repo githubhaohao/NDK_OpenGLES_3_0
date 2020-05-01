@@ -7,16 +7,13 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
-import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_3D_MODEL;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_BASIC_LIGHTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_COORD_SYSTEM;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_DEPTH_TESTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_VISUALIZE_AUDIO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_PARTICLES;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_PBO;
@@ -97,7 +94,8 @@ public class MyGLSurfaceView extends GLSurfaceView implements ScaleGestureDetect
                     case SAMPLE_TYPE_SKYBOX:
                     case SAMPLE_TYPE_3D_MODEL:
                     case SAMPLE_TYPE_PBO:
-                        mGLRender.UpdateTransformMatrix(mXAngle, mYAngle, mCurScale, mCurScale);
+                    case SAMPLE_TYPE_KEY_VISUALIZE_AUDIO:
+                        mGLRender.updateTransformMatrix(mXAngle, mYAngle, mCurScale, mCurScale);
                         requestRender();
                         break;
                     default:
@@ -150,6 +148,7 @@ public class MyGLSurfaceView extends GLSurfaceView implements ScaleGestureDetect
             case SAMPLE_TYPE_BASIC_LIGHTING:
             case SAMPLE_TYPE_INSTANCING:
             case SAMPLE_TYPE_3D_MODEL:
+            case SAMPLE_TYPE_KEY_VISUALIZE_AUDIO:
             {
                 float preSpan = detector.getPreviousSpan();
                 float curSpan = detector.getCurrentSpan();
@@ -159,7 +158,7 @@ public class MyGLSurfaceView extends GLSurfaceView implements ScaleGestureDetect
                     mCurScale = mPreScale + (curSpan - preSpan) / 200;
                 }
                 mCurScale = Math.max(0.05f, Math.min(mCurScale, 80.0f));
-                mGLRender.UpdateTransformMatrix(mXAngle, mYAngle, mCurScale, mCurScale);
+                mGLRender.updateTransformMatrix(mXAngle, mYAngle, mCurScale, mCurScale);
                 requestRender();
             }
                 break;
@@ -179,66 +178,6 @@ public class MyGLSurfaceView extends GLSurfaceView implements ScaleGestureDetect
     public void onScaleEnd(ScaleGestureDetector detector) {
         mPreScale = mCurScale;
         mLastMultiTouchTime = System.currentTimeMillis();
-
-    }
-
-    public static class MyGLRender implements GLSurfaceView.Renderer {
-        private MyNativeRender mNativeRender;
-        private int mSampleType;
-
-        MyGLRender() {
-            mNativeRender = new MyNativeRender();
-        }
-
-        @Override
-        public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-            mNativeRender.native_OnSurfaceCreated();
-
-        }
-
-        @Override
-        public void onSurfaceChanged(GL10 gl, int width, int height) {
-            mNativeRender.native_OnSurfaceChanged(width, height);
-
-        }
-
-        @Override
-        public void onDrawFrame(GL10 gl) {
-            mNativeRender.native_OnDrawFrame();
-
-        }
-
-        public void Init() {
-            mNativeRender.native_Init();
-        }
-
-        public void UnInit() {
-            mNativeRender.native_UnInit();
-        }
-
-        public void SetParamsInt(int paramType, int value0, int value1) {
-            if (paramType == SAMPLE_TYPE) {
-                mSampleType = value0;
-            }
-            mNativeRender.native_SetParamsInt(paramType, value0, value1);
-        }
-
-        public void SetImageData(int format, int width, int height, byte[] bytes) {
-            mNativeRender.native_SetImageData(format, width, height, bytes);
-        }
-
-        public void SetImageDataWithIndex(int index, int format, int width, int height, byte[] bytes) {
-            mNativeRender.native_SetImageDataWithIndex(index, format, width, height, bytes);
-        }
-
-        public int getSampleType() {
-            return mSampleType;
-        }
-
-        public void UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
-        {
-            mNativeRender.native_UpdateTransformMatrix(rotateX, rotateY, scaleX, scaleY);
-        }
 
     }
 }
