@@ -40,6 +40,7 @@
 #define SAMPLE_TYPE_KEY_FACE_SLENDER            SAMPLE_TYPE + 24
 #define SAMPLE_TYPE_KEY_BIG_HEAD                SAMPLE_TYPE + 25
 #define SAMPLE_TYPE_KEY_RATARY_HEAD             SAMPLE_TYPE + 26
+#define SAMPLE_TYPE_KEY_VISUALIZE_AUDIO         SAMPLE_TYPE + 27
 
 
 class GLSampleBase
@@ -64,10 +65,7 @@ public:
 	virtual void LoadMultiImageWithIndex(int index, NativeImage *pImage)
 	{};
 
-	virtual void SetParamsInt(int paramType, int value0, int value1)
-	{};
-
-	virtual void SetParamsShortArr(short *const pShortArr, int arrSize)
+	virtual void LoadShortArrData(short *const pShortArr, int arrSize)
 	{}
 
 	virtual void UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)

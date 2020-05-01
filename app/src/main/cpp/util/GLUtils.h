@@ -81,5 +81,10 @@ public:
 		glUniformMatrix4fv(glGetUniformLocation(programId, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 	}
 
+	static glm::vec3 texCoordToVertexCoord(glm::vec2 texCoord)
+	{
+		return glm::vec3(2 * texCoord.x - 1, 1 - 2 * texCoord.y, 0);
+	}
+
 };
 #endif // _BYTE_FLOW_GL_UTILS_H_
