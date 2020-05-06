@@ -94,7 +94,6 @@ public class MyGLSurfaceView extends GLSurfaceView implements ScaleGestureDetect
                     case SAMPLE_TYPE_SKYBOX:
                     case SAMPLE_TYPE_3D_MODEL:
                     case SAMPLE_TYPE_PBO:
-                    case SAMPLE_TYPE_KEY_VISUALIZE_AUDIO:
                         mGLRender.updateTransformMatrix(mXAngle, mYAngle, mCurScale, mCurScale);
                         requestRender();
                         break;
