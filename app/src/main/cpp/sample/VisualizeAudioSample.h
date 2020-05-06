@@ -2,10 +2,11 @@
 // Created by ByteFlow on 2019/7/30.
 //
 
-#ifndef NDK_OPENGLES_3_0_COORDSYSTEMSAMPLE_H
-#define NDK_OPENGLES_3_0_COORDSYSTEMSAMPLE_H
+#ifndef NDK_OPENGLES_3_0_VISUALIZEAUDIOSAMPLE_H
+#define NDK_OPENGLES_3_0_VISUALIZEAUDIOSAMPLE_H
 
-#define MAX_AUDIO_LEVEL 4000
+#define MAX_AUDIO_LEVEL 2000
+#define RESAMPLE_LEVEL  150
 
 #include <detail/type_mat.hpp>
 #include <detail/type_mat4x4.hpp>
@@ -54,6 +55,7 @@ private:
 
 	vec3 *m_pVerticesCoords;
 	vec2 *m_pTextureCoords;
+	int m_RenderDataSize;
 
 };
 

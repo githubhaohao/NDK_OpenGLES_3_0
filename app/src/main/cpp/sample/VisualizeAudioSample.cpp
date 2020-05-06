@@ -72,6 +72,7 @@ void VisualizeAudioSample::Init() {
             "{\n"
             "    gl_Position = u_MVPMatrix * a_position;\n"
             "    v_texCoord = a_texCoord;\n"
+            "    gl_PointSize = 4.0f;\n"
             "}";
 
     char fShaderStr[] =
@@ -79,26 +80,32 @@ void VisualizeAudioSample::Init() {
             "precision mediump float;                            \n"
             "in vec2 v_texCoord;                                 \n"
             "layout(location = 0) out vec4 outColor;             \n"
-            "uniform sampler2D s_TextureMap;                     \n"
+            "uniform float drawType;                             \n"
             "void main()                                         \n"
             "{                                                   \n"
-            "  outColor = texture(s_TextureMap, v_texCoord);     \n"
+            "  if(drawType == 1.0)                               \n"
+            "  {                                                 \n"
+            "      outColor = vec4(1.5 - v_texCoord.y, 0.3, 0.3, 1.0); \n"
+            "  }                                                 \n"
+            "  else                                              \n"
+            "  {                                                 \n"
+            "      outColor = vec4(1.0, 1.0, 1.0, 1.0);          \n"
+            "  }                                                 \n"
             "}                                                   \n";
 
     m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr, m_VertexShader, m_FragmentShader);
     if (m_ProgramObj) {
-        m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "s_TextureMap");
         m_MVPMatLoc = glGetUniformLocation(m_ProgramObj, "u_MVPMatrix");
     } else {
         LOGCATE("VisualizeAudioSample::Init create program fail");
     }
 
     //upload RGBA image data
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_TextureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderImage.width, m_RenderImage.height, 0, GL_RGBA,
-                 GL_UNSIGNED_BYTE, m_RenderImage.ppPlane[0]);
-    glBindTexture(GL_TEXTURE_2D, GL_NONE);
+//    glActiveTexture(GL_TEXTURE0);
+//    glBindTexture(GL_TEXTURE_2D, m_TextureId);
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderImage.width, m_RenderImage.height, 0, GL_RGBA,
+//                 GL_UNSIGNED_BYTE, m_RenderImage.ppPlane[0]);
+//    glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
 }
 
@@ -131,10 +138,10 @@ void VisualizeAudioSample::Draw(int screenW, int screenH) {
         glGenBuffers(2, m_VboIds);
     }
     glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * m_AudioDataSize * 6 * 3, m_pVerticesCoords, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * m_RenderDataSize * 6 * 3, m_pVerticesCoords, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * m_AudioDataSize * 6 * 2, m_pTextureCoords, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * m_RenderDataSize * 6 * 2, m_pTextureCoords, GL_STATIC_DRAW);
     lock.unlock();
 
     if(m_VaoId == GL_NONE)
@@ -163,12 +170,15 @@ void VisualizeAudioSample::Draw(int screenW, int screenH) {
 
     glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 
-    // Bind the RGBA map
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_TextureId);
-    glUniform1i(m_SamplerLoc, 0);
+//    // Bind the RGBA map
+//    glActiveTexture(GL_TEXTURE0);
+//    glBindTexture(GL_TEXTURE_2D, m_TextureId);
+//    glUniform1i(m_SamplerLoc, 0);
+    GLUtils::setFloat(m_ProgramObj, "drawType", 1.0f);
+    glDrawArrays(GL_TRIANGLES, 0, m_RenderDataSize * 6);
+    GLUtils::setFloat(m_ProgramObj, "drawType", 0.0f);
+    glDrawArrays(GL_LINES, 0, m_RenderDataSize * 6);
 
-    glDrawArrays(GL_TRIANGLES, 0, m_AudioDataSize * 6);
 
 }
 
@@ -243,33 +253,37 @@ void VisualizeAudioSample::LoadShortArrData(short *const pShortArr, int arrSize)
         m_AudioDataSize = arrSize;
         m_pAudioData = new short[m_AudioDataSize];
 
-        m_pVerticesCoords = new vec3[m_AudioDataSize * 6]; //(x,y,z) * 6 points
-        m_pTextureCoords = new vec2[m_AudioDataSize * 6]; //(x,y) * 6 points
+        m_RenderDataSize = m_AudioDataSize / RESAMPLE_LEVEL;
+        m_pVerticesCoords = new vec3[m_RenderDataSize * 6]; //(x,y,z) * 6 points
+        m_pTextureCoords = new vec2[m_RenderDataSize * 6]; //(x,y) * 6 points
 
     }
     memcpy(m_pAudioData, pShortArr, sizeof(short) * m_AudioDataSize);
 
     float dy = 0.5f / MAX_AUDIO_LEVEL;
-    float dx = 1.0f / m_AudioDataSize;
-    for (int i = 0; i < m_AudioDataSize; ++i) {
-        vec2 p1(i * dx, 0);
-        vec2 p2(i * dx, m_pAudioData[i] * dy);
-        vec2 p3((i + 1) * dx, m_pAudioData[i] * dy);
-        vec2 p4((i + 1) * dx, 0);
+    float dx = 1.0f / m_RenderDataSize;
+    for (int i = 0; i < m_RenderDataSize; ++i) {
+        int index = i * RESAMPLE_LEVEL;
+        float y = m_pAudioData[index] * dy * -1;
+        y = y < 0 ? y : -y;
+        vec2 p1(i * dx, 0 + 1.0f);
+        vec2 p2(i * dx, y + 1.0f);
+        vec2 p3((i + 1) * dx, y + 1.0f);
+        vec2 p4((i + 1) * dx, 0 + 1.0f);
 
         m_pTextureCoords[i * 6 + 0] = p1;
         m_pTextureCoords[i * 6 + 1] = p2;
-        m_pTextureCoords[i * 6 + 2] = p3;
-        m_pTextureCoords[i * 6 + 3] = p1;
-        m_pTextureCoords[i * 6 + 4] = p3;
-        m_pTextureCoords[i * 6 + 5] = p4;
+        m_pTextureCoords[i * 6 + 2] = p4;
+        m_pTextureCoords[i * 6 + 3] = p4;
+        m_pTextureCoords[i * 6 + 4] = p2;
+        m_pTextureCoords[i * 6 + 5] = p3;
 
         m_pVerticesCoords[i * 6 + 0] = GLUtils::texCoordToVertexCoord(p1);
         m_pVerticesCoords[i * 6 + 1] = GLUtils::texCoordToVertexCoord(p2);
-        m_pVerticesCoords[i * 6 + 2] = GLUtils::texCoordToVertexCoord(p3);
-        m_pVerticesCoords[i * 6 + 3] = GLUtils::texCoordToVertexCoord(p1);
-        m_pVerticesCoords[i * 6 + 4] = GLUtils::texCoordToVertexCoord(p3);
-        m_pVerticesCoords[i * 6 + 5] = GLUtils::texCoordToVertexCoord(p4);
+        m_pVerticesCoords[i * 6 + 2] = GLUtils::texCoordToVertexCoord(p4);
+        m_pVerticesCoords[i * 6 + 3] = GLUtils::texCoordToVertexCoord(p4);
+        m_pVerticesCoords[i * 6 + 4] = GLUtils::texCoordToVertexCoord(p2);
+        m_pVerticesCoords[i * 6 + 5] = GLUtils::texCoordToVertexCoord(p3);
     }
 
 }
