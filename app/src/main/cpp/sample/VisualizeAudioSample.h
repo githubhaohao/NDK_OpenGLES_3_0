@@ -6,7 +6,7 @@
 #define NDK_OPENGLES_3_0_VISUALIZEAUDIOSAMPLE_H
 
 #define MAX_AUDIO_LEVEL 2000
-#define RESAMPLE_LEVEL  150
+#define RESAMPLE_LEVEL  80
 
 #include <detail/type_mat.hpp>
 #include <detail/type_mat4x4.hpp>
