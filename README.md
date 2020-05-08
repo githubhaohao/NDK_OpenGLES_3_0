@@ -12,7 +12,7 @@
 ![beating_heart](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/beating_heart.gif)
 ![poly_3d_model](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/poly.gif)
 
-## 教程篇
+## 基础篇
 
 - [NDK OpenGL ES 3.0 开发（一）：绘制一个三角形](https://www.jianshu.com/p/3f3518194066)
 
