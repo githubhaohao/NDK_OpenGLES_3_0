@@ -296,7 +296,6 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;
                     case SAMPLE_TYPE_KEY_VISUALIZE_AUDIO:
-                        //loadRGBAImage(R.drawable.java);
                         if(mAudioCollector == null) {
                             mAudioCollector = new AudioCollector();
                             mAudioCollector.addCallback(MainActivity.this);

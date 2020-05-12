@@ -131,19 +131,6 @@ void TextureMapSample::LoadImage(NativeImage *pImage)
 
 }
 
-void TextureMapSample::CreateTexture()
-{
-	//create RGBA texture
-	glActiveTexture(GL_TEXTURE0);
-	glGenTextures(1, &m_TextureId);
-	glBindTexture(GL_TEXTURE_2D, m_TextureId);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-}
-
 void TextureMapSample::Destroy()
 {
 	if (m_ProgramObj)
