@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
     protected void onPause() {
         super.onPause();
         if (mAudioCollector != null) {
-            mAudioCollector.uninit();
+            mAudioCollector.unInit();
             mAudioCollector = null;
         }
     }
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
     public void onAudioBufferCallback(short[] buffer) {
         Log.e(TAG, "onAudioBufferCallback() called with: buffer[0] = [" + buffer[0] + "]");
         mGLSurfaceView.getGLRender().setAudioData(buffer);
-        mGLSurfaceView.requestRender();
+        //mGLSurfaceView.requestRender();
     }
 
     private void showGLSampleDialog() {
@@ -301,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                             mAudioCollector.addCallback(MainActivity.this);
                             mAudioCollector.init();
                         }
-                        //mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                     default:
                         break;
                 }
@@ -309,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                 mGLSurfaceView.requestRender();
 
                 if(sampleType != SAMPLE_TYPE_KEY_VISUALIZE_AUDIO && mAudioCollector != null) {
-                    mAudioCollector.uninit();
+                    mAudioCollector.unInit();
                     mAudioCollector = null;
                 }
 

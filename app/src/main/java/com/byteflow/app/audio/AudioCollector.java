@@ -46,7 +46,7 @@ public class AudioCollector implements AudioRecord.OnRecordPositionUpdateListene
         mThread.start();
     }
 
-    public void uninit() {
+    public void unInit() {
         if(mAudioRecord != null) {
             mAudioRecord.stop();
             mAudioRecord.release();
