@@ -6,7 +6,7 @@
 #define NDK_OPENGLES_3_0_VISUALIZEAUDIOSAMPLE_H
 
 #define MAX_AUDIO_LEVEL 2000
-#define RESAMPLE_LEVEL  80
+#define RESAMPLE_LEVEL  112
 
 #include <detail/type_mat.hpp>
 #include <detail/type_mat4x4.hpp>
@@ -35,6 +35,8 @@ public:
 
 	void UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio);
 
+	void UpdateMesh();
+
 private:
 	GLuint m_TextureId;
 	GLint m_SamplerLoc;
@@ -49,13 +51,18 @@ private:
 	float m_ScaleX;
 	float m_ScaleY;
 
-	short *m_pAudioData;
+	short *m_pCurAudioData;
+	short *m_pAudioBuffer;
 	int m_AudioDataSize;
 	std::mutex m_Mutex;
+	std::condition_variable m_Cond;
 
 	vec3 *m_pVerticesCoords;
 	vec2 *m_pTextureCoords;
 	int m_RenderDataSize;
+
+	int m_FrameIndex;
+	volatile bool m_bAudioDataReady;
 
 };
 

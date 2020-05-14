@@ -66,7 +66,8 @@ public class AudioCollector implements AudioRecord.OnRecordPositionUpdateListene
 
     @Override
     public void onPeriodicNotification(AudioRecord recorder) {
-        if (mAudioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING
+        if (mAudioRecord != null
+                && mAudioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING
                 && mAudioRecord.read(mAudioBuffer, 0, mAudioBuffer.length) != -1)
         {
             if(mCallback != null)

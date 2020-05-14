@@ -3,6 +3,7 @@
 //
 
 #include <gtc/matrix_transform.hpp>
+#include <thread>
 #include "VisualizeAudioSample.h"
 #include "../util/GLUtils.h"
 
@@ -20,30 +21,34 @@ VisualizeAudioSample::VisualizeAudioSample() {
     m_ScaleX = 1.0f;
     m_ScaleY = 1.0f;
 
-    m_pAudioData = nullptr;
+    m_pCurAudioData = nullptr;
     m_AudioDataSize = 0;
 
     m_pTextureCoords = nullptr;
     m_pVerticesCoords = nullptr;
 
     memset(m_VboIds, 0, sizeof(GLuint) * 2);
+
+    m_FrameIndex = 0;
+    m_pAudioBuffer = nullptr;
+    m_bAudioDataReady = false;
 }
 
 VisualizeAudioSample::~VisualizeAudioSample() {
     NativeImageUtil::FreeNativeImage(&m_RenderImage);
 
-    if (m_pAudioData != nullptr) {
-        free(m_pAudioData);
-        m_pAudioData = nullptr;
+    if (m_pAudioBuffer != nullptr) {
+        delete [] m_pAudioBuffer;
+        m_pAudioBuffer = nullptr;
     }
 
     if (m_pTextureCoords != nullptr) {
-        free(m_pTextureCoords);
+        delete [] m_pTextureCoords;
         m_pTextureCoords = nullptr;
     }
 
     if (m_pVerticesCoords != nullptr) {
-        free(m_pVerticesCoords);
+        delete [] m_pVerticesCoords;
         m_pVerticesCoords = nullptr;
     }
 
@@ -125,24 +130,33 @@ void VisualizeAudioSample::Draw(int screenW, int screenH) {
     LOGCATE("VisualizeAudioSample::Draw()");
 
     if (m_ProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
-
-    if (m_pVerticesCoords == nullptr || m_pTextureCoords == nullptr) return;
+    std::this_thread::sleep_for(std::chrono::milliseconds(25));
+    std::unique_lock<std::mutex> lock(m_Mutex);
+    if (!m_bAudioDataReady) return;
+    UpdateMesh();
+    lock.unlock();
 
     UpdateMVPMatrix(m_MVPMatrix, m_AngleX, m_AngleY, (float) screenW / screenH);
 
-
-    std::unique_lock<std::mutex> lock(m_Mutex);
     // Generate VBO Ids and load the VBOs with data
     if(m_VboIds[0] == 0)
     {
         glGenBuffers(2, m_VboIds);
-    }
-    glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * m_RenderDataSize * 6 * 3, m_pVerticesCoords, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * m_RenderDataSize * 6 * 2, m_pTextureCoords, GL_STATIC_DRAW);
-    lock.unlock();
+        glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * m_RenderDataSize * 6 * 3, m_pVerticesCoords, GL_DYNAMIC_DRAW);
+
+        glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[1]);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * m_RenderDataSize * 6 * 2, m_pTextureCoords, GL_DYNAMIC_DRAW);
+    }
+    else
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLfloat) * m_RenderDataSize * 6 * 3, m_pVerticesCoords);
+
+        glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[1]);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLfloat) * m_RenderDataSize * 6 * 2, m_pTextureCoords);
+    }
 
     if(m_VaoId == GL_NONE)
     {
@@ -183,6 +197,10 @@ void VisualizeAudioSample::Draw(int screenW, int screenH) {
 }
 
 void VisualizeAudioSample::Destroy() {
+    std::unique_lock<std::mutex> lock(m_Mutex);
+    m_Cond.notify_all();
+    lock.unlock();
+
     if (m_ProgramObj) {
         glDeleteProgram(m_ProgramObj);
         glDeleteBuffers(2, m_VboIds);
@@ -192,14 +210,7 @@ void VisualizeAudioSample::Destroy() {
 
 }
 
-
-/**
- * @param angleX 绕X轴旋转度数
- * @param angleY 绕Y轴旋转度数
- * @param ratio 宽高比
- * */
-void
-VisualizeAudioSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio) {
+void VisualizeAudioSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio) {
     LOGCATE("VisualizeAudioSample::UpdateMVPMatrix angleX = %d, angleY = %d, ratio = %f", angleX,
             angleY, ratio);
     angleX = angleX % 360;
@@ -227,6 +238,10 @@ VisualizeAudioSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angl
     Model = glm::scale(Model, glm::vec3(m_ScaleX, m_ScaleY, 1.0f));
     Model = glm::rotate(Model, radiansX, glm::vec3(1.0f, 0.0f, 0.0f));
     Model = glm::rotate(Model, radiansY, glm::vec3(0.0f, 1.0f, 0.0f));
+
+    float radiansZ = static_cast<float>(MATH_PI / 2.0f);
+
+    //Model = glm::rotate(Model, radiansZ, glm::vec3(0.0f, 0.0f, 1.0f));
     Model = glm::translate(Model, glm::vec3(0.0f, 0.0f, 0.0f));
 
     mvpMatrix = Projection * View * Model;
@@ -247,43 +262,74 @@ void VisualizeAudioSample::LoadShortArrData(short *const pShortArr, int arrSize)
     LOGCATE("VisualizeAudioSample::LoadShortArrData pShortArr=%p, arrSize=%d", pShortArr, arrSize);
     if (pShortArr == nullptr || arrSize == 0)
         return;
-
+    m_FrameIndex++;
     std::unique_lock<std::mutex> lock(m_Mutex);
-    if (m_pAudioData == nullptr) {
+    if(m_FrameIndex == 1)
+    {
+        m_pAudioBuffer = new short[arrSize * 2];
+        memcpy(m_pAudioBuffer, pShortArr, sizeof(short) * arrSize);
         m_AudioDataSize = arrSize;
-        m_pAudioData = new short[m_AudioDataSize];
+        return;
+    }
 
+    if(m_FrameIndex == 2)
+    {
+        memcpy(m_pAudioBuffer + arrSize, pShortArr, sizeof(short) * arrSize);
         m_RenderDataSize = m_AudioDataSize / RESAMPLE_LEVEL;
         m_pVerticesCoords = new vec3[m_RenderDataSize * 6]; //(x,y,z) * 6 points
         m_pTextureCoords = new vec2[m_RenderDataSize * 6]; //(x,y) * 6 points
-
-    }
-    memcpy(m_pAudioData, pShortArr, sizeof(short) * m_AudioDataSize);
-
-    float dy = 0.5f / MAX_AUDIO_LEVEL;
-    float dx = 1.0f / m_RenderDataSize;
-    for (int i = 0; i < m_RenderDataSize; ++i) {
-        int index = i * RESAMPLE_LEVEL;
-        float y = m_pAudioData[index] * dy * -1;
-        y = y < 0 ? y : -y;
-        vec2 p1(i * dx, 0 + 1.0f);
-        vec2 p2(i * dx, y + 1.0f);
-        vec2 p3((i + 1) * dx, y + 1.0f);
-        vec2 p4((i + 1) * dx, 0 + 1.0f);
-
-        m_pTextureCoords[i * 6 + 0] = p1;
-        m_pTextureCoords[i * 6 + 1] = p2;
-        m_pTextureCoords[i * 6 + 2] = p4;
-        m_pTextureCoords[i * 6 + 3] = p4;
-        m_pTextureCoords[i * 6 + 4] = p2;
-        m_pTextureCoords[i * 6 + 5] = p3;
-
-        m_pVerticesCoords[i * 6 + 0] = GLUtils::texCoordToVertexCoord(p1);
-        m_pVerticesCoords[i * 6 + 1] = GLUtils::texCoordToVertexCoord(p2);
-        m_pVerticesCoords[i * 6 + 2] = GLUtils::texCoordToVertexCoord(p4);
-        m_pVerticesCoords[i * 6 + 3] = GLUtils::texCoordToVertexCoord(p4);
-        m_pVerticesCoords[i * 6 + 4] = GLUtils::texCoordToVertexCoord(p2);
-        m_pVerticesCoords[i * 6 + 5] = GLUtils::texCoordToVertexCoord(p3);
     }
 
+    if(m_FrameIndex > 2)
+    {
+        memcpy(m_pAudioBuffer, m_pAudioBuffer + arrSize, sizeof(short) * arrSize);
+        memcpy(m_pAudioBuffer + arrSize, pShortArr, sizeof(short) * arrSize);
+    }
+    LOGCATE("VisualizeAudioSample::Draw() m_bAudioDataReady = true");
+    m_bAudioDataReady = true;
+    m_pCurAudioData = m_pAudioBuffer;
+    m_Cond.wait(lock);
+
+}
+
+void VisualizeAudioSample::UpdateMesh() {
+    //calculate mesh
+    int step = m_AudioDataSize / 64;
+    if(m_pAudioBuffer + m_AudioDataSize - m_pCurAudioData >= step)
+    {
+        LOGCATE("VisualizeAudioSample::Draw() m_pAudioBuffer + m_AudioDataSize - m_pCurAudioData >= step");
+        float dy = 0.5f / MAX_AUDIO_LEVEL;
+        float dx = 1.0f / m_RenderDataSize;
+        for (int i = 0; i < m_RenderDataSize; ++i) {
+            int index = i * RESAMPLE_LEVEL;
+            float y = m_pCurAudioData[index] * dy * -1;
+            y = y < 0 ? y : -y;
+            vec2 p1(i * dx, 0 + 1.0f);
+            vec2 p2(i * dx, y + 1.0f);
+            vec2 p3((i + 1) * dx, y + 1.0f);
+            vec2 p4((i + 1) * dx, 0 + 1.0f);
+
+            m_pTextureCoords[i * 6 + 0] = p1;
+            m_pTextureCoords[i * 6 + 1] = p2;
+            m_pTextureCoords[i * 6 + 2] = p4;
+            m_pTextureCoords[i * 6 + 3] = p4;
+            m_pTextureCoords[i * 6 + 4] = p2;
+            m_pTextureCoords[i * 6 + 5] = p3;
+
+            m_pVerticesCoords[i * 6 + 0] = GLUtils::texCoordToVertexCoord(p1);
+            m_pVerticesCoords[i * 6 + 1] = GLUtils::texCoordToVertexCoord(p2);
+            m_pVerticesCoords[i * 6 + 2] = GLUtils::texCoordToVertexCoord(p4);
+            m_pVerticesCoords[i * 6 + 3] = GLUtils::texCoordToVertexCoord(p4);
+            m_pVerticesCoords[i * 6 + 4] = GLUtils::texCoordToVertexCoord(p2);
+            m_pVerticesCoords[i * 6 + 5] = GLUtils::texCoordToVertexCoord(p3);
+        }
+        m_pCurAudioData += step;
+    }
+    else
+    {
+        LOGCATE("VisualizeAudioSample::Draw() m_pAudioBuffer + m_AudioDataSize - m_pCurAudioData < step");
+        m_bAudioDataReady = false;
+        m_Cond.notify_all();
+        return;
+    }
 }
