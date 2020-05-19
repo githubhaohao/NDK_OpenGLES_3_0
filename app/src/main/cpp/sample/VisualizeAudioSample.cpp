@@ -12,7 +12,6 @@ VisualizeAudioSample::VisualizeAudioSample() {
     m_SamplerLoc = GL_NONE;
     m_MVPMatLoc = GL_NONE;
 
-    m_TextureId = GL_NONE;
     m_VaoId = GL_NONE;
 
     m_AngleX = 0;
@@ -35,8 +34,6 @@ VisualizeAudioSample::VisualizeAudioSample() {
 }
 
 VisualizeAudioSample::~VisualizeAudioSample() {
-    NativeImageUtil::FreeNativeImage(&m_RenderImage);
-
     if (m_pAudioBuffer != nullptr) {
         delete [] m_pAudioBuffer;
         m_pAudioBuffer = nullptr;
@@ -58,15 +55,6 @@ VisualizeAudioSample::~VisualizeAudioSample() {
 void VisualizeAudioSample::Init() {
     if (m_ProgramObj)
         return;
-    //create RGBA texture
-    glGenTextures(1, &m_TextureId);
-    glBindTexture(GL_TEXTURE_2D, m_TextureId);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glBindTexture(GL_TEXTURE_2D, GL_NONE);
-
     char vShaderStr[] =
             "#version 300 es\n"
             "layout(location = 0) in vec4 a_position;\n"
@@ -116,12 +104,6 @@ void VisualizeAudioSample::Init() {
 
 void VisualizeAudioSample::LoadImage(NativeImage *pImage) {
     LOGCATE("VisualizeAudioSample::LoadImage pImage = %p", pImage->ppPlane[0]);
-    if (pImage) {
-        m_RenderImage.width = pImage->width;
-        m_RenderImage.height = pImage->height;
-        m_RenderImage.format = pImage->format;
-        NativeImageUtil::CopyNativeImage(pImage, &m_RenderImage);
-    }
 
 }
 
@@ -129,7 +111,7 @@ void VisualizeAudioSample::LoadImage(NativeImage *pImage) {
 void VisualizeAudioSample::Draw(int screenW, int screenH) {
     LOGCATE("VisualizeAudioSample::Draw()");
 
-    if (m_ProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
+    if (m_ProgramObj == GL_NONE) return;
     std::this_thread::sleep_for(std::chrono::milliseconds(25));
     std::unique_lock<std::mutex> lock(m_Mutex);
     if (!m_bAudioDataReady) return;
@@ -179,15 +161,8 @@ void VisualizeAudioSample::Draw(int screenW, int screenH) {
 
     // Use the program object
     glUseProgram(m_ProgramObj);
-
     glBindVertexArray(m_VaoId);
-
     glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
-
-//    // Bind the RGBA map
-//    glActiveTexture(GL_TEXTURE0);
-//    glBindTexture(GL_TEXTURE_2D, m_TextureId);
-//    glUniform1i(m_SamplerLoc, 0);
     GLUtils::setFloat(m_ProgramObj, "drawType", 1.0f);
     glDrawArrays(GL_TRIANGLES, 0, m_RenderDataSize * 6);
     GLUtils::setFloat(m_ProgramObj, "drawType", 0.0f);
@@ -205,7 +180,6 @@ void VisualizeAudioSample::Destroy() {
         glDeleteProgram(m_ProgramObj);
         glDeleteBuffers(2, m_VboIds);
         glDeleteVertexArrays(1, &m_VaoId);
-        glDeleteTextures(1, &m_TextureId);
     }
 
 }
