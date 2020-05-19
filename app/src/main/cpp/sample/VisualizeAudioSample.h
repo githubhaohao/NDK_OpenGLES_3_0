@@ -38,12 +38,10 @@ public:
 	void UpdateMesh();
 
 private:
-	GLuint m_TextureId;
 	GLint m_SamplerLoc;
 	GLint m_MVPMatLoc;
 	GLuint m_VaoId;
 	GLuint m_VboIds[2];
-	NativeImage m_RenderImage;
 	glm::mat4 m_MVPMatrix;
 
 	int m_AngleX;
