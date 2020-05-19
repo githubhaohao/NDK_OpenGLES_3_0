@@ -70,3 +70,5 @@
 
 - [Android OpenGL ES 实现头部形变和头部晃动效果](https://blog.csdn.net/Kennethdroid/article/details/105208054)
 
+- [Android OpenGL ES 实现实时音频的可视化](https://blog.csdn.net/Kennethdroid/article/details/106128767)
+
