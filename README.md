@@ -72,3 +72,8 @@
 
 - [Android OpenGL ES 实现实时音频的可视化](https://blog.csdn.net/Kennethdroid/article/details/106128767)
 
+## 联系交流
+微信公众号：字节流动
+
+![字节流动](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/accountID.jpg)
+
