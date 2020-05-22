@@ -41,6 +41,9 @@
 #define SAMPLE_TYPE_KEY_BIG_HEAD                SAMPLE_TYPE + 25
 #define SAMPLE_TYPE_KEY_RATARY_HEAD             SAMPLE_TYPE + 26
 #define SAMPLE_TYPE_KEY_VISUALIZE_AUDIO         SAMPLE_TYPE + 27
+#define SAMPLE_TYPE_KEY_SCRATCH_CARD            SAMPLE_TYPE + 28
+
+#define SAMPLE_TYPE_KEY_SET_TOUCH_LOC           SAMPLE_TYPE + 999
 
 
 class GLSampleBase
@@ -51,6 +54,9 @@ public:
 		m_ProgramObj = 0;
 		m_VertexShader = 0;
 		m_FragmentShader = 0;
+
+		m_SurfaceWidth = 0;
+		m_SurfaceHeight = 0;
 
 	}
 
@@ -71,6 +77,9 @@ public:
 	virtual void UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
 	{}
 
+	virtual void SetTouchLocation(float x, float y)
+	{}
+
 	virtual void Init() = 0;
 	virtual void Draw(int screenW, int screenH) = 0;
 
@@ -81,6 +90,8 @@ protected:
 	GLuint m_FragmentShader;
 	GLuint m_ProgramObj;
 	MySyncLock m_Lock;
+	int m_SurfaceWidth;
+	int m_SurfaceHeight;
 };
 
 
