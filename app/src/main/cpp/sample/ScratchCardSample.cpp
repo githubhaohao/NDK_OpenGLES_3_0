@@ -214,6 +214,7 @@ void ScratchCardSample::Draw(int screenW, int screenH) {
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(m_pTexCoords), m_pTexCoords);
         glDrawArrays(GL_TRIANGLES, 0, TRIANGLE_NUM * 3);
     }
+    glDisable(GL_STENCIL_TEST);
 }
 
 void ScratchCardSample::Destroy() {
