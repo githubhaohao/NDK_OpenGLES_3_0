@@ -110,7 +110,7 @@ void VisualizeAudioSample::LoadImage(NativeImage *pImage) {
 
 void VisualizeAudioSample::Draw(int screenW, int screenH) {
     LOGCATE("VisualizeAudioSample::Draw()");
-
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0);
     if (m_ProgramObj == GL_NONE) return;
     std::this_thread::sleep_for(std::chrono::milliseconds(25));
     std::unique_lock<std::mutex> lock(m_Mutex);
@@ -196,9 +196,9 @@ void VisualizeAudioSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int
 
 
     // Projection matrix
-    //glm::mat4 Projection = glm::ortho(-ratio, ratio, -1.0f, 1.0f, 0.1f, 100.0f);
+    glm::mat4 Projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
     //glm::mat4 Projection = glm::frustum(-ratio, ratio, -1.0f, 1.0f, 4.0f, 100.0f);
-    glm::mat4 Projection = glm::perspective(45.0f, ratio, 0.1f, 100.f);
+    //glm::mat4 Projection = glm::perspective(45.0f, ratio, 0.1f, 100.f);
 
     // View matrix
     glm::mat4 View = glm::lookAt(
