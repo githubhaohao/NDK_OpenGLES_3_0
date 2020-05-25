@@ -18,7 +18,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.byteflow.app.adapter.MyRecyclerViewAdapter;
@@ -43,6 +45,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_EGL;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_AVATAR;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEATING_HEART;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEZIER_CURVE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BIG_EYES;
@@ -50,6 +53,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BIG_HEAD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_CLOUD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FACE_SLENDER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_ROTARY_HEAD;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SCRATCH_CARD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SHOCK_WAVE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_VISUALIZE_AUDIO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
@@ -63,7 +67,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TRIANGLE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_VAO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_YUV_TEXTURE_MAP;
 
-public class MainActivity extends AppCompatActivity implements AudioCollector.Callback{
+public class MainActivity extends AppCompatActivity implements AudioCollector.Callback, ViewTreeObserver.OnGlobalLayoutListener{
     private static final String TAG = "MainActivity";
     private static final String[] REQUEST_PERMISSIONS = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -98,22 +102,36 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "Face Slender",
             "Big Head",
             "Rotary Head",
-            "Visualize Audio"
+            "Visualize Audio",
+            "Scratch Card"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
     private ViewGroup mRootView;
     private int mSampleSelectedIndex = SAMPLE_TYPE_KEY_BEATING_HEART - SAMPLE_TYPE;
     private AudioCollector mAudioCollector;
+    private MyGLRender mGLRender = new MyGLRender();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mRootView = (ViewGroup) findViewById(R.id.rootView);
-        mGLSurfaceView = (MyGLSurfaceView) findViewById(R.id.my_gl_surface_view);
-        mGLSurfaceView.getGLRender().init();
+        mRootView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        mGLRender.init();
+
+    }
+
+    @Override
+    public void onGlobalLayout() {
+        mRootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+        mGLSurfaceView = new MyGLSurfaceView(this, mGLRender);
+        mRootView.addView(mGLSurfaceView, lp);
         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+
     }
 
     @Override
@@ -148,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mGLSurfaceView.getGLRender().unInit();
+        mGLRender.unInit();
         /*
         * Once the EGL context gets destroyed all the GL buffers etc will get destroyed with it,
         * so this is unnecessary.
@@ -176,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
     @Override
     public void onAudioBufferCallback(short[] buffer) {
         Log.e(TAG, "onAudioBufferCallback() called with: buffer[0] = [" + buffer[0] + "]");
-        mGLSurfaceView.getGLRender().setAudioData(buffer);
+        mGLRender.setAudioData(buffer);
         //mGLSurfaceView.requestRender();
     }
 
@@ -202,6 +220,14 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
         myPreviewSizeViewAdapter.addOnItemClickListener(new MyRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                mRootView.removeView(mGLSurfaceView);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+                mGLSurfaceView = new MyGLSurfaceView(MainActivity.this, mGLRender);
+                mRootView.addView(mGLSurfaceView, lp);
+
+
                 int selectIndex = myPreviewSizeViewAdapter.getSelectIndex();
                 myPreviewSizeViewAdapter.setSelectIndex(position);
                 myPreviewSizeViewAdapter.notifyItemChanged(selectIndex);
@@ -214,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                     mGLSurfaceView.setAspectRatio(mRootView.getWidth(), mRootView.getHeight());
                 }
 
-                mGLSurfaceView.getGLRender().setParamsInt(SAMPLE_TYPE, position + SAMPLE_TYPE, 0);
+                mGLRender.setParamsInt(SAMPLE_TYPE, position + SAMPLE_TYPE, 0);
 
                 int sampleType = position + SAMPLE_TYPE;
 
@@ -302,6 +328,18 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                             mAudioCollector.init();
                         }
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                    case SAMPLE_TYPE_KEY_SCRATCH_CARD:
+                        Bitmap b1 = loadRGBAImage(R.drawable.yifei);
+                        mGLSurfaceView.setAspectRatio(b1.getWidth(), b1.getHeight());
+                        //mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        break;
+                    case SAMPLE_TYPE_KEY_AVATAR:
+                        Bitmap b2 = loadRGBAImage(R.drawable.avatar_a, 0);
+                        mGLSurfaceView.setAspectRatio(b2.getWidth(), b2.getHeight());
+                        loadRGBAImage(R.drawable.avatar_b, 1);
+                        loadRGBAImage(R.drawable.avatar_c, 2);
+                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        break;
                     default:
                         break;
                 }
@@ -339,7 +377,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                 ByteBuffer buf = ByteBuffer.allocate(bytes);
                 bitmap.copyPixelsToBuffer(buf);
                 byte[] byteArray = buf.array();
-                mGLSurfaceView.getGLRender().setImageData(IMAGE_FORMAT_RGBA, bitmap.getWidth(), bitmap.getHeight(), byteArray);
+                mGLRender.setImageData(IMAGE_FORMAT_RGBA, bitmap.getWidth(), bitmap.getHeight(), byteArray);
             }
         }
         finally
@@ -356,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
         return bitmap;
     }
 
-    private void loadRGBAImage(int resId, int index) {
+    private Bitmap loadRGBAImage(int resId, int index) {
         InputStream is = this.getResources().openRawResource(resId);
         Bitmap bitmap;
         try {
@@ -366,7 +404,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                 ByteBuffer buf = ByteBuffer.allocate(bytes);
                 bitmap.copyPixelsToBuffer(buf);
                 byte[] byteArray = buf.array();
-                mGLSurfaceView.getGLRender().setImageDataWithIndex(index, IMAGE_FORMAT_RGBA, bitmap.getWidth(), bitmap.getHeight(), byteArray);
+                mGLRender.setImageDataWithIndex(index, IMAGE_FORMAT_RGBA, bitmap.getWidth(), bitmap.getHeight(), byteArray);
             }
         }
         finally
@@ -380,6 +418,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                 e.printStackTrace();
             }
         }
+        return bitmap;
     }
 
     private void loadNV21Image() {
@@ -395,7 +434,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             lenght = is.available();
             byte[] buffer = new byte[lenght];
             is.read(buffer);
-            mGLSurfaceView.getGLRender().setImageData(IMAGE_FORMAT_NV21, 840, 1074, buffer);
+            mGLRender.setImageData(IMAGE_FORMAT_NV21, 840, 1074, buffer);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -420,4 +459,5 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
         }
         return true;
     }
+
 }

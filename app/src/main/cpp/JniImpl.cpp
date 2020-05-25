@@ -76,6 +76,17 @@ JNIEXPORT void JNICALL native_SetParamsInt
 	MyGLRenderContext::GetInstance()->SetParamsInt(paramType, value0, value1);
 }
 
+/*
+ * Class:     com_byteflow_app_MyNativeRender
+ * Method:    native_SetParamsFloat
+ * Signature: (IFF)V
+ */
+JNIEXPORT void JNICALL native_SetParamsFloat
+		(JNIEnv *env, jobject instance, jint paramType, jfloat value0, jfloat value1)
+{
+	MyGLRenderContext::GetInstance()->SetParamsFloat(paramType, value0, value1);
+}
+
 
 /*
  * Class:     com_byteflow_app_MyNativeRender
@@ -206,6 +217,7 @@ static JNINativeMethod g_RenderMethods[] = {
 		{"native_SetImageData",              "(III[B)V",  (void *)(native_SetImageData)},
 		{"native_SetImageDataWithIndex",     "(IIII[B)V", (void *)(native_SetImageDataWithIndex)},
 		{"native_SetParamsInt",              "(III)V",    (void *)(native_SetParamsInt)},
+		{"native_SetParamsFloat",            "(IFF)V",    (void *)(native_SetParamsFloat)},
 		{"native_SetAudioData",              "([S)V",     (void *)(native_SetAudioData)},
 		{"native_UpdateTransformMatrix",     "(FFFF)V",   (void *)(native_UpdateTransformMatrix)},
 		{"native_OnSurfaceCreated",          "()V",       (void *)(native_OnSurfaceCreated)},

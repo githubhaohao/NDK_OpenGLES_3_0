@@ -31,7 +31,11 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_KEY_BIG_HEAD            = SAMPLE_TYPE + 25;
     public static final int SAMPLE_TYPE_KEY_ROTARY_HEAD         = SAMPLE_TYPE + 26;
     public static final int SAMPLE_TYPE_KEY_VISUALIZE_AUDIO     = SAMPLE_TYPE + 27;
+    public static final int SAMPLE_TYPE_KEY_SCRATCH_CARD        = SAMPLE_TYPE + 28;
+    public static final int SAMPLE_TYPE_KEY_AVATAR              = SAMPLE_TYPE + 29;
 
+
+    public static final int SAMPLE_TYPE_SET_TOUCH_LOC           = SAMPLE_TYPE + 999;
 
     static {
         System.loadLibrary("native-render");
@@ -42,6 +46,8 @@ public class MyNativeRender {
     public native void native_UnInit();
 
     public native void native_SetParamsInt(int paramType, int value0, int value1);
+
+    public native void native_SetParamsFloat(int paramType, float value0, float value1);
 
     public native void native_UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY);
 
