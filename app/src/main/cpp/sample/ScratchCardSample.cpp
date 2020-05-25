@@ -279,7 +279,6 @@ void ScratchCardSample::CalculateMesh(vec2 pre, vec2 cur) {
     vec2 p0 = pre * imgSize, p1 = cur * imgSize;
     vec2 v0, v1, v2, v3;
     float r = static_cast<float>(EFFECT_RADIUS * imgSize.x);
-    float semicircleStartAngle0, semicircleStartAngle1;
     float x0 = p0.x, y0 = p0.y;
     float x1 = p1.x, y1 = p1.y;
     if (p0.y == p1.y) //1. 平行于 x 轴的
@@ -289,17 +288,11 @@ void ScratchCardSample::CalculateMesh(vec2 pre, vec2 cur) {
         v2 = vec2(p1.x, p1.y - r) / imgSize;
         v3 = vec2(p1.x, p1.y + r) / imgSize;
 
-        semicircleStartAngle0 = static_cast<float>(MATH_PI / 2);
-        semicircleStartAngle1 = static_cast<float>(semicircleStartAngle0 + MATH_PI);
-
     } else if (p0.x == p1.x) { //2. 平行于 y 轴的
         v0 = vec2(p0.x - r, p0.y) / imgSize;
         v1 = vec2(p0.x + r, p0.y) / imgSize;
         v2 = vec2(p1.x - r, p1.y) / imgSize;
         v3 = vec2(p1.x + r, p1.y) / imgSize;
-
-        semicircleStartAngle0 = 0;
-        semicircleStartAngle1 = static_cast<float>(semicircleStartAngle0 + MATH_PI);
 
     } else { //3. 其他 case
         float A0 = (y1 - y0) * y0 + (x1 - x0) * x0;
@@ -322,9 +315,6 @@ void ScratchCardSample::CalculateMesh(vec2 pre, vec2 cur) {
         v0 = vec2(v0_v1.x, v0_v1.y) / imgSize;
         v1 = vec2(v0_v1.z, v0_v1.w) / imgSize;
 
-        semicircleStartAngle0 = atan((v0.y - v1.y) / (v0.x - v1.x));
-        semicircleStartAngle1 = static_cast<float>(semicircleStartAngle0 + MATH_PI);
-
         vec4 v2_v3 = getInsertPointBetweenCircleAndLine(x1, y1, x1_i, y1_i, x1, y1, r);
 
         v2 = vec2(v2_v3.x, v2_v3.y) / imgSize;
@@ -332,7 +322,7 @@ void ScratchCardSample::CalculateMesh(vec2 pre, vec2 cur) {
 
     }
 
-    // 矩形 2 个三角形
+    // 矩形 3 个三角形
     m_pTexCoords[0] = v0;
     m_pTexCoords[1] = v1;
     m_pTexCoords[2] = v2;
@@ -345,13 +335,13 @@ void ScratchCardSample::CalculateMesh(vec2 pre, vec2 cur) {
 
     int index = 9;
     float step = MATH_PI / 10;
-    // 2 个半圆，一共 20 个三角形
+    // 2 个圆，一共 40 个三角形
     for (int i = 0; i < 20; ++i) {
-        float x = r * cos(semicircleStartAngle0 + i * step);
-        float y = r * sin(semicircleStartAngle0 + i * step);
+        float x = r * cos(i * step);
+        float y = r * sin(i * step);
 
-        float x_ = r * cos(semicircleStartAngle0 + (i + 1) * step);
-        float y_ = r * sin(semicircleStartAngle0 + (i + 1) * step);
+        float x_ = r * cos((i + 1) * step);
+        float y_ = r * sin((i + 1) * step);
 
         x += x0;
         y += y0;
@@ -362,11 +352,11 @@ void ScratchCardSample::CalculateMesh(vec2 pre, vec2 cur) {
         m_pTexCoords[index + 6 * i + 1] = vec2(x_, y_) / imgSize;
         m_pTexCoords[index + 6 * i + 2] = vec2(x0, y0) / imgSize;
 
-        x = r * cos(semicircleStartAngle1 + i * step);
-        y = r * sin(semicircleStartAngle1 + i * step);
+        x = r * cos(i * step);
+        y = r * sin(i * step);
 
-        x_ = r * cos(semicircleStartAngle1 + (i + 1) * step);
-        y_ = r * sin(semicircleStartAngle1 + (i + 1) * step);
+        x_ = r * cos((i + 1) * step);
+        y_ = r * sin((i + 1) * step);
 
         x += x1;
         y += y1;

@@ -7,10 +7,10 @@
     android:id="@+id/rootView"
     tools:context=".MainActivity">
 
-    <com.byteflow.app.MyGLSurfaceView
-        android:layout_centerInParent="true"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/my_gl_surface_view"/>
+<!--    <com.byteflow.app.MyGLSurfaceView-->
+<!--        android:layout_centerInParent="true"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:id="@+id/my_gl_surface_view"/>-->
 
 </RelativeLayout>

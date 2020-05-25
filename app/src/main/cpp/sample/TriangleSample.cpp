@@ -24,7 +24,8 @@ void TriangleSample::LoadImage(NativeImage *pImage)
 
 void TriangleSample::Init()
 {
-
+	if(m_ProgramObj != 0)
+		return;
 	char vShaderStr[] =
 			"#version 300 es                          \n"
 			"layout(location = 0) in vec4 vPosition;  \n"
@@ -69,6 +70,7 @@ void TriangleSample::Draw(int screenW, int screenH)
 	glEnableVertexAttribArray (0);
 
 	glDrawArrays (GL_TRIANGLES, 0, 3);
+	glUseProgram (GL_NONE);
 
 }
 
