@@ -194,7 +194,7 @@ void CoordSystemSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int an
 
 
 	// Projection matrix
-	//glm::mat4 Projection = glm::ortho(-ratio, ratio, -1.0f, 1.0f, 0.1f, 100.0f);
+	//glm::mat4 Projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
 	//glm::mat4 Projection = glm::frustum(-ratio, ratio, -1.0f, 1.0f, 4.0f, 100.0f);
 	glm::mat4 Projection = glm::perspective(45.0f,ratio, 0.1f,100.f);
 

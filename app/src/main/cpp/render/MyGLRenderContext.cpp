@@ -31,6 +31,7 @@
 #include <BigHeadSample.h>
 #include <RotaryHeadSample.h>
 #include <VisualizeAudioSample.h>
+#include <ScratchCardSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -153,6 +154,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 			case SAMPLE_TYPE_KEY_VISUALIZE_AUDIO:
 				m_pCurSample = new VisualizeAudioSample();
 				break;
+			case SAMPLE_TYPE_KEY_SCRATCH_CARD:
+				m_pCurSample = new ScratchCardSample();
+				break;
 			default:
 			    m_pCurSample = nullptr;
 				break;
@@ -160,6 +164,23 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 
 		LOGCATE("MyGLRenderContext::SetParamsInt m_pBeforeSample = %p, m_pCurSample=%p", m_pBeforeSample, m_pCurSample);
 	}
+}
+
+void MyGLRenderContext::SetParamsFloat(int paramType, float value0, float value1) {
+	LOGCATE("MyGLRenderContext::SetParamsFloat paramType=%d, value0=%f, value1=%f", paramType, value0, value1);
+	if(m_pCurSample)
+	{
+		switch (paramType)
+		{
+			case SAMPLE_TYPE_KEY_SET_TOUCH_LOC:
+				m_pCurSample->SetTouchLocation(value0, value1);
+				break;
+			default:
+				break;
+
+		}
+	}
+
 }
 
 void MyGLRenderContext::SetParamsShortArr(short *const pShortArr, int arrSize) {
@@ -293,5 +314,6 @@ void MyGLRenderContext::DestroyInstance()
 	}
 
 }
+
 
 

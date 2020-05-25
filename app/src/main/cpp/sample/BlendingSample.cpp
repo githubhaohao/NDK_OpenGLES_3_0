@@ -290,6 +290,9 @@ void BlendingSample::Draw(int screenW, int screenH)
 
 	GO_CHECK_GL_ERROR();
 	glBindVertexArray(0);
+
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
 }
 
 void BlendingSample::Destroy()
