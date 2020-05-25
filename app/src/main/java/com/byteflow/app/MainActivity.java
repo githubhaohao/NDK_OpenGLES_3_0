@@ -227,7 +227,6 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                 mGLSurfaceView = new MyGLSurfaceView(MainActivity.this, mGLRender);
                 mRootView.addView(mGLSurfaceView, lp);
 
-
                 int selectIndex = myPreviewSizeViewAdapter.getSelectIndex();
                 myPreviewSizeViewAdapter.setSelectIndex(position);
                 myPreviewSizeViewAdapter.notifyItemChanged(selectIndex);
@@ -279,8 +278,8 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                         loadRGBAImage(R.drawable.window,2);
                         break;
                     case SAMPLE_TYPE_PARTICLES:
-                        //mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         loadRGBAImage(R.drawable.board_texture);
+                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;
                     case SAMPLE_TYPE_SKYBOX:
                         loadRGBAImage(R.drawable.right,0);
