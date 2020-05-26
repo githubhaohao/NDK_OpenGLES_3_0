@@ -72,6 +72,8 @@
 
 - [Android OpenGL ES 实现实时音频的可视化](https://blog.csdn.net/Kennethdroid/article/details/106128767)
 
+- [Android OpenGL ES 实现刮刮卡和手写板功能](https://blog.csdn.net/Kennethdroid/article/details/106339286)
+
 ## 联系交流
 微信公众号：字节流动
 
