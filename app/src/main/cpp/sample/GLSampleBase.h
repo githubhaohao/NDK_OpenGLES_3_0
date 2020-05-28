@@ -46,6 +46,7 @@
 
 
 #define SAMPLE_TYPE_KEY_SET_TOUCH_LOC           SAMPLE_TYPE + 999
+#define SAMPLE_TYPE_SET_GRAVITY_XY              SAMPLE_TYPE + 1000
 
 
 class GLSampleBase
@@ -80,6 +81,9 @@ public:
 	{}
 
 	virtual void SetTouchLocation(float x, float y)
+	{}
+
+	virtual void SetGravityXY(float x, float y)
 	{}
 
 	virtual void Init() = 0;
