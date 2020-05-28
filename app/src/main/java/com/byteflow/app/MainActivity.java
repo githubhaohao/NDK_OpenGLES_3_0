@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -67,7 +71,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_TRIANGLE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_VAO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_YUV_TEXTURE_MAP;
 
-public class MainActivity extends AppCompatActivity implements AudioCollector.Callback, ViewTreeObserver.OnGlobalLayoutListener{
+public class MainActivity extends AppCompatActivity implements AudioCollector.Callback, ViewTreeObserver.OnGlobalLayoutListener, SensorEventListener {
     private static final String TAG = "MainActivity";
     private static final String[] REQUEST_PERMISSIONS = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -103,7 +107,8 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "Big Head",
             "Rotary Head",
             "Visualize Audio",
-            "Scratch Card"
+            "Scratch Card",
+            "3D Avatar"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -111,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
     private int mSampleSelectedIndex = SAMPLE_TYPE_KEY_BEATING_HEART - SAMPLE_TYPE;
     private AudioCollector mAudioCollector;
     private MyGLRender mGLRender = new MyGLRender();
+    private SensorManager mSensorManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
         setContentView(R.layout.activity_main);
         mRootView = (ViewGroup) findViewById(R.id.rootView);
         mRootView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mGLRender.init();
 
     }
@@ -137,6 +144,9 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
     @Override
     protected void onResume() {
         super.onResume();
+        mSensorManager.registerListener(this,
+                mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY),
+                SensorManager.SENSOR_DELAY_FASTEST);
         if (!hasPermissionsGranted(REQUEST_PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, REQUEST_PERMISSIONS, PERMISSION_REQUEST_CODE);
         }
@@ -157,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
     @Override
     protected void onPause() {
         super.onPause();
+        mSensorManager.unregisterListener(this);
         if (mAudioCollector != null) {
             mAudioCollector.unInit();
             mAudioCollector = null;
@@ -196,6 +207,25 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
         Log.e(TAG, "onAudioBufferCallback() called with: buffer[0] = [" + buffer[0] + "]");
         mGLRender.setAudioData(buffer);
         //mGLSurfaceView.requestRender();
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        switch (event.sensor.getType()) {
+            case Sensor.TYPE_GRAVITY:
+                Log.d(TAG, "onSensorChanged() called with TYPE_GRAVITY: [x,y,z] = [" + event.values[0] + ", " + event.values[1] + ", " + event.values[2] + "]");
+                if(mSampleSelectedIndex + SAMPLE_TYPE == SAMPLE_TYPE_KEY_AVATAR)
+                {
+                    mGLRender.setGravityXY(event.values[0], event.values[1]);
+                }
+                break;
+        }
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 
     private void showGLSampleDialog() {

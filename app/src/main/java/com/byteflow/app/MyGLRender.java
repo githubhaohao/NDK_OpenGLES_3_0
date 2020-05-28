@@ -6,6 +6,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_SET_GRAVITY_XY;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_SET_TOUCH_LOC;
 
 public class MyGLRender implements GLSurfaceView.Renderer {
@@ -52,6 +53,10 @@ public class MyGLRender implements GLSurfaceView.Renderer {
     public void setTouchLoc(float x, float y)
     {
         mNativeRender.native_SetParamsFloat(SAMPLE_TYPE_SET_TOUCH_LOC, x, y);
+    }
+
+    public void setGravityXY(float x, float y) {
+        mNativeRender.native_SetParamsFloat(SAMPLE_TYPE_SET_GRAVITY_XY, x, y);
     }
 
     public void setImageData(int format, int width, int height, byte[] bytes) {

@@ -32,6 +32,7 @@
 #include <RotaryHeadSample.h>
 #include <VisualizeAudioSample.h>
 #include <ScratchCardSample.h>
+#include <AvatarSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -157,6 +158,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 			case SAMPLE_TYPE_KEY_SCRATCH_CARD:
 				m_pCurSample = new ScratchCardSample();
 				break;
+            case SAMPLE_TYPE_KEY_AVATAR:
+                m_pCurSample = new AvatarSample();
+                break;
 			default:
 			    m_pCurSample = nullptr;
 				break;
@@ -174,6 +178,9 @@ void MyGLRenderContext::SetParamsFloat(int paramType, float value0, float value1
 		{
 			case SAMPLE_TYPE_KEY_SET_TOUCH_LOC:
 				m_pCurSample->SetTouchLocation(value0, value1);
+				break;
+			case SAMPLE_TYPE_SET_GRAVITY_XY:
+                m_pCurSample->SetGravityXY(value0, value1);
 				break;
 			default:
 				break;
