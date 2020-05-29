@@ -74,6 +74,8 @@
 
 - [Android OpenGL ES 实现刮刮卡和手写板功能](https://blog.csdn.net/Kennethdroid/article/details/106339286)
 
+- [Android OpenGL ES 实现 3D 阿凡达效果](https://blog.csdn.net/Kennethdroid/article/details/106423475)
+
 ## 联系交流
 微信公众号：字节流动
 
