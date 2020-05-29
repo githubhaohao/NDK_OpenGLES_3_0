@@ -2,20 +2,20 @@
 // Created by ByteFlow on 2020/01/08.
 //
 
-#ifndef NDK_OPENGLES_3_0_SHOCKWAVE_SAMPLE_H
-#define NDK_OPENGLES_3_0_SHOCKWAVE_SAMPLE_H
+#ifndef NDK_OPENGLES_3_0_TIMETUNNEL_SAMPLE_H
+#define NDK_OPENGLES_3_0_TIMETUNNEL_SAMPLE_H
 
 
 #include <detail/type_mat.hpp>
 #include "GLSampleBase.h"
 #include "../util/ImageDef.h"
 
-class ShockWaveSample : public GLSampleBase
+class TimeTunnelSample : public GLSampleBase
 {
 public:
-	ShockWaveSample();
+	TimeTunnelSample();
 
-	virtual ~ShockWaveSample();
+	virtual ~TimeTunnelSample();
 
 	virtual void LoadImage(NativeImage *pImage);
 
@@ -55,4 +55,4 @@ private:
 };
 
 
-#endif //NDK_OPENGLES_3_0_SHOCKWAVE_SAMPLE_H
+#endif //NDK_OPENGLES_3_0_TIMETUNNEL_SAMPLE_H

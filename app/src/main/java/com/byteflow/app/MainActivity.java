@@ -58,7 +58,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_CLOUD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FACE_SLENDER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_ROTARY_HEAD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SCRATCH_CARD;
-import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SHOCK_WAVE;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TIME_TUNNEL;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_VISUALIZE_AUDIO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_PARTICLES;
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "PBO",
             "Beating Heart",
             "Cloud",
-            "Shock Wave",
+            "Time Tunnel",
             "Bezier Curve",
             "Big Eyes",
             "Face Slender",
@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                         loadRGBAImage(R.drawable.noise);
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;
-                    case SAMPLE_TYPE_KEY_SHOCK_WAVE:
+                    case SAMPLE_TYPE_KEY_TIME_TUNNEL:
                         loadRGBAImage(R.drawable.front);
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;

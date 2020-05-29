@@ -24,7 +24,7 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_PBO                     = SAMPLE_TYPE + 18;
     public static final int SAMPLE_TYPE_KEY_BEATING_HEART       = SAMPLE_TYPE + 19;
     public static final int SAMPLE_TYPE_KEY_CLOUD               = SAMPLE_TYPE + 20;
-    public static final int SAMPLE_TYPE_KEY_SHOCK_WAVE          = SAMPLE_TYPE + 21;
+    public static final int SAMPLE_TYPE_KEY_TIME_TUNNEL         = SAMPLE_TYPE + 21;
     public static final int SAMPLE_TYPE_KEY_BEZIER_CURVE        = SAMPLE_TYPE + 22;
     public static final int SAMPLE_TYPE_KEY_BIG_EYES            = SAMPLE_TYPE + 23;
     public static final int SAMPLE_TYPE_KEY_FACE_SLENDER        = SAMPLE_TYPE + 24;
