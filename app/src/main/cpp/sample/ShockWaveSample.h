@@ -30,6 +30,9 @@ public:
 
 	void UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio);
 
+	virtual void SetTouchLocation(float x, float y);
+
+
 private:
 	GLuint m_TextureId;
 	GLuint m_VaoId;
@@ -41,6 +44,9 @@ private:
 	int m_AngleY;
 	float m_ScaleX;
 	float m_ScaleY;
+	int m_FrameIndex;
+
+	vec2 m_touchXY;
 
 };
 

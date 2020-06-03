@@ -16,6 +16,10 @@ ShockWaveSample::ShockWaveSample()
 
 	m_ScaleX = 1.0f;
 	m_ScaleY = 1.0f;
+
+	m_FrameIndex = 0;
+
+	m_touchXY = vec2(0.5f, 0.5f);
 }
 
 ShockWaveSample::~ShockWaveSample()
@@ -51,30 +55,31 @@ void ShockWaveSample::Init()
 
 	char fShaderStr[] =
 			"#version 300 es\n"
-			"precision highp float;\n"
-			"in vec2 v_texCoord;\n"
-			"layout(location = 0) out vec4 outColor;\n"
-			"uniform sampler2D s_TextureMap;\n"
-			"uniform vec2 u_TouchXY;\n"
-			"uniform vec2 u_TexSize;\n"
-			"uniform float u_Time;\n"
-			"uniform vec3 u_Param;\n"
-			"void main()\n"
-			"{\n"
-			"    float ratio = u_TexSize.y / u_TexSize.x;\n"
-			"    vec2 texCoord = v_texCoord * vec2(1.0, ratio);\n"
-			"    vec2 touchXY = u_TouchXY * vec2(1.0, ratio);\n"
-			"    float distance = distance(texCoord, touchXY);\n"
-			"    if ((u_Time - u_Param.z) > 0.0 && (distance <= (u_Time + u_Param.z)) && (distance >= (u_Time - u_Param.z))) {\n"
-			"        float diff = (distance - u_Time);\n"
-			"        float powDiff = 1.0 - pow(abs(diff * u_Param.x), u_Param.y);\n"
-			"        float diffTime = diff  * powDiff;\n"
-			"        vec2 diffUV = normalize(texCoord - touchXY);\n"
-			"        texCoord = texCoord + (diffUV * diffTime);\n"
-			"    }\n"
-			"    texCoord = texCoord / vec2(1.0, ratio);\n"
-			"    outColor = texture(s_TextureMap, texCoord);\n"
-			"}";
+            "precision highp float;\n"
+            "in vec2 v_texCoord;\n"
+            "layout(location = 0) out vec4 outColor;\n"
+            "uniform sampler2D s_TextureMap;\n"
+            "uniform vec2 u_TouchXY;\n"
+            "uniform vec2 u_TexSize;\n"
+            "uniform float u_Time;\n"
+            "uniform vec3 u_Param;//20， 0.8， 0.1\n"
+            "void main()\n"
+            "{\n"
+            "    float ratio = u_TexSize.y / u_TexSize.x;\n"
+            "    vec2 texCoord = v_texCoord * vec2(1.0, ratio);\n"
+            "    vec2 touchXY = u_TouchXY * vec2(1.0, ratio);\n"
+            "    float distance = distance(texCoord, touchXY);\n"
+            "    if ((u_Time - u_Param.z) > 0.0\n"
+            "    && (distance <= (u_Time + u_Param.z))\n"
+            "    && (distance >= (u_Time - u_Param.z))) {\n"
+            "        float diff = (distance - u_Time);\n"
+            "        float moveDis = diff  * (1.0 - pow(abs(diff * u_Param.x), u_Param.y));//采样坐标移动距离\n"
+            "        vec2 unitDirectionVec = normalize(texCoord - touchXY);//单位方向向量\n"
+            "        texCoord = texCoord + (unitDirectionVec * moveDis);\n"
+            "    }\n"
+            "    texCoord = texCoord / vec2(1.0, ratio);\n"
+            "    outColor = texture(s_TextureMap, texCoord);\n"
+            "}";
 
 	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr, m_VertexShader, m_FragmentShader);
 	if (m_ProgramObj)
@@ -151,8 +156,11 @@ void ShockWaveSample::LoadImage(NativeImage *pImage)
 void ShockWaveSample::Draw(int screenW, int screenH)
 {
 	LOGCATE("ShockWaveSample::Draw()");
-
+    m_SurfaceWidth = screenW;
+    m_SurfaceHeight = screenH;
 	if(m_ProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
+
+	m_FrameIndex ++;
 
 	UpdateMVPMatrix(m_MVPMatrix, m_AngleX, m_AngleY, (float)screenW / screenH);
 
@@ -165,12 +173,13 @@ void ShockWaveSample::Draw(int screenW, int screenH)
 	glBindTexture(GL_TEXTURE_2D, m_TextureId);
 	GLUtils::setFloat(m_ProgramObj, "s_TextureMap", 0);
 
-	float time = static_cast<float>(fmod(GetSysCurrentTime(), 3000) / 3000);
+	//float time = static_cast<float>(fmod(GetSysCurrentTime(), 2000) / 2000);
+    float time = static_cast<float>(fmod(m_FrameIndex, 150) / 120);
 	GLUtils::setFloat(m_ProgramObj, "u_Time", time);
 
-	GLUtils::setVec2(m_ProgramObj, "u_TouchXY", vec2(0.5f, 0.5f));
+	GLUtils::setVec2(m_ProgramObj, "u_TouchXY", m_touchXY);
     GLUtils::setVec2(m_ProgramObj, "u_TexSize", vec2(m_RenderImage.width, m_RenderImage.height));
-	GLUtils::setVec3(m_ProgramObj, "u_Param", vec3(17.0f, 4.8f, 0.1f));
+	GLUtils::setVec3(m_ProgramObj, "u_Param", vec3(10.0f, 0.8f, 0.1f));
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const void *)0);
 
@@ -234,4 +243,10 @@ void ShockWaveSample::UpdateTransformMatrix(float rotateX, float rotateY, float 
 	m_AngleY = static_cast<int>(rotateY);
 	m_ScaleX = scaleX;
 	m_ScaleY = scaleY;
+}
+
+void ShockWaveSample::SetTouchLocation(float x, float y)
+{
+    m_touchXY = vec2(x / m_SurfaceWidth, y / m_SurfaceHeight);
+    m_FrameIndex = 0;
 }
