@@ -11,9 +11,6 @@
 
 ![beating_heart](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/beating_heart.gif)
 ![poly_3d_model](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/poly.gif)
-![avatar](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/avatar.gif?raw=true)
-![wave](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/wave.gif?raw=true)
-![board](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/draw_board.gif?raw=true)
 
 ## 基础篇
 
@@ -60,6 +57,11 @@
 - [NDK OpenGL ES 3.0 开发（二十一）：3D 模型加载和渲染](https://www.jianshu.com/p/c690872a036f)
 
 - [NDK OpenGL ES 3.0 开发（二十二）：PBO](https://www.jianshu.com/p/80f0d0d83fb2)
+
+## 展示图
+
+![avatar](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/avatar.gif)
+![board](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/draw_board.gif)
 
 ## 应用篇
 
