@@ -55,31 +55,32 @@ void ShockWaveSample::Init()
 
 	char fShaderStr[] =
 			"#version 300 es\n"
-            "precision highp float;\n"
-            "in vec2 v_texCoord;\n"
-            "layout(location = 0) out vec4 outColor;\n"
-            "uniform sampler2D s_TextureMap;\n"
-            "uniform vec2 u_TouchXY;\n"
-            "uniform vec2 u_TexSize;\n"
-            "uniform float u_Time;\n"
-            "uniform vec3 u_Param;//20， 0.8， 0.1\n"
-            "void main()\n"
-            "{\n"
-            "    float ratio = u_TexSize.y / u_TexSize.x;\n"
-            "    vec2 texCoord = v_texCoord * vec2(1.0, ratio);\n"
-            "    vec2 touchXY = u_TouchXY * vec2(1.0, ratio);\n"
-            "    float distance = distance(texCoord, touchXY);\n"
-            "    if ((u_Time - u_Param.z) > 0.0\n"
-            "    && (distance <= (u_Time + u_Param.z))\n"
-            "    && (distance >= (u_Time - u_Param.z))) {\n"
-            "        float diff = (distance - u_Time);\n"
-            "        float moveDis = diff  * (1.0 - pow(abs(diff * u_Param.x), u_Param.y));//采样坐标移动距离\n"
-            "        vec2 unitDirectionVec = normalize(texCoord - touchXY);//单位方向向量\n"
-            "        texCoord = texCoord + (unitDirectionVec * moveDis);\n"
-            "    }\n"
-            "    texCoord = texCoord / vec2(1.0, ratio);\n"
-            "    outColor = texture(s_TextureMap, texCoord);\n"
-            "}";
+			"precision highp float;\n"
+			"in vec2 v_texCoord;\n"
+			"layout(location = 0) out vec4 outColor;\n"
+			"uniform sampler2D s_TextureMap;\n"
+			"uniform vec2 u_TouchXY;\n"
+			"uniform vec2 u_TexSize;\n"
+			"uniform float u_Time;\n"
+			"uniform float u_Boundary;//0.1\n"
+			"void main()\n"
+			"{\n"
+			"    float ratio = u_TexSize.y / u_TexSize.x;\n"
+			"    vec2 texCoord = v_texCoord * vec2(1.0, ratio);\n"
+			"    vec2 touchXY = u_TouchXY * vec2(1.0, ratio);\n"
+			"    float distance = distance(texCoord, touchXY);\n"
+			"    if ((u_Time - u_Boundary) > 0.0\n"
+			"    && (distance <= (u_Time + u_Boundary))\n"
+			"    && (distance >= (u_Time - u_Boundary))) {\n"
+			"        float diff = (distance - u_Time);\n"
+			"        float moveDis = 20.0*diff*(diff - u_Boundary)*(diff + u_Boundary);//采样坐标移动距离\n"
+			"        vec2 unitDirectionVec = normalize(texCoord - touchXY);//单位方向向量\n"
+			"        texCoord = texCoord + (unitDirectionVec * moveDis);\n"
+			"    }\n"
+			"\n"
+			"    texCoord = texCoord / vec2(1.0, ratio);\n"
+			"    outColor = texture(s_TextureMap, texCoord);\n"
+			"}";
 
 	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr, m_VertexShader, m_FragmentShader);
 	if (m_ProgramObj)
@@ -179,7 +180,7 @@ void ShockWaveSample::Draw(int screenW, int screenH)
 
 	GLUtils::setVec2(m_ProgramObj, "u_TouchXY", m_touchXY);
     GLUtils::setVec2(m_ProgramObj, "u_TexSize", vec2(m_RenderImage.width, m_RenderImage.height));
-	GLUtils::setVec3(m_ProgramObj, "u_Param", vec3(10.0f, 0.8f, 0.1f));
+	GLUtils::setFloat(m_ProgramObj, "u_Boundary", 0.1f);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const void *)0);
 

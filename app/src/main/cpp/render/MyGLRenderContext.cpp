@@ -33,6 +33,7 @@
 #include <VisualizeAudioSample.h>
 #include <ScratchCardSample.h>
 #include <AvatarSample.h>
+#include <ShockWaveSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -161,6 +162,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
             case SAMPLE_TYPE_KEY_AVATAR:
                 m_pCurSample = new AvatarSample();
                 break;
+			case SAMPLE_TYPE_KEY_SHOCK_WAVE:
+				m_pCurSample = new ShockWaveSample();
+				break;
 			default:
 			    m_pCurSample = nullptr;
 				break;
