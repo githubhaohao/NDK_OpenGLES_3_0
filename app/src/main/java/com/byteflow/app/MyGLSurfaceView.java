@@ -16,6 +16,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_DEPTH_TESTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SCRATCH_CARD;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SHOCK_WAVE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_VISUALIZE_AUDIO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_PARTICLES;
@@ -204,6 +205,7 @@ public class MyGLSurfaceView extends GLSurfaceView implements ScaleGestureDetect
     }
 
     public void consumeTouchEvent(MotionEvent e) {
+        dealClickEvent(e);
         float touchX = -1, touchY = -1;
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
@@ -214,6 +216,8 @@ public class MyGLSurfaceView extends GLSurfaceView implements ScaleGestureDetect
             case MotionEvent.ACTION_CANCEL:
                 touchX = -1;
                 touchY = -1;
+                break;
+            default:
                 break;
         }
 
@@ -227,5 +231,41 @@ public class MyGLSurfaceView extends GLSurfaceView implements ScaleGestureDetect
                 break;
         }
 
+        //点击
+        switch (e.getAction()) {
+            case MotionEvent.ACTION_MOVE:
+                //touchX = e.getX();
+                //touchY = e.getY();
+                break;
+            case MotionEvent.ACTION_UP:
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    public void dealClickEvent(MotionEvent e) {
+        float touchX = -1, touchY = -1;
+        switch (e.getAction()) {
+            case MotionEvent.ACTION_UP:
+                touchX = e.getX();
+                touchY = e.getY();
+            {
+                //点击
+                switch (mGLRender.getSampleType()) {
+                    case SAMPLE_TYPE_KEY_SHOCK_WAVE:
+                        mGLRender.setTouchLoc(touchX, touchY);
+                        break;
+                    default:
+                        break;
+                }
+            }
+                break;
+            default:
+                break;
+        }
     }
 }

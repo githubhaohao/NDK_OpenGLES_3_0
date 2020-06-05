@@ -58,6 +58,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_CLOUD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FACE_SLENDER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_ROTARY_HEAD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SCRATCH_CARD;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SHOCK_WAVE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TIME_TUNNEL;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_VISUALIZE_AUDIO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
@@ -108,7 +109,8 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "Rotary Head",
             "Visualize Audio",
             "Scratch Card",
-            "3D Avatar"
+            "3D Avatar",
+            "Shock Wave"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -367,6 +369,11 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                         mGLSurfaceView.setAspectRatio(b2.getWidth(), b2.getHeight());
                         loadRGBAImage(R.drawable.avatar_b, 1);
                         loadRGBAImage(R.drawable.avatar_c, 2);
+                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        break;
+                    case SAMPLE_TYPE_KEY_SHOCK_WAVE:
+                        Bitmap b3 = loadRGBAImage(R.drawable.lye);
+                        mGLSurfaceView.setAspectRatio(b3.getWidth(), b3.getHeight());
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;
                     default:
