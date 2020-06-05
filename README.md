@@ -11,6 +11,9 @@
 
 ![beating_heart](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/beating_heart.gif)
 ![poly_3d_model](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/poly.gif)
+![avatar](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/avatar.gif?raw=true)
+![wave](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/wave.gif?raw=true)
+![board](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/draw_board.gif?raw=true)
 
 ## 基础篇
 
