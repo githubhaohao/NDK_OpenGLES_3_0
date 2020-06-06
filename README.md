@@ -83,6 +83,8 @@
 
 - [Android OpenGL ES 实现 3D 阿凡达效果](https://blog.csdn.net/Kennethdroid/article/details/106423475)
 
+- [Android OpenGL ES 实现动态（水波纹）涟漪效果](https://blog.csdn.net/Kennethdroid/article/details/106556584)
+
 ## 联系交流
 微信公众号：字节流动
 
