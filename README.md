@@ -4,6 +4,8 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/LICENSE.txt)
 ![Build](https://img.shields.io/badge/build-passing-brightgreen)
+[![apk](https://img.shields.io/badge/APK-download-green.svg)](https://github.com/githubhaohao/NDK_OpenGLES_3_0/raw/master/doc/OepnGLES.apk)
+
 
 备注: 其中一些 Case 的 3D 效果是通过手势触发（转动和缩放）。
 
