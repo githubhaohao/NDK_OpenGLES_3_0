@@ -139,7 +139,6 @@ GLuint GLUtils::CreateProgramWithFeedback(const char *pVertexShaderSource, const
     FUN_END_TIME("GLUtils::CreateProgramWithFeedback")
     LOGCATE("GLUtils::CreateProgramWithFeedback program = %d", program);
     return program;
-    return 0;
 }
 
 void GLUtils::DeleteProgram(GLuint &program)
