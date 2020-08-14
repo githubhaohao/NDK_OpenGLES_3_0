@@ -24,11 +24,11 @@
         android:layout_width="match_parent"
         android:layout_height="0.4dp"
         android:background="@android:color/darker_gray"/>
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/resolution_list_view"
         android:layout_width="match_parent"
         android:layout_height="360dp">
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
     <View
         android:layout_width="match_parent"
         android:layout_height="0.4dp"
