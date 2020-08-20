@@ -1,6 +1,6 @@
 ![OpenGLES3.0](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/opengles.png)
 
-# Android OpenGLES 3.0 开发极简教程
+# Android OpenGLES 3.0 开发系统性学习教程
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/LICENSE.txt)
 ![Build](https://img.shields.io/badge/build-passing-brightgreen)
