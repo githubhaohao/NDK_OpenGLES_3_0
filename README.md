@@ -87,7 +87,7 @@
 - [Android OpenGL ES 实现动态（水波纹）涟漪效果](https://blog.csdn.net/Kennethdroid/article/details/106556584)
 
 ## 联系交流
-有疑问或技术交流可以添加我的微信：Byte-Flow
+有疑问或技术交流可以添加我的微信：Byte-Flow , 领取音视频开发优质视频教程。
 
 ![字节流动](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/accountID.jpg)
 
