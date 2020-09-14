@@ -16,49 +16,49 @@
 
 ## 基础篇
 
-- [OpenGL ES 3.0 开发（01）：绘制一个三角形](https://www.jianshu.com/p/3f3518194066)
+- [OpenGL ES 3.0 开发（01）：绘制一个三角形](https://blog.csdn.net/Kennethdroid/article/details/95622391)
 
-- [OpenGL ES 3.0 开发（02）：纹理映射](https://www.jianshu.com/p/545e96798c68)
+- [OpenGL ES 3.0 开发（02）：纹理映射](https://blog.csdn.net/Kennethdroid/article/details/96887637)
 
-- [OpenGL ES 3.0 开发（03）：YUV 渲染](https://www.jianshu.com/p/224892abfc33)
+- [OpenGL ES 3.0 开发（03）：YUV 渲染](https://blog.csdn.net/Kennethdroid/article/details/97153407)
 
-- [OpenGL ES 3.0 开发（04）：VBO、EBO 和 VAO](https://www.jianshu.com/p/e51b693eb1ff)
+- [OpenGL ES 3.0 开发（04）：VBO、EBO 和 VAO](https://blog.csdn.net/Kennethdroid/article/details/98088890)
 
-- [OpenGL ES 3.0 开发（05）：FBO 离屏渲染](https://www.jianshu.com/p/2596f1e758c7)
+- [OpenGL ES 3.0 开发（05）：FBO 离屏渲染](https://blog.csdn.net/Kennethdroid/article/details/98883854)
 
-- [OpenGL ES 3.0 开发（06）：EGL](https://www.jianshu.com/p/44f280abaf53)
+- [OpenGL ES 3.0 开发（06）：EGL](https://blog.csdn.net/Kennethdroid/article/details/99655635)
 
-- [OpenGL ES 3.0 开发（07）：Transform Feedback](https://www.jianshu.com/p/ff103464a84f)
+- [OpenGL ES 3.0 开发（07）：Transform Feedback](https://blog.csdn.net/Kennethdroid/article/details/100083599)
 
-- [OpenGL ES 3.0 开发（08）：坐标系统](https://www.jianshu.com/p/aee250678e77)
+- [OpenGL ES 3.0 开发（08）：坐标系统](https://blog.csdn.net/Kennethdroid/article/details/100898155)
 
-- [OpenGL ES 3.0 开发（09）：光照基础](https://www.jianshu.com/p/882bd2b9dfe3)
+- [OpenGL ES 3.0 开发（09）：光照基础](https://blog.csdn.net/Kennethdroid/article/details/101220947)
 
-- [OpenGL ES 3.0 开发（10）：深度测试](https://www.jianshu.com/p/d024c23570b4)
+- [OpenGL ES 3.0 开发（10）：深度测试](https://blog.csdn.net/Kennethdroid/article/details/101709694)
 
-- [OpenGL ES 3.0 开发（11）：模板测试](https://www.jianshu.com/p/5459bdca9a3b)
+- [OpenGL ES 3.0 开发（11）：模板测试](https://blog.csdn.net/Kennethdroid/article/details/102533260)
 
-- [OpenGL ES 3.0 开发（12）：混合](https://www.jianshu.com/p/2bc344ef052c)
+- [OpenGL ES 3.0 开发（12）：混合](https://blog.csdn.net/Kennethdroid/article/details/102630858)
 
-- [OpenGL ES 3.0 开发（13）：实例化（Instancing）](https://www.jianshu.com/p/7081421966f6)
+- [OpenGL ES 3.0 开发（13）：实例化（Instancing）](https://blog.csdn.net/Kennethdroid/article/details/102770813)
 
-- [OpenGL ES 3.0 开发（14）：粒子（Particles）](https://www.jianshu.com/p/9fc0adc3d7d5)
+- [OpenGL ES 3.0 开发（14）：粒子（Particles）](https://blog.csdn.net/Kennethdroid/article/details/102881654)
 
-- [OpenGL ES 3.0 开发（15）：立方体贴图（天空盒）](https://www.jianshu.com/p/51108459934f)
+- [OpenGL ES 3.0 开发（15）：立方体贴图（天空盒）](https://blog.csdn.net/Kennethdroid/article/details/102991524)
 
-- [OpenGL ES 3.0 开发（16）：相机预览](https://www.jianshu.com/p/74b0fcff8b66)
+- [OpenGL ES 3.0 开发（16）：相机预览](https://blog.csdn.net/Kennethdroid/article/details/103189489)
 
-- [OpenGL ES 3.0 开发（17）：相机基础滤镜](https://www.jianshu.com/p/db17b4d48a1e)
+- [OpenGL ES 3.0 开发（17）：相机基础滤镜](https://blog.csdn.net/Kennethdroid/article/details/103335598)
 
-- [OpenGL ES 3.0 开发（18）：相机 LUT 滤镜](https://www.jianshu.com/p/ae8091d321d1)
+- [OpenGL ES 3.0 开发（18）：相机 LUT 滤镜](https://blog.csdn.net/Kennethdroid/article/details/103355129)
 
-- [OpenGL ES 3.0 开发（19）：相机抖音滤镜](https://www.jianshu.com/p/b310559a2716)
+- [OpenGL ES 3.0 开发（19）：相机抖音滤镜](https://blog.csdn.net/Kennethdroid/article/details/103449935)
 
-- [OpenGL ES 3.0 开发（20）：3D 模型](https://www.jianshu.com/p/a07eaeb6824e)
+- [OpenGL ES 3.0 开发（20）：3D 模型](https://blog.csdn.net/Kennethdroid/article/details/103771970)
 
-- [OpenGL ES 3.0 开发（21）：3D 模型加载和渲染](https://www.jianshu.com/p/c690872a036f)
+- [OpenGL ES 3.0 开发（21）：3D 模型加载和渲染](https://blog.csdn.net/Kennethdroid/article/details/103825593)
 
-- [OpenGL ES 3.0 开发（22）：PBO](https://www.jianshu.com/p/80f0d0d83fb2)
+- OpenGL ES 3.0 开发（22）：PBO](https://blog.csdn.net/Kennethdroid/article/details/103931627)
 
 
 ## 展示图
@@ -87,7 +87,7 @@
 - [Android OpenGL ES 实现动态（水波纹）涟漪效果](https://blog.csdn.net/Kennethdroid/article/details/106556584)
 
 ## 联系交流
-有疑问或技术交流可以添加我的微信：Byte-Flow , 领取音视频开发优质视频教程。
+有疑问或技术交流可以添加我的微信：Byte-Flow , 拉你入 OpenGL ES 技术交流群。
 
 ![字节流动](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/accountID.jpg)
 
