@@ -44,7 +44,7 @@
 #define SAMPLE_TYPE_KEY_SCRATCH_CARD            SAMPLE_TYPE + 28
 #define SAMPLE_TYPE_KEY_AVATAR                  SAMPLE_TYPE + 29
 #define SAMPLE_TYPE_KEY_SHOCK_WAVE              SAMPLE_TYPE + 30
-
+#define SAMPLE_TYPE_KEY_MRT                     SAMPLE_TYPE + 31
 
 #define SAMPLE_TYPE_KEY_SET_TOUCH_LOC           SAMPLE_TYPE + 999
 #define SAMPLE_TYPE_SET_GRAVITY_XY              SAMPLE_TYPE + 1000
