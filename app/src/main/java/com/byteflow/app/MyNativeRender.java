@@ -34,6 +34,7 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_KEY_SCRATCH_CARD        = SAMPLE_TYPE + 28;
     public static final int SAMPLE_TYPE_KEY_AVATAR              = SAMPLE_TYPE + 29;
     public static final int SAMPLE_TYPE_KEY_SHOCK_WAVE          = SAMPLE_TYPE + 30;
+    public static final int SAMPLE_TYPE_KEY_MRT                 = SAMPLE_TYPE + 31;
 
 
     public static final int SAMPLE_TYPE_SET_TOUCH_LOC           = SAMPLE_TYPE + 999;

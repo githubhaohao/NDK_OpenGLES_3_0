@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.SurfaceTexture;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -20,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -56,6 +58,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BIG_EYES;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BIG_HEAD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_CLOUD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FACE_SLENDER;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MRT;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_ROTARY_HEAD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SCRATCH_CARD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SHOCK_WAVE;
@@ -110,7 +113,8 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "Visualize Audio",
             "Scratch Card",
             "3D Avatar",
-            "Shock Wave"
+            "Shock Wave",
+            "MRT"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -375,6 +379,10 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                         Bitmap b3 = loadRGBAImage(R.drawable.lye);
                         mGLSurfaceView.setAspectRatio(b3.getWidth(), b3.getHeight());
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        break;
+                    case SAMPLE_TYPE_KEY_MRT:
+                        Bitmap b4 = loadRGBAImage(R.drawable.lye);
+                        mGLSurfaceView.setAspectRatio(b4.getWidth(), b4.getHeight());
                         break;
                     default:
                         break;
