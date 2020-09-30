@@ -60,6 +60,7 @@
 
 - [OpenGL ES 3.0 开发（22）：PBO](https://blog.csdn.net/Kennethdroid/article/details/103931627)
 
+- [OpenGL ES 3.0 开发（23）：多重渲染目标（MRT）](https://blog.csdn.net/Kennethdroid/article/details/108873665)
 
 ## 展示图
 
