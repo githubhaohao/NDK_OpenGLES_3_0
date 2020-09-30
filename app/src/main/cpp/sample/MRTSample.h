@@ -29,10 +29,9 @@ public:
 
     bool InitFBO();
 
-    void BlitTextures();
-
 private:
 	GLuint m_TextureId;
+    GLuint m_MRTProgramObj;
     GLuint m_AttachTexIds[ATTACHMENT_NUM];
     GLuint m_FBO;
 	GLint m_SamplerLoc;

@@ -27,6 +27,8 @@ MRTSample::MRTSample()
 
 	m_ScaleX = 1.0f;
 	m_ScaleY = 1.0f;
+
+    m_MRTProgramObj = GL_NONE;
 }
 
 MRTSample::~MRTSample()
@@ -60,7 +62,7 @@ void MRTSample::Init()
             "    v_texCoord = a_texCoord;\n"
             "}";
 
-	char fShaderStr[] =
+	char fMRTShaderStr[] =
 			"#version 300 es\n"
             "precision mediump float;\n"
             "in vec2 v_texCoord;\n"
@@ -78,11 +80,41 @@ void MRTSample::Init()
             "    outColor3 = vec4(0.0, 0.0, outputColor.b, 1.0);\n"
             "}";
 
-	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr, m_VertexShader, m_FragmentShader);
-	if (m_ProgramObj)
+	char fShaderStr[] =
+	        "#version 300 es\n"
+            "precision mediump float;\n"
+            "in vec2 v_texCoord;\n"
+            "layout(location = 0) out vec4 outColor;\n"
+            "uniform sampler2D s_Texture0;\n"
+            "uniform sampler2D s_Texture1;\n"
+            "uniform sampler2D s_Texture2;\n"
+            "uniform sampler2D s_Texture3;\n"
+            "void main()\n"
+            "{\n"
+            "    if(v_texCoord.x < 0.5 && v_texCoord.y < 0.5)\n"
+            "    {\n"
+            "        outColor = texture(s_Texture0, v_texCoord);\n"
+            "    }\n"
+            "    else if(v_texCoord.x > 0.5 && v_texCoord.y < 0.5)\n"
+            "    {\n"
+            "        outColor = texture(s_Texture1, v_texCoord);\n"
+            "    }\n"
+            "    else if(v_texCoord.x < 0.5 && v_texCoord.y > 0.5)\n"
+            "    {\n"
+            "        outColor = texture(s_Texture2, v_texCoord);\n"
+            "    }\n"
+            "    else\n"
+            "    {\n"
+            "        outColor = texture(s_Texture3, v_texCoord);\n"
+            "    }\n"
+            "}";
+
+	m_MRTProgramObj = GLUtils::CreateProgram(vShaderStr, fMRTShaderStr);
+    m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr);
+	if (m_MRTProgramObj)
 	{
-		m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "s_Texture");
-		m_MVPMatLoc = glGetUniformLocation(m_ProgramObj, "u_MVPMatrix");
+		m_SamplerLoc = glGetUniformLocation(m_MRTProgramObj, "s_Texture");
+		m_MVPMatLoc = glGetUniformLocation(m_MRTProgramObj, "u_MVPMatrix");
 	}
 	else
 	{
@@ -162,7 +194,7 @@ void MRTSample::Draw(int screenW, int screenH)
 	m_SurfaceWidth = screenW;
 	m_SurfaceHeight = screenH;
 
-	if(m_ProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
+	if(m_MRTProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
 
 	GLint defaultFrameBuffer = GL_NONE;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &defaultFrameBuffer);
@@ -172,10 +204,10 @@ void MRTSample::Draw(int screenW, int screenH)
 	glClear(GL_COLOR_BUFFER_BIT);
 	glDrawBuffers(ATTACHMENT_NUM, attachments);
 
-	glUseProgram (m_ProgramObj);
+	glUseProgram (m_MRTProgramObj);
 
 	glBindVertexArray(m_VaoId);
-	UpdateMVPMatrix(m_MVPMatrix, 0, m_AngleY, (float)screenW / screenH);
+	UpdateMVPMatrix(m_MVPMatrix, 180, m_AngleY, (float)screenW / screenH);
 	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 
 	// Bind the RGBA map
@@ -189,16 +221,20 @@ void MRTSample::Draw(int screenW, int screenH)
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, defaultFrameBuffer);
 	glViewport ( 0, 0, m_SurfaceWidth, m_SurfaceHeight);
 	glClear(GL_COLOR_BUFFER_BIT);
-//	UpdateMVPMatrix(m_MVPMatrix, 0, m_AngleY, (float)screenW / screenH);
-//	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
-//
-//	glActiveTexture(GL_TEXTURE0);
-//	glBindTexture(GL_TEXTURE_2D, m_AttachTexIds[1]);
-//	glUniform1i(m_SamplerLoc, 0);
-//
-//	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const void *)0);
+    glUseProgram (m_ProgramObj);
+	UpdateMVPMatrix(m_MVPMatrix, 0, m_AngleY, (float)screenW / screenH);
+	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 
-	BlitTextures();
+    for (int i = 0; i < ATTACHMENT_NUM; ++i)
+    {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, m_AttachTexIds[i]);
+        char samplerName[64] = {0};
+        sprintf(samplerName, "s_Texture%d", i);
+        GLUtils::setInt(m_ProgramObj, samplerName, i);
+    }
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const void *)0);
 }
 
 void MRTSample::Destroy()
@@ -206,12 +242,12 @@ void MRTSample::Destroy()
 	if (m_ProgramObj)
 	{
 		glDeleteProgram(m_ProgramObj);
+        glDeleteProgram(m_MRTProgramObj);
 		glDeleteBuffers(3, m_VboIds);
 		glDeleteVertexArrays(1, &m_VaoId);
 		glDeleteTextures(1, &m_TextureId);
 	}
 }
-
 
 /**
  * @param angleX 绕X轴旋转度数
@@ -290,26 +326,3 @@ bool MRTSample::InitFBO() {
     return true;
 }
 
-void MRTSample::BlitTextures() {
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_FBO);
-
-	glReadBuffer(GL_COLOR_ATTACHMENT0);
-	glBlitFramebuffer (0, 0, m_RenderImage.width, m_RenderImage.height,
-						0, 0, m_SurfaceWidth/2, m_SurfaceHeight/2,
-						GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-	glReadBuffer (GL_COLOR_ATTACHMENT1);
-	glBlitFramebuffer ( 0, 0, m_RenderImage.width, m_RenderImage.height,
-						m_SurfaceWidth/2, 0, m_SurfaceWidth, m_SurfaceHeight/2,
-						GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-	glReadBuffer (GL_COLOR_ATTACHMENT2);
-	glBlitFramebuffer ( 0, 0, m_RenderImage.width, m_RenderImage.height,
-						0, m_SurfaceHeight/2, m_SurfaceWidth/2, m_SurfaceHeight,
-						GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-	glReadBuffer (GL_COLOR_ATTACHMENT3);
-	glBlitFramebuffer ( 0, 0, m_RenderImage.width, m_RenderImage.height,
-						m_SurfaceWidth/2, m_SurfaceHeight/2, m_SurfaceWidth, m_SurfaceHeight,
-						GL_COLOR_BUFFER_BIT, GL_LINEAR);
-}

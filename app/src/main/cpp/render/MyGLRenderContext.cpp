@@ -35,6 +35,7 @@
 #include <AvatarSample.h>
 #include <ShockWaveSample.h>
 #include <MRTSample.h>
+#include <FBOBlitSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -168,6 +169,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 				break;
 			case SAMPLE_TYPE_KEY_MRT:
 				m_pCurSample = new MRTSample();
+				break;
+			case SAMPLE_TYPE_KEY_FBO_BLIT:
+				m_pCurSample = new FBOBlitSample();
 				break;
 			default:
 			    m_pCurSample = nullptr;
