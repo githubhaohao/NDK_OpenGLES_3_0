@@ -1,19 +1,14 @@
 //
-// Created by ByteFlow on 2019/7/30.
+// Created by ByteFlow on 2021/7/30.
 //
 
 #include <gtc/matrix_transform.hpp>
-#include "FBOBlitSample.h"
+#include "TextureBufferSample.h"
 #include "../util/GLUtils.h"
 
-const GLenum attachments[ATTACHMENT_NUM] = {
-		GL_COLOR_ATTACHMENT0,
-		GL_COLOR_ATTACHMENT1,
-		GL_COLOR_ATTACHMENT2,
-		GL_COLOR_ATTACHMENT3
-};
+#define BIG_DATA_SIZE 2048
 
-FBOBlitSample::FBOBlitSample()
+TextureBufferSample::TextureBufferSample()
 {
 
 	m_SamplerLoc = GL_NONE;
@@ -27,17 +22,15 @@ FBOBlitSample::FBOBlitSample()
 
 	m_ScaleX = 1.0f;
 	m_ScaleY = 1.0f;
-
-    m_ProgramObj = GL_NONE;
 }
 
-FBOBlitSample::~FBOBlitSample()
+TextureBufferSample::~TextureBufferSample()
 {
 	NativeImageUtil::FreeNativeImage(&m_RenderImage);
 
 }
 
-void FBOBlitSample::Init()
+void TextureBufferSample::Init()
 {
 	if(m_ProgramObj)
 		return;
@@ -51,7 +44,7 @@ void FBOBlitSample::Init()
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
 	char vShaderStr[] =
-            "#version 300 es\n"
+            "#version 320 es\n"
             "layout(location = 0) in vec4 a_position;\n"
             "layout(location = 1) in vec2 a_texCoord;\n"
             "uniform mat4 u_MVPMatrix;\n"
@@ -62,33 +55,32 @@ void FBOBlitSample::Init()
             "    v_texCoord = a_texCoord;\n"
             "}";
 
-	char fMRTShaderStr[] =
-			"#version 300 es\n"
-            "precision mediump float;\n"
-            "in vec2 v_texCoord;\n"
-            "layout(location = 0) out vec4 outColor0;\n"
-            "layout(location = 1) out vec4 outColor1;\n"
-            "layout(location = 2) out vec4 outColor2;\n"
-            "layout(location = 3) out vec4 outColor3;\n"
-            "uniform sampler2D s_Texture;\n"
+	char fShaderStr[] =
+            "#version 320 es\n"
+            "#extension GL_EXT_texture_buffer : require\n"
+            "in mediump vec2 v_texCoord;\n"
+            "layout(location = 0) out mediump  vec4 outColor;\n"
+            "uniform mediump samplerBuffer u_tbo;\n"
+            "uniform mediump sampler2D u_texture;\n"
+            "uniform mediump int u_BufferSize;\n"
             "void main()\n"
             "{\n"
-            "    vec4 outputColor = texture(s_Texture, v_texCoord);\n"
-            "    outColor0 = outputColor;\n"
-            "    outColor1 = vec4(outputColor.r, 0.0, 0.0, 1.0);\n"
-            "    outColor2 = vec4(0.0, outputColor.g, 0.0, 1.0);\n"
-            "    outColor3 = vec4(0.0, 0.0, outputColor.b, 1.0);\n"
+            "    mediump float offset = 0.1;\n"
+            "    mediump int index = int((floor(v_texCoord.x/offset) +floor(v_texCoord.y/offset)) * offset /2.0 * float(u_BufferSize - 1));\n"
+            "    mediump float value = texelFetch(u_tbo, index).x;//index[0~u_BufferSize - 1]\n"
+            "    mediump vec4 lightColor = vec4(vec3(vec2(value / float(u_BufferSize - 1)), 0.0), 1.0);\n"
+            "    outColor = texture(u_texture, v_texCoord) * lightColor;\n"
             "}";
 
-	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fMRTShaderStr);
+	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr, m_VertexShader, m_FragmentShader);
 	if (m_ProgramObj)
 	{
-		m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "s_Texture");
+		m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "u_tbo");
 		m_MVPMatLoc = glGetUniformLocation(m_ProgramObj, "u_MVPMatrix");
 	}
 	else
 	{
-		LOGCATE("FBOBlitSample::Init create program fail");
+		LOGCATE("TextureBufferSample::Init create program fail");
 	}
 
 	GLfloat verticesCoords[] = {
@@ -142,13 +134,23 @@ void FBOBlitSample::Init()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderImage.width, m_RenderImage.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_RenderImage.ppPlane[0]);
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
-	LOGCATE("FBOBlitSample::Init InitFBO = %d", InitFBO());
+	float *bigData = new float[BIG_DATA_SIZE];
+	for (int i = 0; i < BIG_DATA_SIZE; ++i) {
+		bigData[i] = i * 1.0f;
+	}
+
+	glGenBuffers(1, &m_TboId);
+	glBindBuffer(GL_TEXTURE_BUFFER, m_TboId);
+	glBufferData(GL_TEXTURE_BUFFER, sizeof(float) * BIG_DATA_SIZE, bigData, GL_STATIC_DRAW);
+	delete [] bigData;
+
+	glGenTextures(1, &m_TboTexId);
 
 }
 
-void FBOBlitSample::LoadImage(NativeImage *pImage)
+void TextureBufferSample::LoadImage(NativeImage *pImage)
 {
-	LOGCATE("FBOBlitSample::LoadImage pImage = %p", pImage->ppPlane[0]);
+	LOGCATE("TextureBufferSample::LoadImage pImage = %p", pImage->ppPlane[0]);
 	if (pImage)
 	{
 		m_RenderImage.width = pImage->width;
@@ -156,64 +158,58 @@ void FBOBlitSample::LoadImage(NativeImage *pImage)
 		m_RenderImage.format = pImage->format;
 		NativeImageUtil::CopyNativeImage(pImage, &m_RenderImage);
 	}
+
 }
 
-void FBOBlitSample::Draw(int screenW, int screenH)
+void TextureBufferSample::Draw(int screenW, int screenH)
 {
-	LOGCATE("FBOBlitSample::Draw()");
-	m_SurfaceWidth = screenW;
-	m_SurfaceHeight = screenH;
+	LOGCATE("TextureBufferSample::Draw()");
 
 	if(m_ProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
 
-	GLint defaultFrameBuffer = GL_NONE;
-	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &defaultFrameBuffer);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
-	glViewport ( 0, 0, m_RenderImage.width, m_RenderImage.height);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glDrawBuffers(ATTACHMENT_NUM, attachments);
+	UpdateMVPMatrix(m_MVPMatrix, m_AngleX, m_AngleY, (float)screenW / screenH);
 
 	glUseProgram (m_ProgramObj);
 
 	glBindVertexArray(m_VaoId);
-	UpdateMVPMatrix(m_MVPMatrix, 0, m_AngleY, (float)screenW / screenH);
+
 	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 
-	// Bind the RGBA map
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_TextureId);
+	glBindTexture(GL_TEXTURE_BUFFER, m_TboTexId);
+	glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, m_TboId);
 	glUniform1i(m_SamplerLoc, 0);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, m_TextureId);
+    GLUtils::setInt(m_ProgramObj, "u_texture", 1);
+
+	GLUtils::setInt(m_ProgramObj, "u_BufferSize", BIG_DATA_SIZE);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const void *)0);
 
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, defaultFrameBuffer);
-	glViewport ( 0, 0, m_SurfaceWidth, m_SurfaceHeight);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	BlitTextures();
 }
 
-void FBOBlitSample::Destroy()
+void TextureBufferSample::Destroy()
 {
 	if (m_ProgramObj)
 	{
 		glDeleteProgram(m_ProgramObj);
-        glDeleteProgram(m_ProgramObj);
 		glDeleteBuffers(3, m_VboIds);
 		glDeleteVertexArrays(1, &m_VaoId);
 		glDeleteTextures(1, &m_TextureId);
 	}
 }
 
+
 /**
  * @param angleX 绕X轴旋转度数
  * @param angleY 绕Y轴旋转度数
  * @param ratio 宽高比
  * */
-void FBOBlitSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio)
+void TextureBufferSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio)
 {
-	LOGCATE("FBOBlitSample::UpdateMVPMatrix angleX = %d, angleY = %d, ratio = %f", angleX, angleY, ratio);
+	LOGCATE("TextureBufferSample::UpdateMVPMatrix angleX = %d, angleY = %d, ratio = %f", angleX, angleY, ratio);
 	angleX = angleX % 360;
 	angleY = angleY % 360;
 
@@ -245,63 +241,11 @@ void FBOBlitSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY
 
 }
 
-void FBOBlitSample::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
+void TextureBufferSample::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
 {
 	GLSampleBase::UpdateTransformMatrix(rotateX, rotateY, scaleX, scaleY);
 	m_AngleX = static_cast<int>(rotateX);
 	m_AngleY = static_cast<int>(rotateY);
 	m_ScaleX = scaleX;
 	m_ScaleY = scaleY;
-}
-
-bool FBOBlitSample::InitFBO() {
-	GLint defaultFrameBuffer = GL_NONE;
-	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &defaultFrameBuffer);
-
-	glGenFramebuffers(1, &m_FBO);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
-
-	glGenTextures(ATTACHMENT_NUM, m_AttachTexIds);
-	for (int i = 0; i < ATTACHMENT_NUM; ++i) {
-		glBindTexture(GL_TEXTURE_2D, m_AttachTexIds[i]);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderImage.width, m_RenderImage.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attachments[i], GL_TEXTURE_2D, m_AttachTexIds[i], 0);
-	}
-
-	glDrawBuffers(ATTACHMENT_NUM, attachments);
-
-	if (GL_FRAMEBUFFER_COMPLETE != glCheckFramebufferStatus(GL_FRAMEBUFFER))
-	{
-		return false;
-	}
-	glBindFramebuffer(GL_FRAMEBUFFER, defaultFrameBuffer);
-    return true;
-}
-
-void FBOBlitSample::BlitTextures() {
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_FBO);
-
-	glReadBuffer(GL_COLOR_ATTACHMENT0);
-	glBlitFramebuffer(0, 0, m_RenderImage.width, m_RenderImage.height,
-						0, 0, m_SurfaceWidth/2, m_SurfaceHeight/2,
-						GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-	glReadBuffer(GL_COLOR_ATTACHMENT1);
-	glBlitFramebuffer(0, 0, m_RenderImage.width, m_RenderImage.height,
-						m_SurfaceWidth/2, 0, m_SurfaceWidth, m_SurfaceHeight/2,
-						GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-	glReadBuffer(GL_COLOR_ATTACHMENT2);
-	glBlitFramebuffer(0, 0, m_RenderImage.width, m_RenderImage.height,
-						0, m_SurfaceHeight/2, m_SurfaceWidth/2, m_SurfaceHeight,
-						GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-	glReadBuffer(GL_COLOR_ATTACHMENT3);
-	glBlitFramebuffer(0, 0, m_RenderImage.width, m_RenderImage.height,
-						m_SurfaceWidth/2, m_SurfaceHeight/2, m_SurfaceWidth, m_SurfaceHeight,
-						GL_COLOR_BUFFER_BIT, GL_LINEAR);
 }

@@ -36,6 +36,7 @@
 #include <ShockWaveSample.h>
 #include <MRTSample.h>
 #include <FBOBlitSample.h>
+#include <TextureBufferSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -173,6 +174,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 			case SAMPLE_TYPE_KEY_FBO_BLIT:
 				m_pCurSample = new FBOBlitSample();
 				break;
+            case SAMPLE_TYPE_KEY_TBO:
+                m_pCurSample = new TextureBufferSample();
+                break;
 			default:
 			    m_pCurSample = nullptr;
 				break;
