@@ -1,6 +1,7 @@
 package com.byteflow.app;
 
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -10,6 +11,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_SET_GRAVITY_XY;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_SET_TOUCH_LOC;
 
 public class MyGLRender implements GLSurfaceView.Renderer {
+    private static final String TAG = "MyGLRender";
     private MyNativeRender mNativeRender;
     private int mSampleType;
 
@@ -20,7 +22,7 @@ public class MyGLRender implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         mNativeRender.native_OnSurfaceCreated();
-
+        Log.e(TAG, "onSurfaceCreated() called with: GL_VERSION = [" + gl.glGetString(GL10.GL_VERSION) + "]");
     }
 
     @Override
