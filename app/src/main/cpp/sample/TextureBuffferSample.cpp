@@ -198,6 +198,8 @@ void TextureBufferSample::Destroy()
 		glDeleteBuffers(3, m_VboIds);
 		glDeleteVertexArrays(1, &m_VaoId);
 		glDeleteTextures(1, &m_TextureId);
+		glDeleteBuffers(1, &m_TboId);
+		glDeleteTextures(1, &m_TboTexId);
 	}
 }
 
