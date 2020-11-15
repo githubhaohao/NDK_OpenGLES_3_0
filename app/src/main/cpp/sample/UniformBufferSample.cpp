@@ -1,12 +1,12 @@
 //
-// Created by ByteFlow on 2019/7/30.
+// Created by ByteFlow on 2021/7/30.
 //
 
 #include <gtc/matrix_transform.hpp>
-#include "CoordSystemSample.h"
+#include "UniformBufferSample.h"
 #include "../util/GLUtils.h"
 
-CoordSystemSample::CoordSystemSample()
+UniformBufferSample::UniformBufferSample()
 {
 
 	m_SamplerLoc = GL_NONE;
@@ -22,13 +22,13 @@ CoordSystemSample::CoordSystemSample()
 	m_ScaleY = 1.0f;
 }
 
-CoordSystemSample::~CoordSystemSample()
+UniformBufferSample::~UniformBufferSample()
 {
 	NativeImageUtil::FreeNativeImage(&m_RenderImage);
 
 }
 
-void CoordSystemSample::Init()
+void UniformBufferSample::Init()
 {
 	if(m_ProgramObj)
 		return;
@@ -42,14 +42,19 @@ void CoordSystemSample::Init()
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
 	char vShaderStr[] =
-            "#version 300 es\n"
+            "#version 310 es\n"
             "layout(location = 0) in vec4 a_position;\n"
             "layout(location = 1) in vec2 a_texCoord;\n"
-            "uniform mat4 u_MVPMatrix;\n"
+            "layout (std140) uniform MVPMatrix\n"
+            "{\n"
+            "    mat4 projection;\n"
+            "    mat4 view;\n"
+            "    mat4 model;\n"
+            "};\n"
             "out vec2 v_texCoord;\n"
             "void main()\n"
             "{\n"
-            "    gl_Position = u_MVPMatrix * a_position;\n"
+            "    gl_Position = projection * view * model * a_position;\n"
             "    v_texCoord = a_texCoord;\n"
             "}";
 
@@ -72,7 +77,7 @@ void CoordSystemSample::Init()
 	}
 	else
 	{
-		LOGCATE("CoordSystemSample::Init create program fail");
+		LOGCATE("UniformBufferSample::Init create program fail");
 	}
 
 	GLfloat verticesCoords[] = {
@@ -126,11 +131,21 @@ void CoordSystemSample::Init()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderImage.width, m_RenderImage.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_RenderImage.ppPlane[0]);
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
+	//UBO
+    GLuint uniformBlockIndex = glGetUniformBlockIndex(m_ProgramObj, "MVPMatrix");
+    glUniformBlockBinding(m_ProgramObj, uniformBlockIndex, 0);
+
+    glGenBuffers(1, &m_UboId);
+    glBindBuffer(GL_UNIFORM_BUFFER, m_UboId);
+    glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::mat4), nullptr, GL_STATIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    glBindBufferRange(GL_UNIFORM_BUFFER, 0, m_UboId, 0, 3 * sizeof(glm::mat4));
+
 }
 
-void CoordSystemSample::LoadImage(NativeImage *pImage)
+void UniformBufferSample::LoadImage(NativeImage *pImage)
 {
-	LOGCATE("CoordSystemSample::LoadImage pImage = %p", pImage->ppPlane[0]);
+	LOGCATE("UniformBufferSample::LoadImage pImage = %p", pImage->ppPlane[0]);
 	if (pImage)
 	{
 		m_RenderImage.width = pImage->width;
@@ -141,9 +156,9 @@ void CoordSystemSample::LoadImage(NativeImage *pImage)
 
 }
 
-void CoordSystemSample::Draw(int screenW, int screenH)
+void UniformBufferSample::Draw(int screenW, int screenH)
 {
-	LOGCATE("CoordSystemSample::Draw()");
+	LOGCATE("UniformBufferSample::Draw()");
 
 	if(m_ProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
 
@@ -156,6 +171,12 @@ void CoordSystemSample::Draw(int screenW, int screenH)
 
 	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 
+    glBindBuffer(GL_UNIFORM_BUFFER, m_UboId);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &m_ProjectionMatrix[0][0]);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &m_ViewMatrix[0][0]);
+    glBufferSubData(GL_UNIFORM_BUFFER, 2 *sizeof(glm::mat4), sizeof(glm::mat4), &m_ModelMatrix[0][0]);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
 	// Bind the RGBA map
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_TextureId);
@@ -165,7 +186,7 @@ void CoordSystemSample::Draw(int screenW, int screenH)
 
 }
 
-void CoordSystemSample::Destroy()
+void UniformBufferSample::Destroy()
 {
 	if (m_ProgramObj)
 	{
@@ -182,9 +203,9 @@ void CoordSystemSample::Destroy()
  * @param angleY 绕Y轴旋转度数
  * @param ratio 宽高比
  * */
-void CoordSystemSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio)
+void UniformBufferSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int angleY, float ratio)
 {
-	LOGCATE("CoordSystemSample::UpdateMVPMatrix angleX = %d, angleY = %d, ratio = %f", angleX, angleY, ratio);
+	LOGCATE("UniformBufferSample::UpdateMVPMatrix angleX = %d, angleY = %d, ratio = %f", angleX, angleY, ratio);
 	angleX = angleX % 360;
 	angleY = angleY % 360;
 
@@ -194,9 +215,9 @@ void CoordSystemSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int an
 
 
 	// Projection matrix
-	//glm::mat4 Projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
+	glm::mat4 Projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
 	//glm::mat4 Projection = glm::frustum(-ratio, ratio, -1.0f, 1.0f, 4.0f, 100.0f);
-	glm::mat4 Projection = glm::perspective(45.0f,ratio, 0.1f,100.f);
+	//glm::mat4 Projection = glm::perspective(45.0f,ratio, 0.1f,100.f);
 
 	// View matrix
 	glm::mat4 View = glm::lookAt(
@@ -213,10 +234,12 @@ void CoordSystemSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int an
 	Model = glm::translate(Model, glm::vec3(0.0f, 0.0f, 0.0f));
 
 	mvpMatrix = Projection * View * Model;
-
+	m_ModelMatrix = Model;
+    m_ViewMatrix = View;
+    m_ProjectionMatrix = Projection;
 }
 
-void CoordSystemSample::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
+void UniformBufferSample::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
 {
 	GLSampleBase::UpdateTransformMatrix(rotateX, rotateY, scaleX, scaleY);
 	m_AngleX = static_cast<int>(rotateX);

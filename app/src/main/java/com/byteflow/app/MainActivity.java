@@ -65,6 +65,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SCRATCH_CARD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SHOCK_WAVE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TIME_TUNNEL;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_UBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_VISUALIZE_AUDIO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_PARTICLES;
@@ -118,7 +119,8 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "Shock Wave",
             "MRT",
             "FBO Blit",
-            "Texture Buffer"
+            "Texture Buffer",
+            "Uniform Buffer"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -387,6 +389,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                     case SAMPLE_TYPE_KEY_MRT:
                     case SAMPLE_TYPE_KEY_FBO_BLIT:
                     case SAMPLE_TYPE_KEY_TBO:
+                    case SAMPLE_TYPE_KEY_UBO:
                         Bitmap b4 = loadRGBAImage(R.drawable.lye);
                         mGLSurfaceView.setAspectRatio(b4.getWidth(), b4.getHeight());
                         break;
