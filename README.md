@@ -64,6 +64,10 @@
 
 - [OpenGL ES 3.0 开发（24）：帧缓冲区位块传送（Blit）](https://blog.csdn.net/Kennethdroid/article/details/109032497)
 
+- [OpenGL ES 3.0 开发（25）：TBO](https://blog.csdn.net/Kennethdroid/article/details/109749018)
+
+- [OpenGL ES 3.0 开发（26）：UBO](https://blog.csdn.net/Kennethdroid/article/details/109749018)
+
 
 ## 展示图
 
@@ -91,6 +95,9 @@
 - [Android OpenGL ES 实现动态（水波纹）涟漪效果](https://blog.csdn.net/Kennethdroid/article/details/106556584)
 
 - [Android OpenGL ES 调试工具](https://blog.csdn.net/Kennethdroid/article/details/106695602)
+
+- [Android OpenGL ES 传输超大数组给着色器程序](https://blog.csdn.net/Kennethdroid/article/details/109749018)
+
 
 ## 联系交流
 有疑问或技术交流可以添加我的微信：Byte-Flow , 拉你入 OpenGL ES 技术交流群。
