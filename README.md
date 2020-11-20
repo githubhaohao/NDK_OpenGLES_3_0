@@ -64,9 +64,9 @@
 
 - [OpenGL ES 3.0 开发（24）：帧缓冲区位块传送（Blit）](https://blog.csdn.net/Kennethdroid/article/details/109032497)
 
-- [OpenGL ES 3.0 开发（25）：TBO](https://blog.csdn.net/Kennethdroid/article/details/109749018)
+- [OpenGL ES 3.0 开发（25）：TBO（GLES 3.1）](https://blog.csdn.net/Kennethdroid/article/details/109749018)
 
-- [OpenGL ES 3.0 开发（26）：UBO](https://blog.csdn.net/Kennethdroid/article/details/109749018)
+- [OpenGL ES 3.0 开发（26）：UBO（GLES 3.2）](https://blog.csdn.net/Kennethdroid/article/details/109749018)
 
 
 ## 展示图
