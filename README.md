@@ -98,6 +98,8 @@
 
 - [Android OpenGL ES 传输超大数组给着色器程序](https://blog.csdn.net/Kennethdroid/article/details/109749018)
 
+- [面试中经常被问到的 OpenGL ES 对象，你知道的有哪些？](https://blog.csdn.net/Kennethdroid/article/details/112379836)
+
 
 ## 联系交流
 有疑问或技术交流可以添加我的微信：Byte-Flow , 拉你入 OpenGL ES 技术交流群。
