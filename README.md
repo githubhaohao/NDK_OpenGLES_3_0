@@ -102,6 +102,8 @@
 
 - [Android OpenGL ES 渲染图像读取哪家强](https://blog.csdn.net/Kennethdroid/article/details/109339906)
 
+- [利用 OpenGL ES 给视频播放器和相机做个字符画滤镜](https://blog.csdn.net/Kennethdroid/article/details/113379112)
+
 
 ## 联系交流
 有疑问或技术交流可以添加我的微信：Byte-Flow , 拉你入 OpenGL ES 技术交流群。
