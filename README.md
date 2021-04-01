@@ -108,7 +108,7 @@
 
 
 ## 联系交流
-有疑问或技术交流可以添加我的微信：Byte-Flow , 拉你入 OpenGL ES 技术交流群。
+有疑问或技术交流可以扫码添加**我的微信：Byte-Flow , 拉你入相关技术交流群**，里面很多牛人帮你解答。
 
 ![字节流动](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/accountID.jpg)
 
