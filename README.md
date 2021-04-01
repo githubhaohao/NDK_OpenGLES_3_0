@@ -108,7 +108,6 @@
 
 
 ## 联系交流
-有疑问或技术交流可以扫码添加**我的微信：Byte-Flow , 拉你入相关技术交流群**，里面很多牛人帮你解答。
-
+有疑问或技术交流可以扫码添加**我的微信：Byte-Flow ，领取视频教程，拉你入相关技术交流群**，里面很多牛人帮你解答。
 ![字节流动](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/accountID.jpg)
 
