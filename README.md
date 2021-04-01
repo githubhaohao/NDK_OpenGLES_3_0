@@ -106,6 +106,10 @@
 
 - [利用 OpenGL ES 给视频播放器和相机做个字符画滤镜](https://blog.csdn.net/Kennethdroid/article/details/113379112)
 
+## 相关推荐
+
+- [Android OpenGL Camera 2.0 实现 30 种滤镜和抖音特效](https://github.com/githubhaohao/OpenGLCamera2)
+- [Android FFmpeg 音视频开发教程](https://github.com/githubhaohao/LearnFFmpeg)
 
 ## 联系交流
 有疑问或技术交流可以扫码添加**我的微信：Byte-Flow ，领取视频教程，拉你入相关技术交流群**，里面很多牛人帮你解答。
