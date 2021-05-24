@@ -38,6 +38,7 @@
 #include <FBOBlitSample.h>
 #include <TextureBufferSample.h>
 #include <UniformBufferSample.h>
+#include <RGB2YUVSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -180,6 +181,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
                 break;
 			case SAMPLE_TYPE_KEY_UBO:
 				m_pCurSample = new UniformBufferSample();
+				break;
+			case SAMPLE_TYPE_KEY_RGB2YUV:
+				m_pCurSample = new RGB2YUVSample();
 				break;
 			default:
 			    m_pCurSample = nullptr;

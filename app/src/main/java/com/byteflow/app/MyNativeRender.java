@@ -38,6 +38,8 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_KEY_FBO_BLIT            = SAMPLE_TYPE + 32;
     public static final int SAMPLE_TYPE_KEY_TBO                 = SAMPLE_TYPE + 33;
     public static final int SAMPLE_TYPE_KEY_UBO                 = SAMPLE_TYPE + 34;
+    public static final int SAMPLE_TYPE_KEY_RGB2YUV             = SAMPLE_TYPE + 35;
+
 
 
     public static final int SAMPLE_TYPE_SET_TOUCH_LOC           = SAMPLE_TYPE + 999;

@@ -60,6 +60,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_CLOUD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FACE_SLENDER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FBO_BLIT;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MRT;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2YUV;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_ROTARY_HEAD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SCRATCH_CARD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SHOCK_WAVE;
@@ -120,7 +121,8 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "MRT",
             "FBO Blit",
             "Texture Buffer",
-            "Uniform Buffer"
+            "Uniform Buffer",
+            "OpenGL RGB to YUV"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -392,6 +394,9 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                     case SAMPLE_TYPE_KEY_UBO:
                         Bitmap b4 = loadRGBAImage(R.drawable.lye);
                         mGLSurfaceView.setAspectRatio(b4.getWidth(), b4.getHeight());
+                        break;
+                    case SAMPLE_TYPE_KEY_RGB2YUV:
+                        loadRGBAImage(R.drawable.lye);
                         break;
                     default:
                         break;

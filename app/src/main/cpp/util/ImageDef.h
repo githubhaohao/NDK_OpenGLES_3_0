@@ -17,11 +17,13 @@
 #define IMAGE_FORMAT_NV21           0x02
 #define IMAGE_FORMAT_NV12           0x03
 #define IMAGE_FORMAT_I420           0x04
+#define IMAGE_FORMAT_YUYV           0x05
 
 #define IMAGE_FORMAT_RGBA_EXT       "RGB32"
 #define IMAGE_FORMAT_NV21_EXT       "NV21"
 #define IMAGE_FORMAT_NV12_EXT       "NV12"
 #define IMAGE_FORMAT_I420_EXT       "I420"
+#define IMAGE_FORMAT_YUYV_EXT       "YUYV"
 
 typedef struct _tag_NativeRectF
 {
@@ -65,6 +67,11 @@ public:
 			case IMAGE_FORMAT_RGBA:
 			{
 				pImage->ppPlane[0] = static_cast<uint8_t *>(malloc(pImage->width * pImage->height * 4));
+			}
+				break;
+			case IMAGE_FORMAT_YUYV:
+			{
+				pImage->ppPlane[0] = static_cast<uint8_t *>(malloc(pImage->width * pImage->height * 2));
 			}
 				break;
 			case IMAGE_FORMAT_NV12:
@@ -116,6 +123,11 @@ public:
 				memcpy(pDstImg->ppPlane[0], pSrcImg->ppPlane[0], pSrcImg->width * pSrcImg->height * 1.5);
 			}
 				break;
+			case IMAGE_FORMAT_YUYV:
+			{
+				memcpy(pDstImg->ppPlane[0], pSrcImg->ppPlane[0], pSrcImg->width * pSrcImg->height * 2);
+			}
+				break;
 			case IMAGE_FORMAT_RGBA:
 			{
 				memcpy(pDstImg->ppPlane[0], pSrcImg->ppPlane[0], pSrcImg->width * pSrcImg->height * 4);
@@ -155,6 +167,9 @@ public:
 			case IMAGE_FORMAT_RGBA:
 				pExt = IMAGE_FORMAT_RGBA_EXT;
 				break;
+			case IMAGE_FORMAT_YUYV:
+				pExt = IMAGE_FORMAT_YUYV_EXT;
+				break;
 			default:
 				pExt = "Default";
 				break;
@@ -193,6 +208,12 @@ public:
 				{
 					fwrite(pSrcImg->ppPlane[0],
 						   static_cast<size_t>(pSrcImg->width * pSrcImg->height * 4), 1, fp);
+					break;
+				}
+				case IMAGE_FORMAT_YUYV:
+				{
+					fwrite(pSrcImg->ppPlane[0],
+						   static_cast<size_t>(pSrcImg->width * pSrcImg->height * 2), 1, fp);
 					break;
 				}
 				default:
