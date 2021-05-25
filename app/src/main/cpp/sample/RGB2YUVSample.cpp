@@ -133,7 +133,7 @@ void RGB2YUVSample::Init()
 			"void main()\n"
 			"{\n"
 			"    vec2 texelOffset = vec2(u_Offset, 0.0);\n"
-			"    vec4 color0 = texture(s_TextureMap, v_texCoord - texelOffset);\n"
+			"    vec4 color0 = texture(s_TextureMap, v_texCoord);\n"
 			"    vec4 color1 = texture(s_TextureMap, v_texCoord + texelOffset);\n"
 			"    float y0 = dot(color0.rgb, COEF_Y);\n"
 			"    float u0 = dot(color0.rgb, COEF_U) + 0.5;\n"
@@ -236,17 +236,16 @@ void RGB2YUVSample::Draw(int screenW, int screenH)
 {
 	// 离屏渲染
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-	// 渲染成 yuyv 宽度像素减半,glviewport 宽度减半
-	glViewport(0, 0, m_RenderImage.width / 2, m_RenderImage.height);
-
 	// Do FBO off screen rendering
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FboId);
+    // 渲染成 yuyv 宽度像素减半,glviewport 宽度减半
+    glViewport(0, 0, m_RenderImage.width / 2, m_RenderImage.height);
 	glUseProgram(m_FboProgramObj);
 	glBindVertexArray(m_VaoIds[1]);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_ImageTextureId);
 	glUniform1i(m_FboSamplerLoc, 0);
-	float texelOffset = (float) (0.5f / (float) m_RenderImage.width);
+	float texelOffset = (float) (1.f / (float) m_RenderImage.width);
 	GLUtils::setFloat(m_FboProgramObj, "u_Offset", texelOffset);
 	GO_CHECK_GL_ERROR();
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const void *)0);
@@ -264,7 +263,7 @@ void RGB2YUVSample::Draw(int screenW, int screenH)
 		glReadPixels(0, 0, m_RenderImage.width / 2, nativeImage.height, GL_RGBA, GL_UNSIGNED_BYTE, pBuffer);
 	FUN_END_TIME("FBO cost glReadPixels")
 
-	NativeImageUtil::DumpNativeImage(&nativeImage, "/sdcard/DCIM", "YUYV_DUMP");
+	NativeImageUtil::DumpNativeImage(&nativeImage, "/sdcard/DCIM", "RGB2YUV");
 	delete []pBuffer;
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
