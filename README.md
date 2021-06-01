@@ -106,6 +106,8 @@
 
 - [利用 OpenGL ES 给视频播放器和相机做个字符画滤镜](https://blog.csdn.net/Kennethdroid/article/details/113379112)
 
+- [使用 OpenGL 实现 RGB 到 YUV 的图像格式转换](https://www.jianshu.com/p/7a990a2855c4)
+
 ## 相关推荐
 
 - [Android OpenGL Camera 2.0 实现 30 种滤镜和抖音特效](https://github.com/githubhaohao/OpenGLCamera2)
