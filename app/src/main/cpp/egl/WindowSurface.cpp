@@ -3,7 +3,7 @@
 //
 
 #include <assert.h>
-#include <LogUtils.h>
+#include <LogUtil.h>
 #include "WindowSurface.h"
 
 WindowSurface::WindowSurface(EglCore *eglCore, ANativeWindow *window, bool releaseSurface)

@@ -4,7 +4,7 @@
 
 #include <assert.h>
 #include <GLES2/gl2.h>
-#include <LogUtils.h>
+#include <LogUtil.h>
 #include "EglSurfaceBase.h"
 
 

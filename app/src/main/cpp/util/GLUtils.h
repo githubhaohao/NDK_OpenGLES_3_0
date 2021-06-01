@@ -5,6 +5,8 @@
 #include <string>
 #include <glm.hpp>
 
+#define MATH_PI 3.1415926535897932384626433832802
+
 class GLUtils {
 public:
     static GLuint LoadShader(GLenum shaderType, const char *pSource);

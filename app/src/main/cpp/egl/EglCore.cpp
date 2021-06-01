@@ -2,7 +2,7 @@
 // Created by Administrator on 2018/2/10.
 //
 
-#include "LogUtils.h"
+#include "LogUtil.h"
 #include "EglCore.h"
 #include <assert.h>
 
