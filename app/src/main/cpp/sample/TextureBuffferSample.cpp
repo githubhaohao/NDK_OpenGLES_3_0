@@ -45,6 +45,7 @@ void TextureBufferSample::Init()
 
 	char vShaderStr[] =
             "#version 320 es\n"
+			"precision mediump float;"
             "layout(location = 0) in vec4 a_position;\n"
             "layout(location = 1) in vec2 a_texCoord;\n"
             "uniform mat4 u_MVPMatrix;\n"
@@ -60,22 +61,21 @@ void TextureBufferSample::Init()
             "#extension GL_EXT_texture_buffer : require\n"
             "in mediump vec2 v_texCoord;\n"
             "layout(location = 0) out mediump  vec4 outColor;\n"
-            "uniform mediump samplerBuffer u_tbo;\n"
-            "uniform mediump sampler2D u_texture;\n"
+            "uniform mediump samplerBuffer u_buffer_tex;\n"
+            "uniform mediump sampler2D u_2d_texture;\n"
             "uniform mediump int u_BufferSize;\n"
             "void main()\n"
             "{\n"
             "    mediump float offset = 0.1;\n"
             "    mediump int index = int((floor(v_texCoord.x/offset) +floor(v_texCoord.y/offset)) * offset /2.0 * float(u_BufferSize - 1));\n"
-            "    mediump float value = texelFetch(u_tbo, index).x;//index[0~u_BufferSize - 1]\n"
+            "    mediump float value = texelFetch(u_buffer_tex, index).x;\n"
             "    mediump vec4 lightColor = vec4(vec3(vec2(value / float(u_BufferSize - 1)), 0.0), 1.0);\n"
-            "    outColor = texture(u_texture, v_texCoord) * lightColor;\n"
+            "    outColor = texture(u_2d_texture, v_texCoord) * lightColor;\n"
             "}";
 
 	m_ProgramObj = GLUtils::CreateProgram(vShaderStr, fShaderStr, m_VertexShader, m_FragmentShader);
 	if (m_ProgramObj)
 	{
-		m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "u_tbo");
 		m_MVPMatLoc = glGetUniformLocation(m_ProgramObj, "u_MVPMatrix");
 	}
 	else
@@ -164,8 +164,14 @@ void TextureBufferSample::LoadImage(NativeImage *pImage)
 void TextureBufferSample::Draw(int screenW, int screenH)
 {
 	LOGCATE("TextureBufferSample::Draw()");
+    int maxVertexUniform, maxFragmentUniform, maxVarying, maxVextexAttri;
+    glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &maxVertexUniform);
+    glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, &maxFragmentUniform);
+    glGetIntegerv(GL_MAX_VARYING_COMPONENTS, &maxVarying);
+    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &maxVextexAttri);
+    LOGCATE("TextureBufferSample:: MaxVertexUniform=%d, MaxFragUniform=%d, maxVarying=%d, maxVextexAttri=%d", maxVertexUniform, maxFragmentUniform, maxVarying, maxVextexAttri);
 
-	if(m_ProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
+    if(m_ProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
 
 	UpdateMVPMatrix(m_MVPMatrix, m_AngleX, m_AngleY, (float)screenW / screenH);
 
@@ -178,11 +184,11 @@ void TextureBufferSample::Draw(int screenW, int screenH)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_BUFFER, m_TboTexId);
 	glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, m_TboId);
-	glUniform1i(m_SamplerLoc, 0);
+    GLUtils::setInt(m_ProgramObj, "u_buffer_tex", 0);
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, m_TextureId);
-    GLUtils::setInt(m_ProgramObj, "u_texture", 1);
+    GLUtils::setInt(m_ProgramObj, "u_2d_texture", 1);
 
 	GLUtils::setInt(m_ProgramObj, "u_BufferSize", BIG_DATA_SIZE);
 

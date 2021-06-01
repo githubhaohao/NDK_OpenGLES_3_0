@@ -1,3 +1,11 @@
+/**
+ *
+ * Created by 公众号：字节流动 on 2021/3/12.
+ * https://github.com/githubhaohao/NDK_OpenGLES_3_0
+ * 最新文章首发于公众号：字节流动，有疑问或者技术交流可以添加微信 Byte-Flow ,领取视频教程, 拉你进技术交流群
+ *
+ * */
+
 package com.byteflow.app;
 
 import android.Manifest;
@@ -60,6 +68,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_CLOUD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FACE_SLENDER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FBO_BLIT;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MRT;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MULTI_THREAD_RENDER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2YUV;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_ROTARY_HEAD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SCRATCH_CARD;
@@ -122,7 +131,8 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "FBO Blit",
             "Texture Buffer",
             "Uniform Buffer",
-            "OpenGL RGB to YUV"
+            "OpenGL RGB to YUV",
+            "Multi-Thread Render"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -384,6 +394,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;
                     case SAMPLE_TYPE_KEY_SHOCK_WAVE:
+                    case SAMPLE_TYPE_KEY_MULTI_THREAD_RENDER:
                         Bitmap b3 = loadRGBAImage(R.drawable.lye);
                         mGLSurfaceView.setAspectRatio(b3.getWidth(), b3.getHeight());
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
@@ -392,11 +403,9 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                     case SAMPLE_TYPE_KEY_FBO_BLIT:
                     case SAMPLE_TYPE_KEY_TBO:
                     case SAMPLE_TYPE_KEY_UBO:
+                    case SAMPLE_TYPE_KEY_RGB2YUV:
                         Bitmap b4 = loadRGBAImage(R.drawable.lye);
                         mGLSurfaceView.setAspectRatio(b4.getWidth(), b4.getHeight());
-                        break;
-                    case SAMPLE_TYPE_KEY_RGB2YUV:
-                        loadRGBAImage(R.drawable.lye);
                         break;
                     default:
                         break;

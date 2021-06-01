@@ -1,6 +1,10 @@
-//
-// Created by ByteFlow on 2019/7/9.
-//
+/**
+ *
+ * Created by 公众号：字节流动 on 2021/3/12.
+ * https://github.com/githubhaohao/NDK_OpenGLES_3_0
+ * 最新文章首发于公众号：字节流动，有疑问或者技术交流可以添加微信 Byte-Flow ,领取视频教程, 拉你进技术交流群
+ *
+ * */
 
 #ifndef NDK_OPENGLES_3_0_GLSAMPLEBASE_H
 #define NDK_OPENGLES_3_0_GLSAMPLEBASE_H
@@ -49,6 +53,8 @@
 #define SAMPLE_TYPE_KEY_TBO                     SAMPLE_TYPE + 33
 #define SAMPLE_TYPE_KEY_UBO                     SAMPLE_TYPE + 34
 #define SAMPLE_TYPE_KEY_RGB2YUV                 SAMPLE_TYPE + 35
+#define SAMPLE_TYPE_KEY_MULTI_THREAD_RENDER     SAMPLE_TYPE + 36
+
 
 #define SAMPLE_TYPE_KEY_SET_TOUCH_LOC           SAMPLE_TYPE + 999
 #define SAMPLE_TYPE_SET_GRAVITY_XY              SAMPLE_TYPE + 1000

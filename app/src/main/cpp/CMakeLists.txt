@@ -16,6 +16,8 @@ include_directories(
         inc/assimp
         model
         opencv_3_0_0
+        egl
+        looper
 )
 
 # Creates and names a library, sets it as either STATIC
@@ -26,7 +28,9 @@ file(GLOB src-files
         ${CMAKE_SOURCE_DIR}/*.cpp
         ${CMAKE_SOURCE_DIR}/render/*.cpp
         ${CMAKE_SOURCE_DIR}/util/*.cpp
-        ${CMAKE_SOURCE_DIR}/sample/*.cpp)
+        ${CMAKE_SOURCE_DIR}/sample/*.cpp
+        ${CMAKE_SOURCE_DIR}/egl/*.cpp
+        ${CMAKE_SOURCE_DIR}/looper/*.cpp)
 
 add_library( # Sets the name of the library.
              native-render
@@ -79,4 +83,5 @@ target_link_libraries( # Specifies the target library.
                        ${third-party-libs}
                        EGL
                        GLESv3
+                       android
                        )

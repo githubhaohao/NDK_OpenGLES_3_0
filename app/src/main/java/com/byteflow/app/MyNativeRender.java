@@ -1,3 +1,11 @@
+/**
+ *
+ * Created by 公众号：字节流动 on 2021/3/12.
+ * https://github.com/githubhaohao/NDK_OpenGLES_3_0
+ * 最新文章首发于公众号：字节流动，有疑问或者技术交流可以添加微信 Byte-Flow ,领取视频教程, 拉你进技术交流群
+ *
+ * */
+
 package com.byteflow.app;
 
 public class MyNativeRender {
@@ -39,6 +47,7 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_KEY_TBO                 = SAMPLE_TYPE + 33;
     public static final int SAMPLE_TYPE_KEY_UBO                 = SAMPLE_TYPE + 34;
     public static final int SAMPLE_TYPE_KEY_RGB2YUV             = SAMPLE_TYPE + 35;
+    public static final int SAMPLE_TYPE_KEY_MULTI_THREAD_RENDER = SAMPLE_TYPE + 36;
 
 
 
