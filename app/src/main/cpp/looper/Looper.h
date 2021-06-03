@@ -41,8 +41,8 @@ private:
 
     LooperMessage *head;
     pthread_t worker;
-    sem_t headwriteprotect;
-    sem_t headdataavailable;
+    sem_t headWriteProtect;
+    sem_t headDataAvailable;
     bool running;
 
 };

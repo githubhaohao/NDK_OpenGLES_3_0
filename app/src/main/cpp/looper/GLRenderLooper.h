@@ -49,6 +49,7 @@ public:
 
 private:
     virtual void handleMessage(LooperMessage *msg);
+
     void OnSurfaceCreated();
     void OnSurfaceChanged(int w, int h);
     void OnDrawFrame();
@@ -67,7 +68,6 @@ private:
     GLuint m_FboTextureId;
     GLuint m_FboId;
     int m_FrameIndex = 0;
-
 };
 
 #endif //NDK_OPENGLES_3_0_GLRENDERLOOPER_H

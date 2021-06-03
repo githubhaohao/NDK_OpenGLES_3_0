@@ -24,8 +24,8 @@ void* Looper::trampoline(void* p) {
 Looper::Looper() {
     head = NULL;
 
-    sem_init(&headdataavailable, 0, 0);
-    sem_init(&headwriteprotect, 0, 1);
+    sem_init(&headDataAvailable, 0, 0);
+    sem_init(&headWriteProtect, 0, 1);
     pthread_attr_t attr;
     pthread_attr_init(&attr);
 
@@ -64,7 +64,7 @@ void Looper::postMessage(int what, int arg1, int arg2, void *obj, bool flush) {
 }
 
 void Looper::addMessage(LooperMessage *msg, bool flush) {
-    sem_wait(&headwriteprotect);
+    sem_wait(&headWriteProtect);
     LooperMessage *h = head;
 
     if (flush) {
@@ -84,25 +84,25 @@ void Looper::addMessage(LooperMessage *msg, bool flush) {
         head = msg;
     }
     LOGCATE("Looper::addMessage msg->what=%d", msg->what);
-    sem_post(&headwriteprotect);
-    sem_post(&headdataavailable);
+    sem_post(&headWriteProtect);
+    sem_post(&headDataAvailable);
 }
 
 void Looper::loop() {
     while(true) {
         // wait for available message
-        sem_wait(&headdataavailable);
+        sem_wait(&headDataAvailable);
 
         // get next available message
-        sem_wait(&headwriteprotect);
+        sem_wait(&headWriteProtect);
         LooperMessage *msg = head;
         if (msg == NULL) {
             LOGCATE("Looper::loop() no msg");
-            sem_post(&headwriteprotect);
+            sem_post(&headWriteProtect);
             continue;
         }
         head = msg->next;
-        sem_post(&headwriteprotect);
+        sem_post(&headWriteProtect);
 
         if (msg->quit) {
             LOGCATE("Looper::loop() quitting");
@@ -125,8 +125,8 @@ void Looper::quit() {
     addMessage(msg, false);
     void *retval;
     pthread_join(worker, &retval);
-    sem_destroy(&headdataavailable);
-    sem_destroy(&headwriteprotect);
+    sem_destroy(&headDataAvailable);
+    sem_destroy(&headWriteProtect);
     running = false;
 }
 

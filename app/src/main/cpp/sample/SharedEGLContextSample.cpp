@@ -104,7 +104,6 @@ void SharedEGLContextSample::Init()
 			"{\n"
 			"    vec4 tempColor = texture(s_TextureMap, v_texCoord);\n"
 			"    if(v_texCoord.x < u_Offset) {\n"
-			"        //float luminance = tempColor.r * 0.299 + tempColor.g * 0.587 + tempColor.b * 0.114;\n"
 			"        outColor = vec4(1.0 - tempColor.r, 1.0 - tempColor.g, 1.0 - tempColor.b, tempColor.a);\n"
 			"    }\n"
 			"    else if(v_texCoord.x < u_Offset + 0.005) {\n"
@@ -114,7 +113,6 @@ void SharedEGLContextSample::Init()
 			"    {\n"
 			"        outColor = tempColor;\n"
 			"    }\n"
-			"\n"
 			"}";
 
 	// 编译链接用于普通渲染的着色器程序
