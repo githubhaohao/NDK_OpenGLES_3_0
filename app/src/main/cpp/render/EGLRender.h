@@ -61,8 +61,8 @@ private:
 	GLuint m_ImageTextureId;
 	GLuint m_FboTextureId;
 	GLuint m_FboId;
-	GLuint m_VaoIds[1];
-	GLuint m_VboIds[3];
+	GLuint m_VaoIds[1] = {GL_NONE};;
+	GLuint m_VboIds[3] = {GL_NONE};;
 	GLint m_SamplerLoc;
 	GLint m_TexSizeLoc;
 	NativeImage m_RenderImage;

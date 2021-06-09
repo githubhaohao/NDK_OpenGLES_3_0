@@ -16,12 +16,6 @@
 
 PBOSample::PBOSample()
 {
-	m_VaoIds[2] = {GL_NONE};
-	m_VboIds[4] = {GL_NONE};
-
-    m_UploadPboIds[2] = {0};
-    m_DownloadPboIds[2] = {0};
-
     m_ImageTextureId = GL_NONE;
 	m_FboTextureId = GL_NONE;
 	m_SamplerLoc = GL_NONE;

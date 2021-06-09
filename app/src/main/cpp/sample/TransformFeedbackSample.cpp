@@ -11,7 +11,6 @@
 TransformFeedbackSample::TransformFeedbackSample()
 {
 	m_VaoId = GL_NONE;
-	m_VboIds[3] = {GL_NONE};
 	m_ImageTextureId = GL_NONE;
 	m_SamplerLoc = GL_NONE;
 	m_TransFeedbackBufId = GL_NONE;

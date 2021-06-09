@@ -32,8 +32,8 @@ private:
 	GLuint m_ImageTextureId;
 	GLuint m_FboTextureId;
 	GLuint m_FboId;
-	GLuint m_VaoIds[2];
-	GLuint m_VboIds[4];
+	GLuint m_VaoIds[2] = {GL_NONE};
+	GLuint m_VboIds[4] = {GL_NONE};
 	GLint m_SamplerLoc;
 	NativeImage m_RenderImage;
 	GLuint m_FboProgramObj;

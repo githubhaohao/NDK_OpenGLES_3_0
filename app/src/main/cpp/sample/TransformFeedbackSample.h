@@ -26,7 +26,7 @@ public:
 private:
 	GLuint m_ImageTextureId;
 	GLuint m_VaoId;
-	GLuint m_VboIds[2];
+	GLuint m_VboIds[2] = {GL_NONE};;
 	GLint m_SamplerLoc;
 	GLuint m_TransFeedbackObjId;
 	GLuint m_TransFeedbackBufId;
