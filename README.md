@@ -108,6 +108,8 @@
 
 - [使用 OpenGL 实现 RGB 到 YUV 的图像格式转换](https://www.jianshu.com/p/7a990a2855c4)
 
+- [OpenGL ES 共享上下文时，可以共享哪些资源？](https://www.jianshu.com/p/fb346e3eadf7)
+
 ## 相关推荐
 
 - [Android OpenGL Camera 2.0 实现 30 种滤镜和抖音特效](https://github.com/githubhaohao/OpenGLCamera2)
