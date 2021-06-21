@@ -40,6 +40,7 @@
 #include <UniformBufferSample.h>
 #include <RGB2YUVSample.h>
 #include <SharedEGLContextSample.h>
+#include <TextRenderSample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -188,6 +189,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 				break;
 			case SAMPLE_TYPE_KEY_MULTI_THREAD_RENDER:
 				m_pCurSample = new SharedEGLContextSample();
+				break;
+			case SAMPLE_TYPE_KEY_TEXT_RENDER:
+				m_pCurSample = new TextRenderSample();
 				break;
 			default:
 			    m_pCurSample = nullptr;

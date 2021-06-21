@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.SurfaceTexture;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -29,7 +28,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -74,6 +72,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_ROTARY_HEAD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SCRATCH_CARD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SHOCK_WAVE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TBO;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TEXT_RENDER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TIME_TUNNEL;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_UBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_VISUALIZE_AUDIO;
@@ -132,7 +131,8 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "Texture Buffer",
             "Uniform Buffer",
             "OpenGL RGB to YUV",
-            "Multi-Thread Render"
+            "Multi-Thread Render",
+            "Text Render"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -175,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             ActivityCompat.requestPermissions(this, REQUEST_PERMISSIONS, PERMISSION_REQUEST_CODE);
         }
         CommonUtils.copyAssetsDirToSDCard(MainActivity.this, "poly", "/sdcard/model");
+        CommonUtils.copyAssetsDirToSDCard(MainActivity.this, "fonts", "/sdcard");
     }
 
     @Override
@@ -395,6 +396,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                         break;
                     case SAMPLE_TYPE_KEY_SHOCK_WAVE:
                     case SAMPLE_TYPE_KEY_MULTI_THREAD_RENDER:
+                    case SAMPLE_TYPE_KEY_TEXT_RENDER:
                         Bitmap b3 = loadRGBAImage(R.drawable.lye);
                         mGLSurfaceView.setAspectRatio(b3.getWidth(), b3.getHeight());
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);

@@ -14,6 +14,7 @@ include_directories(
         glm
         inc
         inc/assimp
+        inc/freetype_2_9_1
         model
         opencv_3_0_0
         egl
@@ -61,6 +62,9 @@ set_target_properties(assimp PROPERTIES IMPORTED_LOCATION ${jnilibs}/${ANDROID_A
 add_library(opencv_java3 SHARED IMPORTED )
 set_target_properties(opencv_java3 PROPERTIES IMPORTED_LOCATION ${jnilibs}/${ANDROID_ABI}/libopencv_java3.so)
 
+add_library(freetype STATIC IMPORTED )
+set_target_properties(freetype PROPERTIES IMPORTED_LOCATION ${jnilibs}/${ANDROID_ABI}/libfreetype.a)
+
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
@@ -71,6 +75,7 @@ set_target_properties(opencv_java3 PROPERTIES IMPORTED_LOCATION ${jnilibs}/${AND
 
 #SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fno-rtti -fno-exceptions")
 set(third-party-libs
+        freetype
         assimp
         opencv_java3)
 
@@ -85,3 +90,4 @@ target_link_libraries( # Specifies the target library.
                        GLESv3
                        android
                        )
+

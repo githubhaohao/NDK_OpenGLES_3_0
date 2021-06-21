@@ -48,7 +48,7 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_KEY_UBO                 = SAMPLE_TYPE + 34;
     public static final int SAMPLE_TYPE_KEY_RGB2YUV             = SAMPLE_TYPE + 35;
     public static final int SAMPLE_TYPE_KEY_MULTI_THREAD_RENDER = SAMPLE_TYPE + 36;
-
+    public static final int SAMPLE_TYPE_KEY_TEXT_RENDER         = SAMPLE_TYPE + 37;
 
 
     public static final int SAMPLE_TYPE_SET_TOUCH_LOC           = SAMPLE_TYPE + 999;
