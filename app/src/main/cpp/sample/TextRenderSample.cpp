@@ -140,8 +140,9 @@ void TextRenderSample::Draw(int screenW, int screenH)
 	UpdateMVPMatrix(m_MVPMatrix, m_AngleX, m_AngleY, viewport.x / viewport.y);
 	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 
-	RenderText("My WeChat ID is Byte-Flow.", - viewport.x * 0.9f, viewport.y * 0.2f, 1.0f, glm::vec3(0.8, 0.1f, 0.1f), viewport);
-	RenderText("Welcome to add my WeChat.", - viewport.x * 0.9f, 0.0f, 2.0f, glm::vec3(0.2, 0.4f, 0.7f), viewport);
+	// (x,y)为屏幕坐标系的位置，即原点位于屏幕中心，x(-1.0,1.0), y(-1.0,1.0)
+	RenderText("My WeChat ID is Byte-Flow.", -0.9f, 0.2f, 1.0f, glm::vec3(0.8, 0.1f, 0.1f), viewport);
+	RenderText("Welcome to add my WeChat.", -0.9f, 0.0f, 2.0f, glm::vec3(0.2, 0.4f, 0.7f), viewport);
 }
 
 void TextRenderSample::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
@@ -162,6 +163,8 @@ void TextRenderSample::RenderText(std::string text, GLfloat x, GLfloat y, GLfloa
 	GO_CHECK_GL_ERROR();
 	// 对文本中的所有字符迭代
 	std::string::const_iterator c;
+	x *= viewport.x;
+	y *= viewport.y;
 	for (c = text.begin(); c != text.end(); c++)
 	{
 		Character ch = m_Characters[*c];
