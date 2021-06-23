@@ -24,6 +24,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,6 +40,7 @@ import com.byteflow.app.adapter.MyRecyclerViewAdapter;
 import com.byteflow.app.audio.AudioCollector;
 import com.byteflow.app.egl.EGLActivity;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -174,8 +176,10 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
         if (!hasPermissionsGranted(REQUEST_PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, REQUEST_PERMISSIONS, PERMISSION_REQUEST_CODE);
         }
-        CommonUtils.copyAssetsDirToSDCard(MainActivity.this, "poly", "/sdcard/model");
-        CommonUtils.copyAssetsDirToSDCard(MainActivity.this, "fonts", "/sdcard");
+        ///sdcard/Android/data/com.byteflow.app/files/Download
+        String fileDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+        CommonUtils.copyAssetsDirToSDCard(MainActivity.this, "poly", fileDir + "/model");
+        CommonUtils.copyAssetsDirToSDCard(MainActivity.this, "fonts", fileDir);
     }
 
     @Override
