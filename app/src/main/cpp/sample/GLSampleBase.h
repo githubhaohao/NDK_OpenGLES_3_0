@@ -60,7 +60,7 @@
 #define SAMPLE_TYPE_KEY_SET_TOUCH_LOC           SAMPLE_TYPE + 999
 #define SAMPLE_TYPE_SET_GRAVITY_XY              SAMPLE_TYPE + 1000
 
-
+#define DEFAULT_OGL_ASSETS_DIR "/sdcard/Android/data/com.byteflow.app/files/Download"
 class GLSampleBase
 {
 public:
