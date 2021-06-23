@@ -264,7 +264,8 @@ void RGB2YUVSample::Draw(int screenW, int screenH)
 		glReadPixels(0, 0, m_RenderImage.width / 2, nativeImage.height, GL_RGBA, GL_UNSIGNED_BYTE, pBuffer);
 	FUN_END_TIME("FBO cost glReadPixels")
 
-	NativeImageUtil::DumpNativeImage(&nativeImage, "/sdcard/DCIM", "RGB2YUV");
+	std::string path(DEFAULT_OGL_ASSETS_DIR);
+	NativeImageUtil::DumpNativeImage(&nativeImage, path.c_str(), "RGB2YUV");
 	delete []pBuffer;
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

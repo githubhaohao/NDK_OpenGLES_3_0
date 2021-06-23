@@ -224,7 +224,8 @@ void TextRenderSample::LoadFacesByASCII() {
 
 	// Load font as face
 	FT_Face face;
-	if (FT_New_Face(ft, "/sdcard/fonts/Antonio-Regular.ttf", 0, &face))
+    std::string path(DEFAULT_OGL_ASSETS_DIR);
+	if (FT_New_Face(ft, (path + "/fonts/Antonio-Regular.ttf").c_str(), 0, &face))
 		LOGCATE("TextRenderSample::LoadFacesByASCII FREETYPE: Failed to load font");
 
 	// Set size to load glyphs as
@@ -294,7 +295,8 @@ void TextRenderSample::LoadFacesByUnicode(int *unicodeArr, int size) {
 
 	// Load font as face
 	FT_Face face;
-	if (FT_New_Face(ft, "/sdcard/fonts/timesbi.ttf", 0, &face))
+    std::string path(DEFAULT_OGL_ASSETS_DIR);
+    if (FT_New_Face(ft, (path + "/fonts/timesbi.ttf").c_str(), 0, &face))
 		LOGCATE("TextRenderSample::LoadFacesByUnicode FREETYPE: Failed to load font");
 
 	// Set size to load glyphs as
