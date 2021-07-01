@@ -9,8 +9,8 @@
 #include <gtc/matrix_transform.hpp>
 #include "TextRenderSample.h"
 #include "../util/GLUtils.h"
-//\u5b57\u8282\u6d41\u52a8
-static const int BYTE_FLOW[] = {0x6211, 0x8282, 0x6d41, 0x52a8};
+static const wchar_t BYTE_FLOW[] = L"微信公众号字节流动，欢迎关注交流学习。";
+static const int MAX_SHORT_VALUE = 65536;
 
 TextRenderSample::TextRenderSample()
 {
@@ -42,7 +42,7 @@ void TextRenderSample::Init()
 
 	LoadFacesByASCII();
 
-	LoadFacesByUnicode(const_cast<int *>(BYTE_FLOW), 4);
+	LoadFacesByUnicode(BYTE_FLOW, sizeof(BYTE_FLOW)/sizeof(BYTE_FLOW[0]) - 1);
 
 	//create RGBA texture
 	glGenTextures(1, &m_TextureId);
@@ -143,6 +143,9 @@ void TextRenderSample::Draw(int screenW, int screenH)
 	// (x,y)为屏幕坐标系的位置，即原点位于屏幕中心，x(-1.0,1.0), y(-1.0,1.0)
 	RenderText("My WeChat ID is Byte-Flow.", -0.9f, 0.2f, 1.0f, glm::vec3(0.8, 0.1f, 0.1f), viewport);
 	RenderText("Welcome to add my WeChat.", -0.9f, 0.0f, 2.0f, glm::vec3(0.2, 0.4f, 0.7f), viewport);
+
+	RenderText(BYTE_FLOW, sizeof(BYTE_FLOW)/sizeof(BYTE_FLOW[0]) - 1, -0.9f, -0.2f, 1.0f, glm::vec3(0.7, 0.4f, 0.2f), viewport);
+
 }
 
 void TextRenderSample::UpdateTransformMatrix(float rotateX, float rotateY, float scaleX, float scaleY)
@@ -181,7 +184,7 @@ void TextRenderSample::RenderText(std::string text, GLfloat x, GLfloat y, GLfloa
 		w /= viewport.x;
 		h /= viewport.y;
 
-		LOGCATE("TextRenderSample::RenderText [xpos,ypos,w,h]=[%f, %f, %f, %f]", xpos, ypos, w, h);
+		LOGCATE("TextRenderSample::RenderText [xpos,ypos,w,h]=[%f, %f, %f, %f], ch.advance >> 6 = %d", xpos, ypos, w, h, ch.advance >> 6);
 
 		// 当前字符的VBO
 		GLfloat vertices[6][4] = {
@@ -264,7 +267,7 @@ void TextRenderSample::LoadFacesByASCII() {
 //		image.format = 8;
 //		image.ppPlane[0] = face->glyph->bitmap.buffer;
 //		NativeImageUtil::DumpNativeImage(&image, "/sdcard/DCIM", "TextRenderSample");
-        LOGCATE("TextRenderSample::LoadFacesByASCII [w,h,buffer]=[%d, %d, %p]", face->glyph->bitmap.width,face->glyph->bitmap.rows, face->glyph->bitmap.buffer);
+        LOGCATE("TextRenderSample::LoadFacesByASCII [w,h,buffer]=[%d, %d, %p], ch.advance >> 6 = %d", face->glyph->bitmap.width,face->glyph->bitmap.rows, face->glyph->bitmap.buffer,face->glyph->advance.x >> 6);
 		// Set texture options
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -286,7 +289,7 @@ void TextRenderSample::LoadFacesByASCII() {
 
 }
 
-void TextRenderSample::LoadFacesByUnicode(int *unicodeArr, int size) {
+void TextRenderSample::LoadFacesByUnicode(const wchar_t* text, int size) {
 	// FreeType
 	FT_Library ft;
 	// All functions return a value different than 0 whenever an error occurred
@@ -296,23 +299,32 @@ void TextRenderSample::LoadFacesByUnicode(int *unicodeArr, int size) {
 	// Load font as face
 	FT_Face face;
     std::string path(DEFAULT_OGL_ASSETS_DIR);
-    if (FT_New_Face(ft, (path + "/fonts/timesbi.ttf").c_str(), 0, &face))
+    if (FT_New_Face(ft, (path + "/fonts/msyh.ttc").c_str(), 0, &face))
 		LOGCATE("TextRenderSample::LoadFacesByUnicode FREETYPE: Failed to load font");
 
 	// Set size to load glyphs as
 	FT_Set_Pixel_Sizes(face, 96, 96);
-	//FT_Select_Charmap(face, ft_encoding_unicode);
+	FT_Select_Charmap(face, ft_encoding_unicode);
 
-	// Disable byte-alignment restriction
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 	for (int i = 0; i < size; ++i) {
-		int index =  FT_Get_Char_Index(face,unicodeArr[i]);
-		if (FT_Load_Glyph(face,index, FT_LOAD_RENDER))
+		//int index =  FT_Get_Char_Index(face,unicodeArr[i]);
+		if (FT_Load_Glyph(face, FT_Get_Char_Index(face, text[i]), FT_LOAD_DEFAULT))
 		{
 			LOGCATE("TextRenderSample::LoadFacesByUnicode FREETYTPE: Failed to load Glyph");
 			continue;
 		}
+
+		FT_Glyph glyph;
+		FT_Get_Glyph(face->glyph, &glyph );
+
+		//Convert the glyph to a bitmap.
+		FT_Glyph_To_Bitmap(&glyph, ft_render_mode_normal, 0, 1 );
+		FT_BitmapGlyph bitmap_glyph = (FT_BitmapGlyph)glyph;
+
+		//This reference will make accessing the bitmap easier
+		FT_Bitmap& bitmap = bitmap_glyph->bitmap;
 
 		// Generate texture
 		GLuint texture;
@@ -322,15 +334,15 @@ void TextRenderSample::LoadFacesByUnicode(int *unicodeArr, int size) {
 				GL_TEXTURE_2D,
 				0,
 				GL_LUMINANCE,
-				face->glyph->bitmap.width,
-				face->glyph->bitmap.rows,
+				bitmap.width,
+				bitmap.rows,
 				0,
 				GL_LUMINANCE,
 				GL_UNSIGNED_BYTE,
-				face->glyph->bitmap.buffer
+				bitmap.buffer
 		);
 
-		LOGCATE("TextRenderSample::LoadFacesByUnicode unicodeArr[i]=%d [w,h,buffer]=[%d, %d, %p]", unicodeArr[i], face->glyph->bitmap.width,face->glyph->bitmap.rows, face->glyph->bitmap.buffer);
+		LOGCATE("TextRenderSample::LoadFacesByUnicode text[i]=%d [w,h,buffer]=[%d, %d, %p], advance.x=%ld", text[i], bitmap.width, bitmap.rows, bitmap.buffer, glyph->advance.x / MAX_SHORT_VALUE);
 		// Set texture options
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -341,9 +353,10 @@ void TextRenderSample::LoadFacesByUnicode(int *unicodeArr, int size) {
 				texture,
 				glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
 				glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-				static_cast<GLuint>(face->glyph->advance.x)
+				static_cast<GLuint>((glyph->advance.x / MAX_SHORT_VALUE) << 6)
 		};
-		m_Characters.insert(std::pair<GLint, Character>(unicodeArr[i], character));
+		m_Characters.insert(std::pair<GLint, Character>(text[i], character));
+
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
 	// Destroy FreeType once we're finished
@@ -407,64 +420,60 @@ void TextRenderSample::UpdateMVPMatrix(glm::mat4 &mvpMatrix, int angleX, int ang
 
 }
 
-//void
-//TextRenderSample::RenderUnicodeArr(int *unicodeArr, int size, GLfloat x, GLfloat y, GLfloat scale,
-//								   glm::vec3 color) {
-//	// 激活合适的渲染状态
-//	glUseProgram(m_ProgramObj);
-//	glUniform3f(glGetUniformLocation(m_ProgramObj, "u_textColor"), color.x, color.y, color.z);
-//	glBindVertexArray(m_VaoId);
-//	GO_CHECK_GL_ERROR();
-//	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
-//	GO_CHECK_GL_ERROR();
-//	// 对文本中的所有字符迭代
-//	for (int i = 0; i < size; ++i)
-//	{
-//		Character ch = m_Characters[unicodeArr[i]];
-//
-//		GLfloat xpos = x + ch.bearing.x * scale;
-//		GLfloat ypos = y - (ch.size.y - ch.bearing.y) * scale;
-//
-//		xpos /= m_SurfaceWidth;
-//		ypos /= m_SurfaceHeight;
-//
-//		GLfloat w = ch.size.x * scale;
-//		GLfloat h = ch.size.y * scale;
-//
-//		w /= m_SurfaceWidth;
-//		h /= m_SurfaceHeight;
-//
-//		ypos += 0.7f;
-//
-//		LOGCATE("TextRenderSample::RenderText [xpos,ypos,w,h]=[%f, %f, %f, %f]", xpos, ypos, w, h);
-//
-//		// 当前字符的VBO
-//		GLfloat vertices[6][4] = {
-//				{ xpos,     ypos + h,   0.0, 0.0 },
-//				{ xpos,     ypos,       0.0, 1.0 },
-//				{ xpos + w, ypos,       1.0, 1.0 },
-//
-//				{ xpos,     ypos + h,   0.0, 0.0 },
-//				{ xpos + w, ypos,       1.0, 1.0 },
-//				{ xpos + w, ypos + h,   1.0, 0.0 }
-//		};
-//
-//		// 在方块上绘制字形纹理
-//		glActiveTexture(GL_TEXTURE0);
-//		glBindTexture(GL_TEXTURE_2D, ch.textureID);
-//		glUniform1i(m_SamplerLoc, 0);
-//		GO_CHECK_GL_ERROR();
-//		// 更新当前字符的VBO
-//		glBindBuffer(GL_ARRAY_BUFFER, m_VboId);
-//		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-//		GO_CHECK_GL_ERROR();
-//		glBindBuffer(GL_ARRAY_BUFFER, 0);
-//		// 绘制方块
-//		glDrawArrays(GL_TRIANGLES, 0, 6);
-//		GO_CHECK_GL_ERROR();
-//		// 更新位置到下一个字形的原点，注意单位是1/64像素
-//		x += (ch.advance >> 6) * scale; //(2^6 = 64)
-//	}
-//	glBindVertexArray(0);
-//	glBindTexture(GL_TEXTURE_2D, 0);
-//}
+void TextRenderSample::RenderText(const wchar_t *text, int textLen, GLfloat x, GLfloat y, GLfloat scale,
+								  glm::vec3 color, glm::vec2 viewport) {
+	// 激活合适的渲染状态
+	glUseProgram(m_ProgramObj);
+	glUniform3f(glGetUniformLocation(m_ProgramObj, "u_textColor"), color.x, color.y, color.z);
+	glBindVertexArray(m_VaoId);
+	GO_CHECK_GL_ERROR();
+	x *= viewport.x;
+	y *= viewport.y;
+	for (int i = 0; i < textLen; ++i)
+	{
+		Character ch = m_Characters[text[i]];
+
+		GLfloat xpos = x + ch.bearing.x * scale;
+		GLfloat ypos = y - (ch.size.y - ch.bearing.y) * scale;
+
+		xpos /= viewport.x;
+		ypos /= viewport.y;
+
+		GLfloat w = ch.size.x * scale;
+		GLfloat h = ch.size.y * scale;
+
+		w /= viewport.x;
+		h /= viewport.y;
+
+		LOGCATE("TextRenderSample::RenderText [xpos,ypos,w,h]=[%f, %f, %f, %f]", xpos, ypos, w, h);
+
+		// 当前字符的VBO
+		GLfloat vertices[6][4] = {
+				{ xpos,     ypos + h,   0.0, 0.0 },
+				{ xpos,     ypos,       0.0, 1.0 },
+				{ xpos + w, ypos,       1.0, 1.0 },
+
+				{ xpos,     ypos + h,   0.0, 0.0 },
+				{ xpos + w, ypos,       1.0, 1.0 },
+				{ xpos + w, ypos + h,   1.0, 0.0 }
+		};
+
+		// 在方块上绘制字形纹理
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, ch.textureID);
+		glUniform1i(m_SamplerLoc, 0);
+		GO_CHECK_GL_ERROR();
+		// 更新当前字符的VBO
+		glBindBuffer(GL_ARRAY_BUFFER, m_VboId);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+		GO_CHECK_GL_ERROR();
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		// 绘制方块
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		GO_CHECK_GL_ERROR();
+		// 更新位置到下一个字形的原点，注意单位是1/64像素
+		x += (ch.advance >> 6) * scale; //(2^6 = 64)
+	}
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
