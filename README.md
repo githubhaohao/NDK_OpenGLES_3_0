@@ -106,9 +106,9 @@
 
 - [利用 OpenGL ES 给视频播放器和相机做个字符画滤镜](https://blog.csdn.net/Kennethdroid/article/details/113379112)
 
-- [使用 OpenGL 实现 RGB 到 YUV 的图像格式转换](https://www.jianshu.com/p/7a990a2855c4)
+- [使用 OpenGL 实现 RGB 到 YUV 的图像格式转换](https://t.1yb.co/uvfH)
 
-- [OpenGL ES 共享上下文时，可以共享哪些资源？](https://www.jianshu.com/p/fb346e3eadf7)
+- [OpenGL ES 共享上下文时，可以共享哪些资源？](https://t.1yb.co/uvfS)
 
 - [OpenGL ES 文字渲染方式有几种？](http://mp.weixin.qq.com/s?__biz=MzIwNTIwMzAzNg==&mid=506682327&idx=1&sn=38f091451bb508b66933f2213ec0fb7d&chksm=0cf388e43b8401f2e115aa58b0ad8facb462363f3a1ed99604f9ea5c51b2bc815d8f237fc6e9#rd)
 
