@@ -48,6 +48,7 @@ import java.util.Arrays;
 
 import static android.opengl.GLSurfaceView.RENDERMODE_CONTINUOUSLY;
 import static android.opengl.GLSurfaceView.RENDERMODE_WHEN_DIRTY;
+import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_GARY;
 import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_NV21;
 import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_RGBA;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE;
@@ -73,6 +74,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2YUV;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_ROTARY_HEAD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SCRATCH_CARD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SHOCK_WAVE;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_STAY_COLOR;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TEXT_RENDER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TIME_TUNNEL;
@@ -134,7 +136,8 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "Uniform Buffer",
             "OpenGL RGB to YUV",
             "Multi-Thread Render",
-            "Text Render"
+            "Text Render",
+            "Portrait stay color"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -413,6 +416,12 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                         Bitmap b4 = loadRGBAImage(R.drawable.lye);
                         mGLSurfaceView.setAspectRatio(b4.getWidth(), b4.getHeight());
                         break;
+                    case SAMPLE_TYPE_KEY_STAY_COLOR:
+                        loadGrayImage();
+                        Bitmap b5 = loadRGBAImage(R.drawable.lye2);
+                        loadRGBAImage(R.drawable.ascii_mapping, 1);
+                        mGLSurfaceView.setAspectRatio(b5.getWidth(), b5.getHeight());
+                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                     default:
                         break;
                 }
@@ -508,6 +517,35 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             byte[] buffer = new byte[lenght];
             is.read(buffer);
             mGLRender.setImageData(IMAGE_FORMAT_NV21, 840, 1074, buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try
+            {
+                is.close();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private void loadGrayImage() {
+        InputStream is = null;
+        try {
+            is = getAssets().open("lye_1280x800.Gray");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int lenght = 0;
+        try {
+            lenght = is.available();
+            byte[] buffer = new byte[lenght];
+            is.read(buffer);
+            mGLRender.setImageDataWithIndex(0, IMAGE_FORMAT_GARY, 1280, 800, buffer);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
