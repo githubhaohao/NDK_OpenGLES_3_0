@@ -13,6 +13,8 @@
 #include <string>
 #include <glm.hpp>
 
+#define SHADER_TO_STRING(s) #s
+
 #define MATH_PI 3.1415926535897932384626433832802
 
 class GLUtils {
