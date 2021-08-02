@@ -171,6 +171,17 @@ void ScratchCardSample::Draw(int screenW, int screenH) {
         // Generate VAO Id
         glGenVertexArrays(1, &m_VaoId);
         glBindVertexArray(m_VaoId);
+
+        glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[0]);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (const void *) 0);
+        glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+
+        glBindBuffer(GL_ARRAY_BUFFER, m_VboIds[1]);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (const void *) 0);
+        glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+
         glBindVertexArray(GL_NONE);
     }
 
