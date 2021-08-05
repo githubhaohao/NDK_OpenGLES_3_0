@@ -78,6 +78,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_STAY_COLOR;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TEXT_RENDER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TIME_TUNNEL;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TRANSITION;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_UBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_VISUALIZE_AUDIO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
@@ -137,7 +138,8 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "OpenGL RGB to YUV",
             "Multi-Thread Render",
             "Text Render",
-            "Portrait stay color"
+            "Portrait stay color",
+            "GL Transitions"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -304,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                 mGLRender.setParamsInt(SAMPLE_TYPE, position + SAMPLE_TYPE, 0);
 
                 int sampleType = position + SAMPLE_TYPE;
-
+                Bitmap tmp;
                 switch (sampleType) {
                     case SAMPLE_TYPE_TRIANGLE:
                         break;
@@ -422,6 +424,17 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                         loadRGBAImage(R.drawable.ascii_mapping, 1);
                         mGLSurfaceView.setAspectRatio(b5.getWidth(), b5.getHeight());
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        break;
+                    case SAMPLE_TYPE_KEY_TRANSITION:
+                        loadRGBAImage(R.drawable.lye, 0);
+                        loadRGBAImage(R.drawable.lye4, 1);
+                        loadRGBAImage(R.drawable.lye5, 2);
+                        loadRGBAImage(R.drawable.lye6, 3);
+                        loadRGBAImage(R.drawable.lye7, 4);
+                        tmp = loadRGBAImage(R.drawable.lye8, 5);
+                        mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
+                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        break;
                     default:
                         break;
                 }

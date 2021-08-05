@@ -42,6 +42,7 @@
 #include <SharedEGLContextSample.h>
 #include <TextRenderSample.h>
 #include <PortraitStayColorExample.h>
+#include <GLTransitionExample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -196,6 +197,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 				break;
 			case SAMPLE_TYPE_KEY_STAY_COLOR:
 				m_pCurSample = new PortraitStayColorExample();
+				break;
+			case SAMPLE_TYPE_KEY_TRANSITION:
+				m_pCurSample = new GLTransitionExample();
 				break;
 			default:
 			    m_pCurSample = nullptr;
