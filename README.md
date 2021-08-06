@@ -1,4 +1,3 @@
-![OpenGLES3.0](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/opengles.png)
 
 # Android OpenGLES 3.0 开发系统性学习教程
 
@@ -15,6 +14,8 @@
 
 ![beating_heart](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/beating_heart.gif)
 ![poly_3d_model](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/poly.gif)
+
+![ogl_head](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/head.gif)
 
 ## 基础篇
 
@@ -113,6 +114,8 @@
 - [OpenGL ES 文字渲染方式有几种？](http://mp.weixin.qq.com/s?__biz=MzIwNTIwMzAzNg==&mid=506682327&idx=1&sn=38f091451bb508b66933f2213ec0fb7d&chksm=0cf388e43b8401f2e115aa58b0ad8facb462363f3a1ed99604f9ea5c51b2bc815d8f237fc6e9#rd)
 
 - [OpenGL ES 文字渲染进阶--渲染中文字体](https://t.1yb.co/vezw)
+
+
 
 ## 相关推荐
 
