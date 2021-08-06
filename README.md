@@ -114,7 +114,7 @@
 
 - [OpenGL ES 文字渲染方式有几种？](http://mp.weixin.qq.com/s?__biz=MzIwNTIwMzAzNg==&mid=506682327&idx=1&sn=38f091451bb508b66933f2213ec0fb7d&chksm=0cf388e43b8401f2e115aa58b0ad8facb462363f3a1ed99604f9ea5c51b2bc815d8f237fc6e9#rd)
 
-- [OpenGL ES 文字渲染进阶--渲染中文字体](https://t.1yb.co/vezw)
+- [OpenGL ES 文字渲染进阶：渲染中文字体](https://t.1yb.co/vezw)
 
 
 
