@@ -9,13 +9,10 @@
 备注: 请使用 Android Studio 4.1+ ，NDK r21，其中一些 Case 的 3D 效果是通过手势触发（转动和缩放）
 
 
-
 ## 展示图
 
-![beating_heart](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/beating_heart.gif)
-![poly_3d_model](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/poly.gif)
-
 ![ogl_head](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/head.gif)
+![poly_3d_model](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/poly.gif)
 
 ## 基础篇
 
