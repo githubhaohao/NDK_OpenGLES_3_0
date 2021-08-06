@@ -11,8 +11,12 @@
 
 ## 展示图
 
-![ogl_head](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/head.gif)
+
+![beating_heart](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/beating_heart.gif)
 ![poly_3d_model](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/poly.gif)
+
+![ogl_head](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/head.gif)
+
 
 ## 基础篇
 
