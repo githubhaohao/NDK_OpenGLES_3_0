@@ -66,6 +66,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEZIER_CURVE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BIG_EYES;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BIG_HEAD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_CLOUD;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_CONVEYOR_BELT;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FACE_SLENDER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FBO_BLIT;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MRT;
@@ -78,7 +79,10 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_STAY_COLOR;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TEXT_RENDER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TIME_TUNNEL;
-import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TRANSITION;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TRANSITIONS_1;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TRANSITIONS_2;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TRANSITIONS_3;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TRANSITIONS_4;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_UBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_VISUALIZE_AUDIO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_MULTI_LIGHTS;
@@ -139,7 +143,12 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "Multi-Thread Render",
             "Text Render",
             "Portrait stay color",
-            "GL Transitions"
+            "GL Transitions_1",
+            "GL Transitions_2",
+            "GL Transitions_3",
+            "GL Transitions_4",
+            //"Conveyor Belt"
+
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -425,13 +434,21 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                         mGLSurfaceView.setAspectRatio(b5.getWidth(), b5.getHeight());
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;
-                    case SAMPLE_TYPE_KEY_TRANSITION:
+                    case SAMPLE_TYPE_KEY_TRANSITIONS_1:
+                    case SAMPLE_TYPE_KEY_TRANSITIONS_2:
+                    case SAMPLE_TYPE_KEY_TRANSITIONS_3:
+                    case SAMPLE_TYPE_KEY_TRANSITIONS_4:
                         loadRGBAImage(R.drawable.lye, 0);
                         loadRGBAImage(R.drawable.lye4, 1);
                         loadRGBAImage(R.drawable.lye5, 2);
                         loadRGBAImage(R.drawable.lye6, 3);
                         loadRGBAImage(R.drawable.lye7, 4);
                         tmp = loadRGBAImage(R.drawable.lye8, 5);
+                        mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
+                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        break;
+                    case SAMPLE_TYPE_KEY_CONVEYOR_BELT:
+                        tmp = loadRGBAImage(R.drawable.lye4);
                         mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;

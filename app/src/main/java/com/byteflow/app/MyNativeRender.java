@@ -50,7 +50,11 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_KEY_MULTI_THREAD_RENDER = SAMPLE_TYPE + 36;
     public static final int SAMPLE_TYPE_KEY_TEXT_RENDER         = SAMPLE_TYPE + 37;
     public static final int SAMPLE_TYPE_KEY_STAY_COLOR          = SAMPLE_TYPE + 38;
-    public static final int SAMPLE_TYPE_KEY_TRANSITION          = SAMPLE_TYPE + 39;
+    public static final int SAMPLE_TYPE_KEY_TRANSITIONS_1       = SAMPLE_TYPE + 39;
+    public static final int SAMPLE_TYPE_KEY_TRANSITIONS_2       = SAMPLE_TYPE + 40;
+    public static final int SAMPLE_TYPE_KEY_TRANSITIONS_3       = SAMPLE_TYPE + 41;
+    public static final int SAMPLE_TYPE_KEY_TRANSITIONS_4       = SAMPLE_TYPE + 42;
+    public static final int SAMPLE_TYPE_KEY_CONVEYOR_BELT       = SAMPLE_TYPE + 43;
 
     public static final int SAMPLE_TYPE_SET_TOUCH_LOC           = SAMPLE_TYPE + 999;
     public static final int SAMPLE_TYPE_SET_GRAVITY_XY          = SAMPLE_TYPE + 1000;
