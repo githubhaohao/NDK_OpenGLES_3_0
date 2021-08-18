@@ -87,6 +87,7 @@ void Model3DSample::Init()
 
     char fNoTextureShaderStr[] =
             "#version 300 es\n"
+            "precision highp float;\n"
             "out vec4 outColor;\n"
             "in vec3 ambient;\n"
             "in vec3 diffuse;\n"
