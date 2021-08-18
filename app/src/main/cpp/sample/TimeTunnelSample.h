@@ -32,8 +32,8 @@ private:
 	GLuint m_ImageTextureId;
 	GLuint m_FboTextureId;
 	GLuint m_FboId;
-	GLuint m_VaoIds[2] = {GL_NONE};;
-	GLuint m_VboIds[4] = {GL_NONE};;
+	GLuint m_VaoIds[2] = {GL_NONE};
+	GLuint m_VboIds[4] = {GL_NONE};
 	GLint m_SamplerLoc;
 	GLint m_ImgSizeLoc;
 	GLint m_TimeLoc;
