@@ -116,8 +116,9 @@
 
 - [OpenGL ES 文字渲染进阶：渲染中文字体](https://t.1yb.co/vezw)
 
-- [OpenGL ES + 人像抠图实现人像留色](https://t.1yb.co/z84y)
+- [OpenGL ES + 人像抠图实现人像留色](https://t.1yb.co/z84y) 
 
+- [OpenGL ES + GLTranslations 实现各种图像转场效果](https://t.1yb.co/z8do)
 
 
 ## 相关推荐
