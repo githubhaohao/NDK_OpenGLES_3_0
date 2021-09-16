@@ -120,6 +120,8 @@
 
 - [OpenGL ES + GLTranslations 实现各种图像转场效果](https://t.1yb.co/z8do)
 
+- [OpenGL ES 实现抖音传送带特效](https://mp.weixin.qq.com/s/Px6UeZuavqkKS0hek27vog)
+
 
 ## 相关推荐
 
