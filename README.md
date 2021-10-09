@@ -122,6 +122,8 @@
 
 - [OpenGL ES 实现抖音传送带特效](https://mp.weixin.qq.com/s/Px6UeZuavqkKS0hek27vog)
 
+- [OpenGL ES 实现抖音“蓝线挑战”特效](https://juejin.cn/post/7012976724946190367)
+
 
 ## 相关推荐
 
