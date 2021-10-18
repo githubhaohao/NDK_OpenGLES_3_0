@@ -349,19 +349,19 @@ public:
 		int width = pP010Img->width, height = pP010Img->height;
 		for (int i = 0; i < height; ++i) {
 			uint16_t *pu16YData = (uint16_t *)(pP010Img->ppPlane[0] + pP010Img->width * 2 * i);
-			uint8_t  *pu8UVData = pNV21Img->ppPlane[0] + pNV21Img->width * i;
-			for (int j = 0; j < width; j++, pu8UVData++, pu16YData++) {
-				*pu8UVData = (u_int8_t)(*pu16YData >> 8);
+			uint8_t  *pu8YData = pNV21Img->ppPlane[0] + pNV21Img->width * i;
+			for (int j = 0; j < width; j++, pu8YData++, pu16YData++) {
+				*pu8YData = (u_int8_t)(*pu16YData >> 8);
 			}
 		}
 
 		width /= 2; height /= 2;
 		for (int i = 0; i < height; ++i) {
-			uint16_t *pu16YData = (uint16_t *)(pP010Img->ppPlane[1] + pP010Img->width * 2 * i);
-			uint8_t  *pu8YData = pNV21Img->ppPlane[1] + pNV21Img->width * i;
-			for (int j = 0; j < width; ++j, pu8YData+=2, pu16YData+=2) {
-				*pu8YData = *pu16YData >> 8;
-				*(pu8YData + 1) = *(pu16YData + 1) >> 8;
+			uint16_t *pu16UVData = (uint16_t *)(pP010Img->ppPlane[1] + pP010Img->width * 2 * i);
+			uint8_t  *pu8UVData = pNV21Img->ppPlane[1] + pNV21Img->width * i;
+			for (int j = 0; j < width; ++j, pu8UVData+=2, pu16UVData+=2) {
+				*pu8UVData = *pu16UVData >> 8;
+				*(pu8UVData + 1) = *(pu16UVData + 1) >> 8;
 			}
 		}
 		return 0;
@@ -384,11 +384,11 @@ public:
 
 		width /= 2; height /= 2;
 		for (int i = 0; i < height; ++i) {
-			uint16_t *pu16YData = (uint16_t *)(pP010Img->ppPlane[1] + pP010Img->width * 2 * i);
+			uint16_t *pu16UVData = (uint16_t *)(pP010Img->ppPlane[1] + pP010Img->width * 2 * i);
 			uint8_t  *pu8UVData = pNV21Img->ppPlane[1] + pNV21Img->width * i;
-			for (int j = 0; j < width; ++j, pu8UVData+=2, pu16YData+=2) {
-				*pu16YData = (u_int16_t)*pu8UVData << 8;
-				*(pu16YData + 1) = (u_int16_t)*(pu8UVData + 1) << 8;
+			for (int j = 0; j < width; ++j, pu8UVData+=2, pu16UVData+=2) {
+				*pu16UVData = (u_int16_t)*pu8UVData << 8;
+				*(pu16UVData + 1) = (u_int16_t)*(pu8UVData + 1) << 8;
 			}
 		}
 
