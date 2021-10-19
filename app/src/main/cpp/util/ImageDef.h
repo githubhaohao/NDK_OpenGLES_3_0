@@ -367,6 +367,21 @@ public:
 		return 0;
 	}
 
+	static void ConvertP010PlaneTo8Bit(uint16_t *pSrcData, uint8_t  *pDstData, int width, int height) {
+		if(pSrcData == nullptr
+		   || pDstData == nullptr
+		   || width <= 0
+		   || height <= 0) return;
+
+		for (int i = 0; i < height; ++i) {
+			uint16_t *pu16YData = pSrcData + width * i;
+			uint8_t  *pu8YData = pDstData + width * i;
+			for (int j = 0; j < width; j++, pu8YData++, pu16YData++) {
+				*pu8YData = (u_int8_t)(*pu16YData >> 8);
+			}
+		}
+	}
+
 	static int ConvertNV21toP010(NativeImage* pNV21Img, NativeImage* pP010Img) {
 		if(pP010Img == nullptr
 		   || pNV21Img == nullptr

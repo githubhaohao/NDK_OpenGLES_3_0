@@ -194,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
         String fileDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
         CommonUtils.copyAssetsDirToSDCard(MainActivity.this, "poly", fileDir + "/model");
         CommonUtils.copyAssetsDirToSDCard(MainActivity.this, "fonts", fileDir);
+        CommonUtils.copyAssetsDirToSDCard(MainActivity.this, "yuv", fileDir);
     }
 
     @Override
