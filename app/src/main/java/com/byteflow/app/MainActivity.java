@@ -40,7 +40,6 @@ import com.byteflow.app.adapter.MyRecyclerViewAdapter;
 import com.byteflow.app.audio.AudioCollector;
 import com.byteflow.app.egl.EGLActivity;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -66,12 +65,14 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEZIER_CURVE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BIG_EYES;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BIG_HEAD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_CLOUD;
-import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_CONVEYOR_BELT;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FACE_SLENDER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FBO_BLIT;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MRT;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MULTI_THREAD_RENDER;
-import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2YUV;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2I420;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2I444;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2NV21;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2YUYV;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_ROTARY_HEAD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SCRATCH_CARD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SHOCK_WAVE;
@@ -139,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "FBO Blit",
             "Texture Buffer",
             "Uniform Buffer",
-            "OpenGL RGB to YUV",
+            "RGB to YUYV",
             "Multi-Thread Render",
             "Text Render",
             "Portrait stay color",
@@ -147,8 +148,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "GL Transitions_2",
             "GL Transitions_3",
             "GL Transitions_4",
-            //"Conveyor Belt"
-
+            "RGB to NV21",
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -424,9 +424,15 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                     case SAMPLE_TYPE_KEY_FBO_BLIT:
                     case SAMPLE_TYPE_KEY_TBO:
                     case SAMPLE_TYPE_KEY_UBO:
-                    case SAMPLE_TYPE_KEY_RGB2YUV:
                         Bitmap b4 = loadRGBAImage(R.drawable.lye);
                         mGLSurfaceView.setAspectRatio(b4.getWidth(), b4.getHeight());
+                        break;
+                    case SAMPLE_TYPE_KEY_RGB2YUYV:
+                    case SAMPLE_TYPE_KEY_RGB2NV21:
+                    case SAMPLE_TYPE_KEY_RGB2I420:
+                    case SAMPLE_TYPE_KEY_RGB2I444:
+                        tmp = loadRGBAImage(R.drawable.sk);
+                        mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
                         break;
                     case SAMPLE_TYPE_KEY_STAY_COLOR:
                         loadGrayImage();
@@ -448,11 +454,11 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                         mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;
-                    case SAMPLE_TYPE_KEY_CONVEYOR_BELT:
-                        tmp = loadRGBAImage(R.drawable.lye4);
-                        mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
-                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
-                        break;
+//                    case SAMPLE_TYPE_KEY_CONVEYOR_BELT:
+//                        tmp = loadRGBAImage(R.drawable.lye4);
+//                        mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
+//                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+//                        break;
                     default:
                         break;
                 }

@@ -38,7 +38,7 @@
 #include <FBOBlitSample.h>
 #include <TextureBufferSample.h>
 #include <UniformBufferSample.h>
-#include <RGB2YUVSample.h>
+#include <RGB2YUYVSample.h>
 #include <SharedEGLContextSample.h>
 #include <TextRenderSample.h>
 #include <PortraitStayColorExample.h>
@@ -47,6 +47,10 @@
 #include <GLTransitionExample_3.h>
 #include <GLTransitionExample_4.h>
 #include <ConveyorBeltExample.h>
+#include <RGB2NV21Sample.h>
+//#include <RGB2I420Sample.h>
+//#include <RGB2I444Sample.h>
+//#include <HardwareBufferExample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -190,8 +194,8 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 			case SAMPLE_TYPE_KEY_UBO:
 				m_pCurSample = new UniformBufferSample();
 				break;
-			case SAMPLE_TYPE_KEY_RGB2YUV:
-				m_pCurSample = new RGB2YUVSample();
+			case SAMPLE_TYPE_KEY_RGB2YUYV:
+				m_pCurSample = new RGB2YUYVSample();
 				break;
 			case SAMPLE_TYPE_KEY_MULTI_THREAD_RENDER:
 				m_pCurSample = new SharedEGLContextSample();
@@ -214,9 +218,15 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 			case SAMPLE_TYPE_KEY_TRANSITIONS_4:
 				m_pCurSample = new GLTransitionExample_4();
 				break;
-			case SAMPLE_TYPE_KEY_CONVEYOR_BELT:
-				m_pCurSample = new ConveyorBeltExample();
+			case SAMPLE_TYPE_KEY_RGB2NV21:
+				m_pCurSample = new RGB2NV21Sample();
 				break;
+//            case SAMPLE_TYPE_KEY_RGB2I420:
+//                m_pCurSample = new RGB2I420Sample();
+//                break;
+//            case SAMPLE_TYPE_KEY_RGB2I444:
+//                m_pCurSample = new HardwareBufferExample();
+//                break;
 			default:
 			    m_pCurSample = nullptr;
 				break;

@@ -7,12 +7,12 @@
  * */
 
 #include <GLUtils.h>
-#include "RGB2YUVSample.h"
+#include "RGB2YUYVSample.h"
 
 #define VERTEX_POS_INDX  0
 #define TEXTURE_POS_INDX 1
 
-RGB2YUVSample::RGB2YUVSample()
+RGB2YUYVSample::RGB2YUYVSample()
 {
 	m_ImageTextureId = GL_NONE;
 	m_FboTextureId = GL_NONE;
@@ -24,14 +24,14 @@ RGB2YUVSample::RGB2YUVSample()
 	m_FboSamplerLoc = GL_NONE;
 }
 
-RGB2YUVSample::~RGB2YUVSample()
+RGB2YUYVSample::~RGB2YUYVSample()
 {
 	NativeImageUtil::FreeNativeImage(&m_RenderImage);
 }
 
-void RGB2YUVSample::LoadImage(NativeImage *pImage)
+void RGB2YUYVSample::LoadImage(NativeImage *pImage)
 {
-	LOGCATE("RGB2YUVSample::LoadImage pImage = %p", pImage->ppPlane[0]);
+	LOGCATE("RGB2YUYVSample::LoadImage pImage = %p", pImage->ppPlane[0]);
 	if (pImage)
 	{
 		m_RenderImage.width = pImage->width;
@@ -41,7 +41,7 @@ void RGB2YUVSample::LoadImage(NativeImage *pImage)
 	}
 }
 
-void RGB2YUVSample::Init()
+void RGB2YUYVSample::Init()
 {
 	//顶点坐标
 	GLfloat vVertices[] = {
@@ -151,7 +151,7 @@ void RGB2YUVSample::Init()
 
 	if (m_ProgramObj == GL_NONE || m_FboProgramObj == GL_NONE)
 	{
-		LOGCATE("RGB2YUVSample::Init m_ProgramObj == GL_NONE");
+		LOGCATE("RGB2YUYVSample::Init m_ProgramObj == GL_NONE");
 		return;
 	}
 	m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "s_TextureMap");
@@ -227,13 +227,13 @@ void RGB2YUVSample::Init()
 
 	if (!CreateFrameBufferObj())
 	{
-		LOGCATE("RGB2YUVSample::Init CreateFrameBufferObj fail");
+		LOGCATE("RGB2YUYVSample::Init CreateFrameBufferObj fail");
 		return;
 	}
 
 }
 
-void RGB2YUVSample::Draw(int screenW, int screenH)
+void RGB2YUYVSample::Draw(int screenW, int screenH)
 {
 	// 离屏渲染
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
@@ -287,7 +287,7 @@ void RGB2YUVSample::Draw(int screenW, int screenH)
 
 }
 
-void RGB2YUVSample::Destroy()
+void RGB2YUYVSample::Destroy()
 {
 	if (m_ProgramObj)
 	{
@@ -326,7 +326,7 @@ void RGB2YUVSample::Destroy()
 
 }
 
-bool RGB2YUVSample::CreateFrameBufferObj()
+bool RGB2YUYVSample::CreateFrameBufferObj()
 {
 	// 创建并初始化 FBO 纹理
 	glGenTextures(1, &m_FboTextureId);
@@ -344,7 +344,7 @@ bool RGB2YUVSample::CreateFrameBufferObj()
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_FboTextureId, 0);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderImage.width / 2, m_RenderImage.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER)!= GL_FRAMEBUFFER_COMPLETE) {
-		LOGCATE("RGB2YUVSample::CreateFrameBufferObj glCheckFramebufferStatus status != GL_FRAMEBUFFER_COMPLETE");
+		LOGCATE("RGB2YUYVSample::CreateFrameBufferObj glCheckFramebufferStatus status != GL_FRAMEBUFFER_COMPLETE");
 		return false;
 	}
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);

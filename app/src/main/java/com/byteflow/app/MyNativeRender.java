@@ -46,7 +46,7 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_KEY_FBO_BLIT            = SAMPLE_TYPE + 32;
     public static final int SAMPLE_TYPE_KEY_TBO                 = SAMPLE_TYPE + 33;
     public static final int SAMPLE_TYPE_KEY_UBO                 = SAMPLE_TYPE + 34;
-    public static final int SAMPLE_TYPE_KEY_RGB2YUV             = SAMPLE_TYPE + 35;
+    public static final int SAMPLE_TYPE_KEY_RGB2YUYV            = SAMPLE_TYPE + 35;
     public static final int SAMPLE_TYPE_KEY_MULTI_THREAD_RENDER = SAMPLE_TYPE + 36;
     public static final int SAMPLE_TYPE_KEY_TEXT_RENDER         = SAMPLE_TYPE + 37;
     public static final int SAMPLE_TYPE_KEY_STAY_COLOR          = SAMPLE_TYPE + 38;
@@ -54,7 +54,9 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_KEY_TRANSITIONS_2       = SAMPLE_TYPE + 40;
     public static final int SAMPLE_TYPE_KEY_TRANSITIONS_3       = SAMPLE_TYPE + 41;
     public static final int SAMPLE_TYPE_KEY_TRANSITIONS_4       = SAMPLE_TYPE + 42;
-    public static final int SAMPLE_TYPE_KEY_CONVEYOR_BELT       = SAMPLE_TYPE + 43;
+    public static final int SAMPLE_TYPE_KEY_RGB2NV21            = SAMPLE_TYPE + 43;
+    public static final int SAMPLE_TYPE_KEY_RGB2I420            = SAMPLE_TYPE + 44;
+    public static final int SAMPLE_TYPE_KEY_RGB2I444            = SAMPLE_TYPE + 45;
 
     public static final int SAMPLE_TYPE_SET_TOUCH_LOC           = SAMPLE_TYPE + 999;
     public static final int SAMPLE_TYPE_SET_GRAVITY_XY          = SAMPLE_TYPE + 1000;

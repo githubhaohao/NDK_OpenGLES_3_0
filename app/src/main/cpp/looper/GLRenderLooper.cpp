@@ -174,7 +174,7 @@ bool GLRenderLooper::CreateFrameBufferObj() {
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_FboTextureId, 0);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_GLEnv->imgSize.width, m_GLEnv->imgSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER)!= GL_FRAMEBUFFER_COMPLETE) {
-        LOGCATE("RGB2YUVSample::CreateFrameBufferObj glCheckFramebufferStatus status != GL_FRAMEBUFFER_COMPLETE");
+        LOGCATE("RGB2YUYVSample::CreateFrameBufferObj glCheckFramebufferStatus status != GL_FRAMEBUFFER_COMPLETE");
         return false;
     }
     glBindTexture(GL_TEXTURE_2D, GL_NONE);
