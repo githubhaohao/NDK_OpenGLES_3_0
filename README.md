@@ -124,6 +124,10 @@
 
 - [OpenGL ES 实现抖音“蓝线挑战”特效](https://juejin.cn/post/7012976724946190367)
 
+- [OpenGL ES 利用 Shader 实现 RGBA 到 NV21 图像格式转换](https://juejin.cn/post/7025223104569802789)
+
+- [OpenGL ES 修图（P 图）功能](https://juejin.cn/post/7029111228035399688)
+
 
 ## 相关推荐
 
