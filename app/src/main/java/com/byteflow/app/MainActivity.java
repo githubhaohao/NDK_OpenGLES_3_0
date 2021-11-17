@@ -43,6 +43,7 @@ import com.byteflow.app.egl.EGLActivity;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 
 import static android.opengl.GLSurfaceView.RENDERMODE_CONTINUOUSLY;
@@ -67,6 +68,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BIG_HEAD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_CLOUD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FACE_SLENDER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FBO_BLIT;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_HWBuffer;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MRT;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MULTI_THREAD_RENDER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2I420;
@@ -149,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "GL Transitions_3",
             "GL Transitions_4",
             "RGB to NV21",
+            "RGB to I420",
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -431,6 +434,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                     case SAMPLE_TYPE_KEY_RGB2NV21:
                     case SAMPLE_TYPE_KEY_RGB2I420:
                     case SAMPLE_TYPE_KEY_RGB2I444:
+                    case SAMPLE_TYPE_KEY_HWBuffer:
                         tmp = loadRGBAImage(R.drawable.sk);
                         mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
                         break;
