@@ -152,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "GL Transitions_4",
             "RGB to NV21",
             "RGB to I420",
+            "RGB to I444",
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -434,7 +435,6 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                     case SAMPLE_TYPE_KEY_RGB2NV21:
                     case SAMPLE_TYPE_KEY_RGB2I420:
                     case SAMPLE_TYPE_KEY_RGB2I444:
-                    case SAMPLE_TYPE_KEY_HWBuffer:
                         tmp = loadRGBAImage(R.drawable.sk);
                         mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
                         break;
