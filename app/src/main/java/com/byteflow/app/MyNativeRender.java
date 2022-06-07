@@ -57,7 +57,8 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_KEY_RGB2NV21            = SAMPLE_TYPE + 43;
     public static final int SAMPLE_TYPE_KEY_RGB2I420            = SAMPLE_TYPE + 44;
     public static final int SAMPLE_TYPE_KEY_RGB2I444            = SAMPLE_TYPE + 45;
-    public static final int SAMPLE_TYPE_KEY_HWBuffer            = SAMPLE_TYPE + 46;
+    public static final int SAMPLE_TYPE_KEY_COPY_TEXTURE        = SAMPLE_TYPE + 46;
+    public static final int SAMPLE_TYPE_KEY_HWBuffer            = SAMPLE_TYPE + 50;
 
     public static final int SAMPLE_TYPE_SET_TOUCH_LOC           = SAMPLE_TYPE + 999;
     public static final int SAMPLE_TYPE_SET_GRAVITY_XY          = SAMPLE_TYPE + 1000;

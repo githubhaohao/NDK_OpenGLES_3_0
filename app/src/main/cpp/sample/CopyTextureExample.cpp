@@ -1,18 +1,18 @@
 /**
  *
- * Created by 公众号：字节流动 on 2020/4/18.
+ * Created by 公众号：字节流动 on 2022/6/18.
  * https://github.com/githubhaohao/NDK_OpenGLES_3_0
  * 最新文章首发于公众号：字节流动，有疑问或者技术交流可以添加微信 Byte-Flow ,领取视频教程, 拉你进技术交流群
  *
  * */
 
 #include <GLUtils.h>
-#include "FBOSample.h"
+#include "CopyTextureExample.h"
 
 #define VERTEX_POS_INDX  0
 #define TEXTURE_POS_INDX 1
 
-FBOSample::FBOSample()
+CopyTextureExample::CopyTextureExample()
 {
 	m_VaoIds[0] = GL_NONE;
 	m_VboIds[0] = GL_NONE;
@@ -27,14 +27,14 @@ FBOSample::FBOSample()
 	m_FboSamplerLoc = GL_NONE;
 }
 
-FBOSample::~FBOSample()
+CopyTextureExample::~CopyTextureExample()
 {
 	NativeImageUtil::FreeNativeImage(&m_RenderImage);
 }
 
-void FBOSample::LoadImage(NativeImage *pImage)
+void CopyTextureExample::LoadImage(NativeImage *pImage)
 {
-	LOGCATE("FBOSample::LoadImage pImage = %p", pImage->ppPlane[0]);
+	LOGCATE("CopyTextureExample::LoadImage pImage = %p", pImage->ppPlane[0]);
 	if (pImage)
 	{
 		m_RenderImage.width = pImage->width;
@@ -44,7 +44,7 @@ void FBOSample::LoadImage(NativeImage *pImage)
 	}
 }
 
-void FBOSample::Init()
+void CopyTextureExample::Init()
 {
 	//顶点坐标
 	GLfloat vVertices[] = {
@@ -105,8 +105,9 @@ void FBOSample::Init()
 			"void main()\n"
 			"{\n"
 			"    vec4 tempColor = texture(s_TextureMap, v_texCoord);\n"
-			"    float luminance = tempColor.r * 0.299 + tempColor.g * 0.587 + tempColor.b * 0.114;\n"
-			"    outColor = vec4(vec3(luminance), tempColor.a);\n"
+			"    //float luminance = tempColor.r * 0.299 + tempColor.g * 0.587 + tempColor.b * 0.114;\n"
+			"    //outColor = vec4(vec3(luminance), tempColor.a);\n"
+			"    outColor = tempColor;\n"
 			"}"; // 输出灰度图
 
 	// 编译链接用于普通渲染的着色器程序
@@ -117,7 +118,7 @@ void FBOSample::Init()
 
 	if (m_ProgramObj == GL_NONE || m_FboProgramObj == GL_NONE)
 	{
-		LOGCATE("FBOSample::Init m_ProgramObj == GL_NONE");
+		LOGCATE("CopyTextureExample::Init m_ProgramObj == GL_NONE");
 		return;
 	}
 	m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "s_TextureMap");
@@ -193,19 +194,18 @@ void FBOSample::Init()
 
 	if (!CreateFrameBufferObj())
 	{
-		LOGCATE("FBOSample::Init CreateFrameBufferObj fail");
+		LOGCATE("CopyTextureExample::Init CreateFrameBufferObj fail");
 		return;
 	}
 
 }
 
-void FBOSample::Draw(int screenW, int screenH)
+void CopyTextureExample::Draw(int screenW, int screenH)
 {
 	// 离屏渲染
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	glViewport(0, 0, m_RenderImage.width, m_RenderImage.height);
 
-	// Do FBO off screen rendering
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FboId);
 	glUseProgram(m_FboProgramObj);
 	glBindVertexArray(m_VaoIds[1]);
@@ -216,30 +216,22 @@ void FBOSample::Draw(int screenW, int screenH)
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const void *)0);
 	GO_CHECK_GL_ERROR();
 	glBindVertexArray(0);
+
+	//拷贝纹理
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_ImageTextureId);
+	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_RenderImage.width, m_RenderImage.height);
+
 	glBindTexture(GL_TEXTURE_2D, 0);
-
-//	uint8_t *pBuffer = new uint8_t[m_RenderImage.width * m_RenderImage.height * 4];
-//
-//	NativeImage nativeImage = m_RenderImage;
-//	nativeImage.format = IMAGE_FORMAT_RGBA;
-//	nativeImage.ppPlane[0] = pBuffer;
-//	FUN_BEGIN_TIME("FBO glReadPixels")
-//		glReadPixels(0, 0, nativeImage.width, nativeImage.height, GL_RGBA, GL_UNSIGNED_BYTE, pBuffer);
-//	FUN_END_TIME("FBO cost glReadPixels")
-//
-//	NativeImageUtil::DumpNativeImage(&nativeImage, "/sdcard/DCIM", "NDK");
-//	delete []pBuffer;
-
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	// 普通渲染
-	// Do normal rendering
+	// 上屏渲染
 	glViewport(0, 0, screenW, screenH);
 	glUseProgram(m_ProgramObj);
 	GO_CHECK_GL_ERROR();
 	glBindVertexArray(m_VaoIds[0]);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_FboTextureId);
+	glBindTexture(GL_TEXTURE_2D, m_ImageTextureId);
 	glUniform1i(m_SamplerLoc, 0);
 	GO_CHECK_GL_ERROR();
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const void *)0);
@@ -249,7 +241,7 @@ void FBOSample::Draw(int screenW, int screenH)
 
 }
 
-void FBOSample::Destroy()
+void CopyTextureExample::Destroy()
 {
 	if (m_ProgramObj)
 	{
@@ -288,7 +280,7 @@ void FBOSample::Destroy()
 
 }
 
-bool FBOSample::CreateFrameBufferObj()
+bool CopyTextureExample::CreateFrameBufferObj()
 {
 	// 创建并初始化 FBO 纹理
 	glGenTextures(1, &m_FboTextureId);
@@ -306,7 +298,7 @@ bool FBOSample::CreateFrameBufferObj()
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_FboTextureId, 0);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderImage.width, m_RenderImage.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER)!= GL_FRAMEBUFFER_COMPLETE) {
-		LOGCATE("FBOSample::CreateFrameBufferObj glCheckFramebufferStatus status != GL_FRAMEBUFFER_COMPLETE");
+		LOGCATE("CopyTextureExample::CreateFrameBufferObj glCheckFramebufferStatus status != GL_FRAMEBUFFER_COMPLETE");
 		return false;
 	}
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);

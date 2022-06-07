@@ -66,6 +66,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEZIER_CURVE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BIG_EYES;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BIG_HEAD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_CLOUD;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_COPY_TEXTURE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FACE_SLENDER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FBO_BLIT;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_HWBuffer;
@@ -153,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "RGB to NV21",
             "RGB to I420",
             "RGB to I444",
+            "Copy Texture",
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -333,7 +335,11 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                     case SAMPLE_TYPE_VAO:
                         break;
                     case SAMPLE_TYPE_FBO:
-                        loadRGBAImage(R.drawable.java);
+                    case SAMPLE_TYPE_KEY_COPY_TEXTURE:
+                    {
+                        Bitmap bitmap = loadRGBAImage(R.drawable.lye);
+                        mGLSurfaceView.setAspectRatio(bitmap.getWidth(), bitmap.getHeight());
+                    }
                         break;
                     case SAMPLE_TYPE_FBO_LEG:
                         loadRGBAImage(R.drawable.leg);

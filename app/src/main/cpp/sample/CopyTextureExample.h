@@ -6,19 +6,19 @@
  *
  * */
 
-#ifndef NDK_OPENGLES_3_0_FBOSAMPLE_H
-#define NDK_OPENGLES_3_0_FBOSAMPLE_H
+#ifndef NDK_OPENGLES_3_0_COPYTEXTUREEXAMPLE_H
+#define NDK_OPENGLES_3_0_COPYTEXTUREEXAMPLE_H
 
 
 #include "GLSampleBase.h"
 #include "../util/ImageDef.h"
 
-class FBOSample : public GLSampleBase
+class CopyTextureExample : public GLSampleBase
 {
 public:
-	FBOSample();
+	CopyTextureExample();
 
-	virtual ~FBOSample();
+	virtual ~CopyTextureExample();
 
 	virtual void LoadImage(NativeImage *pImage);
 
@@ -45,4 +45,4 @@ private:
 };
 
 
-#endif //NDK_OPENGLES_3_0_FBOSAMPLE_H
+#endif //NDK_OPENGLES_3_0_COPYTEXTUREEXAMPLE_H

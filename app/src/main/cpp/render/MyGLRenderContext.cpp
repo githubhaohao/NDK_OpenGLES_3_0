@@ -50,6 +50,7 @@
 #include <RGB2NV21Sample.h>
 #include <RGB2I420Sample.h>
 #include <RGB2I444Sample.h>
+#include <CopyTextureExample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -225,6 +226,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
                 break;
 			case SAMPLE_TYPE_KEY_RGB2I444:
 				m_pCurSample = new RGB2I444Sample();
+				break;
+			case SAMPLE_TYPE_KEY_COPY_TEXTURE:
+				m_pCurSample = new CopyTextureExample();
 				break;
 			default:
 			    m_pCurSample = nullptr;
