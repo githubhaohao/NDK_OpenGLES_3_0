@@ -7,12 +7,12 @@
  * */
 
 #include <GLUtils.h>
-#include "CopyTextureExample.h"
+#include "BlitFrameBufferExample.h"
 
 #define VERTEX_POS_INDX  0
 #define TEXTURE_POS_INDX 1
 
-CopyTextureExample::CopyTextureExample()
+BlitFrameBufferExample::BlitFrameBufferExample()
 {
 	m_VaoIds[0] = GL_NONE;
 	m_VboIds[0] = GL_NONE;
@@ -27,14 +27,14 @@ CopyTextureExample::CopyTextureExample()
 	m_FboSamplerLoc = GL_NONE;
 }
 
-CopyTextureExample::~CopyTextureExample()
+BlitFrameBufferExample::~BlitFrameBufferExample()
 {
 	NativeImageUtil::FreeNativeImage(&m_RenderImage);
 }
 
-void CopyTextureExample::LoadImage(NativeImage *pImage)
+void BlitFrameBufferExample::LoadImage(NativeImage *pImage)
 {
-	LOGCATE("CopyTextureExample::LoadImage pImage = %p", pImage->ppPlane[0]);
+	LOGCATE("BlitFrameBufferExample::LoadImage pImage = %p", pImage->ppPlane[0]);
 	if (pImage)
 	{
 		m_RenderImage.width = pImage->width;
@@ -44,7 +44,7 @@ void CopyTextureExample::LoadImage(NativeImage *pImage)
 	}
 }
 
-void CopyTextureExample::Init()
+void BlitFrameBufferExample::Init()
 {
 	//顶点坐标
 	GLfloat vVertices[] = {
@@ -118,7 +118,7 @@ void CopyTextureExample::Init()
 
 	if (m_ProgramObj == GL_NONE || m_FboProgramObj == GL_NONE)
 	{
-		LOGCATE("CopyTextureExample::Init m_ProgramObj == GL_NONE");
+		LOGCATE("BlitFrameBufferExample::Init m_ProgramObj == GL_NONE");
 		return;
 	}
 	m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "s_TextureMap");
@@ -194,16 +194,16 @@ void CopyTextureExample::Init()
 
 	if (!CreateFrameBufferObj())
 	{
-		LOGCATE("CopyTextureExample::Init CreateFrameBufferObj fail");
+		LOGCATE("BlitFrameBufferExample::Init CreateFrameBufferObj fail");
 		return;
 	}
 
 }
 
-void CopyTextureExample::Draw(int screenW, int screenH)
+void BlitFrameBufferExample::Draw(int screenW, int screenH)
 {
 	// 离屏渲染
-	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+	//glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	glViewport(0, 0, m_RenderImage.width, m_RenderImage.height);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FboId);
@@ -216,31 +216,25 @@ void CopyTextureExample::Draw(int screenW, int screenH)
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const void *)0);
 	GO_CHECK_GL_ERROR();
 	glBindVertexArray(0);
-
-	//拷贝纹理
-	glBindTexture(GL_TEXTURE_2D, m_ImageTextureId);
-	//glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_RenderImage.width, m_RenderImage.height);
-    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, m_RenderImage.width, m_RenderImage.height, 0);
-
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	// 上屏渲染
-	glViewport(0, 0, screenW, screenH);
-	glUseProgram(m_ProgramObj);
-	GO_CHECK_GL_ERROR();
-	glBindVertexArray(m_VaoIds[0]);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_ImageTextureId);
-	glUniform1i(m_SamplerLoc, 0);
-	GO_CHECK_GL_ERROR();
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const void *)0);
-	GO_CHECK_GL_ERROR();
-	glBindTexture(GL_TEXTURE_2D, GL_NONE);
-	glBindVertexArray(GL_NONE);
+	// 上屏
+    glViewport(0, 0, screenW, screenH);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, m_FboId);
+    glReadBuffer(GL_COLOR_ATTACHMENT0);
+
+    //直接上屏会有上下镜像
+//	glBlitFramebuffer(0, 0, m_RenderImage.width, m_RenderImage.height,
+//					  0, 0, screenW, screenH,
+//					  GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+    glBlitFramebuffer(0, 0, m_RenderImage.width, m_RenderImage.height,
+					  0, screenH, screenW, 0,
+					   GL_COLOR_BUFFER_BIT, GL_LINEAR);
 }
 
-void CopyTextureExample::Destroy()
+void BlitFrameBufferExample::Destroy()
 {
 	if (m_ProgramObj)
 	{
@@ -279,7 +273,7 @@ void CopyTextureExample::Destroy()
 
 }
 
-bool CopyTextureExample::CreateFrameBufferObj()
+bool BlitFrameBufferExample::CreateFrameBufferObj()
 {
 	// 创建并初始化 FBO 纹理
 	glGenTextures(1, &m_FboTextureId);
@@ -297,7 +291,7 @@ bool CopyTextureExample::CreateFrameBufferObj()
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_FboTextureId, 0);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderImage.width, m_RenderImage.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER)!= GL_FRAMEBUFFER_COMPLETE) {
-		LOGCATE("CopyTextureExample::CreateFrameBufferObj glCheckFramebufferStatus status != GL_FRAMEBUFFER_COMPLETE");
+		LOGCATE("BlitFrameBufferExample::CreateFrameBufferObj glCheckFramebufferStatus status != GL_FRAMEBUFFER_COMPLETE");
 		return false;
 	}
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);

@@ -51,6 +51,7 @@
 #include <RGB2I420Sample.h>
 #include <RGB2I444Sample.h>
 #include <CopyTextureExample.h>
+#include <BlitFrameBufferExample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
 
@@ -230,6 +231,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 			case SAMPLE_TYPE_KEY_COPY_TEXTURE:
 				m_pCurSample = new CopyTextureExample();
 				break;
+            case SAMPLE_TYPE_KEY_BLIT_FRAME_BUFFER:
+                m_pCurSample = new BlitFrameBufferExample();
+                break;
 			default:
 			    m_pCurSample = nullptr;
 				break;
