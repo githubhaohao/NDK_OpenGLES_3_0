@@ -8,8 +8,11 @@
 
 备注: 请使用 **Android Studio 4.1+ ，NDK r21，其中一些 Case 的 3D 效果是通过手势触发（转动和缩放）**
 
-## 展示图
+## 作者声明
 
+有读者反馈，最近有培训机构将本教程进行打包售卖，严重违背了本项目免费开源的初衷。再次声明：**任何商业机构或个人未经作者【微信号：Byte-Flow 】许可，不得将本教程及其项目配套代码用于 "打包贩卖、出书和卖课" 等商业用途，一经发现，全网声讨。**
+
+## 展示图
 
 ![beating_heart](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/beating_heart.gif)
 ![poly_3d_model](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/gif/poly.gif)
@@ -126,11 +129,6 @@
 - [OpenGL ES 利用 Shader 实现 RGBA 到 NV21 图像格式转换](https://juejin.cn/post/7025223104569802789)
 
 - [OpenGL ES 修图（P 图）功能](https://juejin.cn/post/7029111228035399688)
-
-## 作者声明
-
-有读者反馈，最近有培训机构将本教程进行打包售卖。再次声明：**任何组织或个人未经作者本人许可，不得将本教程及其项目配套代码用于 "打包贩卖、出书和卖课" 等商业用途。**
-
 
 ## 相关推荐
 
