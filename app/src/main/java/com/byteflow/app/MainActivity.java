@@ -65,6 +65,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEATING_HEART;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEZIER_CURVE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BIG_EYES;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BIG_HEAD;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BINARY_PROGRAM;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BLIT_FRAME_BUFFER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_CLOUD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_COPY_TEXTURE;
@@ -156,7 +157,8 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "RGB to I420",
             "RGB to I444",
             "Copy Texture",
-            "Blit Frame Buffer"
+            "Blit Frame Buffer",
+            "Binary Program"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -437,6 +439,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                     case SAMPLE_TYPE_KEY_FBO_BLIT:
                     case SAMPLE_TYPE_KEY_TBO:
                     case SAMPLE_TYPE_KEY_UBO:
+                    case SAMPLE_TYPE_KEY_BINARY_PROGRAM:
                         Bitmap b4 = loadRGBAImage(R.drawable.lye);
                         mGLSurfaceView.setAspectRatio(b4.getWidth(), b4.getHeight());
                         break;
