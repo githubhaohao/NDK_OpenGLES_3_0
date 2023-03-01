@@ -135,10 +135,10 @@
 - [Android OpenGL Camera 2.0 实现 30 种滤镜和抖音特效](https://github.com/githubhaohao/OpenGLCamera2)
 - [Android FFmpeg 音视频开发教程](http://mp.weixin.qq.com/s?__biz=MzIwNTIwMzAzNg==&mid=506681298&idx=1&sn=50177285bf0d330d0dfc4e0954d5ad12&chksm=0cf384e13b840df76f89aeb8ac76939ff32b2f9bf600729782d61698181af60d92cce61ee150#rd)
 
-
+<!--
 ## 联系交流
 有疑问或技术交流可以扫码添加**我的微信：Byte-Flow ，领取视频教程，拉你入相关技术交流群**，里面很多牛人帮你解答。
 
 ![字节流动](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/doc/img/accountID.jpg)
-
+-->
 
