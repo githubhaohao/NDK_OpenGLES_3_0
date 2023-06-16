@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 31
-    buildToolsVersion "29.0.3"
+    buildToolsVersion "30.0.2"
     defaultConfig {
         applicationId "com.byteflow.app"
         minSdkVersion 26
@@ -38,6 +38,12 @@ android {
         cmake {
             path "src/main/cpp/CMakeLists.txt"
         }
+    }
+    ndkVersion "21.1.6352462"
+
+    packagingOptions {
+        pickFirst 'lib/arm64-v8a/libassimp.so'
+        pickFirst 'lib/arm64-v8a/libopencv_java3.so'
     }
 }
 
