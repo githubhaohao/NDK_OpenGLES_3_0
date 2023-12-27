@@ -103,8 +103,20 @@ void RGB2I420Sample::Init()
 //            "    outColor = vec4(rgb, 1.0);\n"
 //            "}";
 
+	// 用于普通渲染的片段着色器脚本，简单纹理映射
+	char fShaderStr[] =
+			"#version 300 es\n"
+			"precision mediump float;\n"
+			"in vec2 v_texCoord;\n"
+			"layout(location = 0) out vec4 outColor;\n"
+			"uniform sampler2D s_TextureMap;\n"
+			"void main()\n"
+			"{\n"
+			"    outColor = texture(s_TextureMap, v_texCoord);\n"
+			"}";
+
     // 用于普通渲染的片段着色器脚本，简单纹理映射
-    char fShaderStr[] =
+    char fFboShaderStr[] =
 	    "#version 300 es\n"
             "precision mediump float;\n"
             "in vec2 v_texCoord;\n"

@@ -1,6 +1,6 @@
 /**
  *
- * Created by 公众号：字节流动 on 2022/3/12.
+ * Created by 公众号：字节流动 on 2023/3/12.
  * https://github.com/githubhaohao/NDK_OpenGLES_3_0
  * 最新文章首发于公众号：字节流动，有疑问或者技术交流可以添加微信 Byte-Flow ,领取视频教程, 拉你进技术交流群
  *
@@ -13,14 +13,6 @@
 
 void Render16BitGraySample::LoadImage(NativeImage *pImage)
 {
-//	LOGCATE("Render16BitGraySample::LoadImage pImage = %p", pImage->ppPlane[0]);
-//	if (pImage)
-//	{
-//		m_RenderImage.width = pImage->width;
-//		m_RenderImage.height = pImage->height;
-//		m_RenderImage.format = pImage->format;
-//		NativeImageUtil::CopyNativeImage(pImage, &m_RenderImage);
-//	}
 	NativeImageUtil::FreeNativeImage(&m_RenderImage);
 	if(m_RenderImage.ppPlane[0] == nullptr) {
 		m_RenderImage.width = 4406;
@@ -30,43 +22,21 @@ void Render16BitGraySample::LoadImage(NativeImage *pImage)
 	}
 	NativeImageUtil::LoadNativeImage(&m_RenderImage, IMAGE_PATH);
 
-	YUVP010Example::YUVP010Test();
-
-//	NativeImage nativeImageFloat = m_RenderImage;
-//	nativeImageFloat.ppPlane[0] = static_cast<uint8_t *>(malloc(pImage->width * pImage->height *
-//																		sizeof(float)));
-//
-//	int width = m_RenderImage.width, height = m_RenderImage.height;
-//	for (int i = 0; i < height; ++i) {
-//		uint16_t *pu16YData = (uint16_t *)(m_RenderImage.ppPlane[0] + m_RenderImage.width * 2 * i);
-//
-//		float *pFloatYData = (float *)(nativeImageFloat.ppPlane[0] +
-//														  nativeImageFloat.width * i *
-//														  sizeof(float));
-//		for (int j = 0; j < width; j++, pFloatYData++, pu16YData++) {
-//			*pFloatYData = uint16_cov_float(*pu16YData);
-//            //*pFloatYData = *reinterpret_cast<float*>(pu16YData);
-//		}
-//	}
-//
-//	NativeImageUtil::FreeNativeImage(&m_RenderImage);
-//	m_RenderImage = nativeImageFloat;
-
-
+	//YUVP010Example::YUVP010Test();
 }
 
 void Render16BitGraySample::Init()
 {
-	char vShaderStr[] =
-			"#version 300 es                            \n"
-			"layout(location = 0) in vec4 a_position;   \n"
-			"layout(location = 1) in vec2 a_texCoord;   \n"
-			"out vec2 v_texCoord;                       \n"
-			"void main()                                \n"
-			"{                                          \n"
-			"   gl_Position = a_position;               \n"
-			"   v_texCoord = a_texCoord;                \n"
-			"}                                          \n";
+	char vShaderStr[] =R"(
+			#version 300 es
+			layout(location = 0) in vec4 a_position;
+			layout(location = 1) in vec2 a_texCoord;
+			out vec2 v_texCoord;
+			void main()
+			{
+			   gl_Position = a_position;
+			   v_texCoord = a_texCoord;
+			})";
 
 	char fShaderStr[] =R"(
 			#version 300 es
