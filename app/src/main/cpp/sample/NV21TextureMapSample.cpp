@@ -1,6 +1,10 @@
-//
-// Created by ByteFlow on 2019/7/10.
-//
+/**
+ *
+ * Created by 公众号：字节流动 on 2023/3/12.
+ * https://github.com/githubhaohao/NDK_OpenGLES_3_0
+ * 最新文章首发于公众号：字节流动，有疑问或者技术交流可以添加微信 Byte-Flow ,领取视频教程, 拉你进技术交流群
+ *
+ * */
 
 #include <GLUtils.h>
 #include "NV21TextureMapSample.h"
@@ -40,13 +44,13 @@ void NV21TextureMapSample::Init()
 			"void main()                                         \n"
 			"{                                                   \n"
 			"	vec3 yuv;										\n"
-			"   yuv.x = texture(y_texture, v_texCoord).r;  	\n"
-			"   yuv.y = texture(uv_texture, v_texCoord).a-0.5;	\n"
-			"   yuv.z = texture(uv_texture, v_texCoord).r-0.5;	\n"
-			"	highp vec3 rgb = mat3( 1,       1,       	1,					\n"
-			"               0, 		-0.344, 	1.770,					\n"
-			"               1.403,  -0.714,       0) * yuv; 			\n"
-			"	outColor = vec4(rgb, 1);						\n"
+			"   yuv.x = texture(y_texture, v_texCoord).r -0.063;  	\n"
+			"   yuv.y = texture(uv_texture, v_texCoord).a-0.502;	\n"
+			"   yuv.z = texture(uv_texture, v_texCoord).r-0.502;	\n"
+			"	highp vec3 rgb = mat3(1.164, 1.164, 1.164,		\n"
+			"               0, 		 -0.392, 	2.017,				\n"
+			"               1.596,   -0.813,    0.0) * yuv; 		\n"
+			"	outColor = vec4(rgb, 1.0);						\n"
 			"}                                                   \n";
 
 	// Load the shaders and get a linked program object
