@@ -6,25 +6,26 @@
  *
  * */
 #include <GLUtils.h>
-#include "Render16BitGraySample.h"
+#include "RenderP010Sample.h"
 #include "YUVP010Example.h"
 
-#define IMAGE_PATH "/sdcard/Android/data/com.byteflow.app/files/Download/yuv/IMAGE_4406x3108.GRAY10"
+#define IMAGE_PATH "/sdcard/Android/data/com.byteflow.app/files/Download/yuv/IMAGE_4406x3108.P010"
 
-void Render16BitGraySample::LoadImage(NativeImage *pImage)
+void RenderP010Sample::LoadImage(NativeImage *pImage)
 {
 	NativeImageUtil::FreeNativeImage(&m_RenderImage);
 	if(m_RenderImage.ppPlane[0] == nullptr) {
 		m_RenderImage.width = 4406;
 		m_RenderImage.height = 3108;
-		m_RenderImage.format = IMAGE_FORMAT_GRAY10;
+		m_RenderImage.format = IMAGE_FORMAT_P010;
 		NativeImageUtil::AllocNativeImage(&m_RenderImage);
 	}
 	NativeImageUtil::LoadNativeImage(&m_RenderImage, IMAGE_PATH);
+
 	//YUVP010Example::YUVP010Test();
 }
 
-void Render16BitGraySample::Init()
+void RenderP010Sample::Init()
 {
 	char vShaderStr[] =R"(
 			#version 300 es
@@ -38,28 +39,46 @@ void Render16BitGraySample::Init()
 			})";
 
 	char fShaderStr[] =R"(
-			#version 300 es
-			precision highp float;
-			in vec2 v_texCoord;
-			uniform sampler2D y_texture;
-			out vec4 outColor;
-			void main() {
-				vec4 col = texture(y_texture, v_texCoord);
-				float val = 255.0 * col.r + col.a * 255.0 * pow(2.0, 8.0);
-				outColor = vec4(vec3(val / 65535.0), 1.0);
-			})";
+				#version 300 es
+				precision highp float;
+				in vec2 v_texCoord;
+				uniform sampler2D y_texture;
+				uniform sampler2D uv_texture;
+				out vec4 outColor;
+				void main() {
+					vec4 yCol = texture(y_texture, v_texCoord);
+					vec4 uvCol = texture(uv_texture, v_texCoord);
+
+					float val = 255.0 * yCol.r + yCol.a * 255.0 * pow(2.0, 8.0);
+					float yVal = val / 65535.0 - 0.063;
+
+					val = 255.0 * uvCol.r + uvCol.g * 255.0 * pow(2.0, 8.0);
+					float vVal = val / 65535.0 - 0.502;
+
+					val = 255.0 * uvCol.b + uvCol.a * 255.0 * pow(2.0, 8.0);
+					float uVal = val / 65535.0 - 0.502;
+
+					highp vec3 rgb = mat3(1.164, 1.164, 1.164,
+											  0, -0.392, 2.017,
+										  1.596, -0.813,  0.0) * vec3(yVal, uVal, vVal);
+					outColor = vec4(rgb, 1.0);
+				}
+)";
 
 	// Load the shaders and get a linked program object
 	m_ProgramObj= GLUtils::CreateProgram(vShaderStr, fShaderStr, m_VertexShader, m_FragmentShader);
 
 	// Get the sampler location
 	m_ySamplerLoc = glGetUniformLocation (m_ProgramObj, "y_texture" );
+	m_uvSamplerLoc = glGetUniformLocation(m_ProgramObj, "uv_texture");
+
 
 	//create textures
-	GLuint textureIds[1] = {0};
-	glGenTextures(1, textureIds);
+	GLuint textureIds[2] = {0};
+	glGenTextures(2, textureIds);
 
 	m_yTextureId = textureIds[0];
+	m_uvTextureId = textureIds[1];
 
 	LoadImage(nullptr);
 
@@ -67,7 +86,6 @@ void Render16BitGraySample::Init()
 	glBindTexture(GL_TEXTURE_2D, m_yTextureId);
 	//GL_R16F, GL_RED, GL_HALF_FLOAT
 	glTexImage2D ( GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, m_RenderImage.width, m_RenderImage.height, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, m_RenderImage.ppPlane[0]);
-    //glTexImage2D ( GL_TEXTURE_2D, 0, GL_R16UI, m_RenderImage.width,m_RenderImage.height, 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT, m_RenderImage.ppPlane[0]);
 
 	//glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, m_RenderImage.width, m_RenderImage.height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, m_RenderImage.ppPlane[0]);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -75,11 +93,20 @@ void Render16BitGraySample::Init()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
+
+	//update UV plane data
+	glBindTexture(GL_TEXTURE_2D, m_uvTextureId);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderImage.width >> 1, m_RenderImage.height >> 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_RenderImage.ppPlane[1]);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 }
 
-void Render16BitGraySample::Draw(int screenW, int screenH)
+void RenderP010Sample::Draw(int screenW, int screenH)
 {
-	LOGCATE("Render16BitGraySample::Draw()");
+	LOGCATE("RenderP010Sample::Draw()");
 
 	if(m_ProgramObj == GL_NONE || m_yTextureId == GL_NONE) return;
 
@@ -119,15 +146,23 @@ void Render16BitGraySample::Draw(int screenW, int screenH)
 	// Set the Y plane sampler to texture unit to 0
 	glUniform1i(m_ySamplerLoc, 0);
 
+	// Bind the UV plane map
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, m_uvTextureId);
+
+	// Set the UV plane sampler to texture unit to 1
+	glUniform1i(m_uvSamplerLoc, 1);
+
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
-void Render16BitGraySample::Destroy()
+void RenderP010Sample::Destroy()
 {
 	if (m_ProgramObj)
 	{
 		glDeleteProgram(m_ProgramObj);
 		glDeleteTextures(1, &m_yTextureId);
+		glDeleteTextures(1, &m_uvTextureId);
 		m_ProgramObj = GL_NONE;
 	}
 }

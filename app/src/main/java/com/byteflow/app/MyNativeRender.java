@@ -60,8 +60,10 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_KEY_COPY_TEXTURE        = SAMPLE_TYPE + 46;
     public static final int SAMPLE_TYPE_KEY_BLIT_FRAME_BUFFER   = SAMPLE_TYPE + 47;
     public static final int SAMPLE_TYPE_KEY_BINARY_PROGRAM      = SAMPLE_TYPE + 48;
+    public static final int SAMPLE_TYPE_KEY_HWBuffer            = SAMPLE_TYPE + 49;
+    public static final int SAMPLE_TYPE_KEY_16BitGray            = SAMPLE_TYPE + 50;
 
-    public static final int SAMPLE_TYPE_KEY_HWBuffer            = SAMPLE_TYPE + 50;
+    public static final int SAMPLE_TYPE_KEY_P010                 = SAMPLE_TYPE + 51;
 
     public static final int SAMPLE_TYPE_SET_TOUCH_LOC           = SAMPLE_TYPE + 999;
     public static final int SAMPLE_TYPE_SET_GRAVITY_XY          = SAMPLE_TYPE + 1000;

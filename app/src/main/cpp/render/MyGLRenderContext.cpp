@@ -53,8 +53,11 @@
 #include <CopyTextureExample.h>
 #include <BlitFrameBufferExample.h>
 #include <BinaryProgramExample.h>
+#include <Render16BitGraySample.h>
 #include "MyGLRenderContext.h"
 #include "LogUtil.h"
+#include "RenderP010Sample.h"
+//#include "HardwareBufferExample.h"
 
 MyGLRenderContext* MyGLRenderContext::m_pContext = nullptr;
 
@@ -238,6 +241,15 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 			case SAMPLE_TYPE_KEY_BINARY_PROGRAM:
 				m_pCurSample = new BinaryProgramExample();
 				break;
+//			case SAMPLE_TYPE_KEY_HWBuffer:
+//				m_pCurSample = new HardwareBufferExample();
+//				break;
+			case SAMPLE_TYPE_KEY_16BitGray:
+				m_pCurSample = new Render16BitGraySample();
+				break;
+            case SAMPLE_TYPE_KEY_P010:
+                m_pCurSample = new RenderP010Sample();
+                break;
 			default:
 			    m_pCurSample = nullptr;
 				break;

@@ -60,6 +60,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_EGL;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_16BitGray;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_AVATAR;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEATING_HEART;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEZIER_CURVE;
@@ -74,6 +75,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FBO_BLIT;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_HWBuffer;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MRT;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MULTI_THREAD_RENDER;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_P010;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2I420;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2I444;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2NV21;
@@ -158,7 +160,10 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "RGB to I444",
             "Copy Texture",
             "Blit Frame Buffer",
-            "Binary Program"
+            "Binary Program",
+            "HardwareBuffer",
+            "Render16BitGray",
+            "RenderP010"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -440,6 +445,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                     case SAMPLE_TYPE_KEY_TBO:
                     case SAMPLE_TYPE_KEY_UBO:
                     case SAMPLE_TYPE_KEY_BINARY_PROGRAM:
+                    case SAMPLE_TYPE_KEY_HWBuffer:
                         Bitmap b4 = loadRGBAImage(R.drawable.lye);
                         mGLSurfaceView.setAspectRatio(b4.getWidth(), b4.getHeight());
                         break;
@@ -469,6 +475,11 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                         tmp = loadRGBAImage(R.drawable.lye8, 5);
                         mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        break;
+                    case SAMPLE_TYPE_KEY_16BitGray:
+                    case SAMPLE_TYPE_KEY_P010:
+                        //loadRGBAImage(R.drawable.front);
+                        mGLSurfaceView.setAspectRatio(440, 310);
                         break;
 //                    case SAMPLE_TYPE_KEY_CONVEYOR_BELT:
 //                        tmp = loadRGBAImage(R.drawable.lye4);
