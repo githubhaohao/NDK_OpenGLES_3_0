@@ -65,6 +65,8 @@ public class MyNativeRender {
 
     public static final int SAMPLE_TYPE_KEY_P010                 = SAMPLE_TYPE + 51;
 
+    public static final int SAMPLE_TYPE_KEY_RENDER_NV21          = SAMPLE_TYPE + 52;
+
     public static final int SAMPLE_TYPE_SET_TOUCH_LOC           = SAMPLE_TYPE + 999;
     public static final int SAMPLE_TYPE_SET_GRAVITY_XY          = SAMPLE_TYPE + 1000;
 

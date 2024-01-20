@@ -76,6 +76,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_HWBuffer;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MRT;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MULTI_THREAD_RENDER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_P010;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RENDER_NV21;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2I420;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2I444;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2NV21;
@@ -163,7 +164,8 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "Binary Program",
             "HardwareBuffer",
             "Render16BitGray",
-            "RenderP010"
+            "RenderP010",
+            "RenderNV21"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -481,6 +483,10 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                         //loadRGBAImage(R.drawable.front);
                         mGLSurfaceView.setAspectRatio(440, 310);
                         break;
+                    case SAMPLE_TYPE_KEY_RENDER_NV21:
+                        loadNV21Image2();
+                        mGLSurfaceView.setAspectRatio(440, 310);
+                        break;
 //                    case SAMPLE_TYPE_KEY_CONVEYOR_BELT:
 //                        tmp = loadRGBAImage(R.drawable.lye4);
 //                        mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
@@ -581,6 +587,35 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             byte[] buffer = new byte[lenght];
             is.read(buffer);
             mGLRender.setImageData(IMAGE_FORMAT_NV21, 840, 1074, buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try
+            {
+                is.close();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private void loadNV21Image2() {
+        InputStream is = null;
+        try {
+            is = getAssets().open("yuv/IMAGE_4406x3108.NV21");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int lenght = 0;
+        try {
+            lenght = is.available();
+            byte[] buffer = new byte[lenght];
+            is.read(buffer);
+            mGLRender.setImageData(IMAGE_FORMAT_NV21, 4406, 3108, buffer);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

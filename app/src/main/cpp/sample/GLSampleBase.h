@@ -69,6 +69,8 @@
 #define SAMPLE_TYPE_KEY_HWBuffer                SAMPLE_TYPE + 49
 #define SAMPLE_TYPE_KEY_16BitGray               SAMPLE_TYPE + 50
 #define SAMPLE_TYPE_KEY_P010                    SAMPLE_TYPE + 51
+#define SAMPLE_TYPE_KEY_RENDER_NV21             SAMPLE_TYPE + 52
+
 
 #define SAMPLE_TYPE_KEY_SET_TOUCH_LOC           SAMPLE_TYPE + 999
 #define SAMPLE_TYPE_SET_GRAVITY_XY              SAMPLE_TYPE + 1000
