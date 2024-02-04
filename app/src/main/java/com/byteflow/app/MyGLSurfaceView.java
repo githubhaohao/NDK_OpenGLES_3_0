@@ -39,6 +39,9 @@ public class MyGLSurfaceView extends GLSurfaceView implements ScaleGestureDetect
     public static final int IMAGE_FORMAT_YUYV = 0x05;
     public static final int IMAGE_FORMAT_GARY = 0x06;
 
+    public static final int IMAGE_FORMAT_I444 = 0x07;
+
+
     private float mPreviousY;
     private float mPreviousX;
     private int mXAngle;

@@ -1,17 +1,17 @@
 /**
  *
- * Created by 公众号：字节流动 on 2024/01/12.
+ * Created by 公众号：字节流动 on 2024/03/12.
  * https://github.com/githubhaohao/NDK_OpenGLES_3_0
  * 最新文章首发于公众号：字节流动，有疑问或者技术交流可以添加微信 Byte-Flow ,领取视频教程, 拉你进技术交流群
  *
  * */
 #include <GLUtils.h>
-#include "RenderNV21Sample.h"
+#include "RenderYUYVSample.h"
 #include "YUVP010Example.h"
 
-void RenderNV21Sample::LoadImage(NativeImage *pImage)
+void RenderYUYVSample::LoadImage(NativeImage *pImage)
 {
-	LOGCATE("RenderNV21Sample::LoadImage pImage = %p", pImage->ppPlane[0]);
+	LOGCATE("RenderYUYVSample::LoadImage pImage = %p", pImage->ppPlane[0]);
 	if (pImage)
 	{
 		m_RenderImage.width = pImage->width;
@@ -21,7 +21,7 @@ void RenderNV21Sample::LoadImage(NativeImage *pImage)
 	}
 }
 
-void RenderNV21Sample::Init()
+void RenderYUYVSample::Init()
 {
 	char vShaderStr[] =R"(
 			#version 300 es
@@ -36,30 +36,32 @@ void RenderNV21Sample::Init()
 
 	char fShaderStr[] =R"(
 		#version 300 es
-		#extension GL_EXT_YUV_target: require
 		precision highp float;
 		in vec2 v_texCoord;
 		uniform sampler2D y_texture;
 		uniform vec2 inputSize;
 		out vec4 outColor;
 		void main() {
+				//YUYV YUYV
 				vec2 uv = v_texCoord;
-				uv.y *= 2.0 / 3.0;
-				float y = texture(y_texture, uv).r - 0.063;
-
 				vec2 pixelUV = v_texCoord * inputSize;
-				pixelUV.x = floor(pixelUV.x / 2.0) * 2.0;
-				pixelUV.y = floor(pixelUV.y / 2.0);
-				pixelUV.y += inputSize.y;
-				float v = texelFetch(y_texture, ivec2(int(pixelUV.x), int(pixelUV.y)), 0).r - 0.502;
-
-				pixelUV.x += 1.0;
-				float u = texelFetch(y_texture, ivec2(int(pixelUV.x), int(pixelUV.y)), 0).r - 0.502;
+				pixelUV = floor(pixelUV);
+				vec4 col = texelFetch(y_texture, ivec2(int(pixelUV.x), int(pixelUV.y)), 0);
+				float y = col.r - 0.063;
+				float u,v;
+				if(mod(pixelUV.x, 2.0) > 0.01) {
+					v = col.a - 0.502;
+					pixelUV.x -= 1.0;
+					u = texelFetch(y_texture, ivec2(int(pixelUV.x), int(pixelUV.y)), 0).a - 0.502;
+				} else {
+					u = col.a - 0.502;
+					pixelUV.x += 1.0;
+					v = texelFetch(y_texture, ivec2(int(pixelUV.x), int(pixelUV.y)), 0).a - 0.502;
+				}
 				vec3 yuv = vec3(y,u,v);
-
-				highp vec3 rgb = mat3(1.164, 1.164, 1.164,
-							0, 		 -0.392, 	2.017,
-							1.596,   -0.813,    0.0) * yuv;
+				vec3 rgb = mat3(1.164, 1.164, 1.164,
+				0, 		 -0.392, 	2.017,
+				1.596,   -0.813,    0.0) * yuv;
 				outColor = vec4(rgb, 1.0);
 		}
 )";
@@ -76,9 +78,20 @@ void RenderNV21Sample::Init()
 
 	m_TextureId = textureIds[0];
 
+//	glActiveTexture(GL_TEXTURE0);
+//	glBindTexture(GL_TEXTURE_2D, m_TextureIds[0]);
+//	glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, nWidth, nHeight, 0,
+//				 GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, ppPlane[0]);
+//
+//	glActiveTexture(GL_TEXTURE1);
+//	glBindTexture(GL_TEXTURE_2D, m_TextureIds[1]);
+//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, nWidth >> 1, nHeight, 0, GL_RGBA,
+//				 GL_UNSIGNED_BYTE, ppPlane[0]);
+
 	//upload Y plane data
 	glBindTexture(GL_TEXTURE_2D, m_TextureId);
-	glTexImage2D ( GL_TEXTURE_2D, 0, GL_LUMINANCE, m_RenderImage.width, m_RenderImage.height * 3 / 2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, m_RenderImage.ppPlane[0]);
+	glTexImage2D ( GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, m_RenderImage.width, m_RenderImage.height, 0,
+				   GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, m_RenderImage.ppPlane[0]);
 
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -87,9 +100,9 @@ void RenderNV21Sample::Init()
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 }
 
-void RenderNV21Sample::Draw(int screenW, int screenH)
+void RenderYUYVSample::Draw(int screenW, int screenH)
 {
-	LOGCATE("RenderNV21Sample::Draw()");
+	LOGCATE("RenderYUYVSample::Draw()");
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	if(m_ProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
 
@@ -134,7 +147,7 @@ void RenderNV21Sample::Draw(int screenW, int screenH)
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
-void RenderNV21Sample::Destroy()
+void RenderYUYVSample::Destroy()
 {
 	if (m_ProgramObj)
 	{

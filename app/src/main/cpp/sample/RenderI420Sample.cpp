@@ -6,12 +6,12 @@
  *
  * */
 #include <GLUtils.h>
-#include "RenderNV21Sample.h"
+#include "RenderI420Sample.h"
 #include "YUVP010Example.h"
 
-void RenderNV21Sample::LoadImage(NativeImage *pImage)
+void RenderI420Sample::LoadImage(NativeImage *pImage)
 {
-	LOGCATE("RenderNV21Sample::LoadImage pImage = %p", pImage->ppPlane[0]);
+	LOGCATE("RenderI420Sample::LoadImage pImage = %p", pImage->ppPlane[0]);
 	if (pImage)
 	{
 		m_RenderImage.width = pImage->width;
@@ -21,7 +21,7 @@ void RenderNV21Sample::LoadImage(NativeImage *pImage)
 	}
 }
 
-void RenderNV21Sample::Init()
+void RenderI420Sample::Init()
 {
 	char vShaderStr[] =R"(
 			#version 300 es
@@ -36,7 +36,6 @@ void RenderNV21Sample::Init()
 
 	char fShaderStr[] =R"(
 		#version 300 es
-		#extension GL_EXT_YUV_target: require
 		precision highp float;
 		in vec2 v_texCoord;
 		uniform sampler2D y_texture;
@@ -48,18 +47,21 @@ void RenderNV21Sample::Init()
 				float y = texture(y_texture, uv).r - 0.063;
 
 				vec2 pixelUV = v_texCoord * inputSize;
-				pixelUV.x = floor(pixelUV.x / 2.0) * 2.0;
-				pixelUV.y = floor(pixelUV.y / 2.0);
+				pixelUV.x = mod(pixelUV.y/2.0, 2.0) > 0.001 ? pixelUV.x / 2.0 + inputSize.x / 2.0 : pixelUV.x / 2.0;
+				pixelUV.y = floor(pixelUV.y / 4.0);
 				pixelUV.y += inputSize.y;
-				float v = texelFetch(y_texture, ivec2(int(pixelUV.x), int(pixelUV.y)), 0).r - 0.502;
-
-				pixelUV.x += 1.0;
 				float u = texelFetch(y_texture, ivec2(int(pixelUV.x), int(pixelUV.y)), 0).r - 0.502;
+
+				pixelUV = v_texCoord * inputSize;
+				pixelUV.x = mod(pixelUV.y/2.0, 2.0) > 0.001 ? pixelUV.x / 2.0 + inputSize.x / 2.0 : pixelUV.x / 2.0;
+				pixelUV.y = floor(pixelUV.y / 4.0);
+				pixelUV.y += inputSize.y * 5.0 / 4.0;
+				float v = texelFetch(y_texture, ivec2(int(pixelUV.x), int(pixelUV.y)), 0).r - 0.502;
 				vec3 yuv = vec3(y,u,v);
 
 				highp vec3 rgb = mat3(1.164, 1.164, 1.164,
-							0, 		 -0.392, 	2.017,
-							1.596,   -0.813,    0.0) * yuv;
+				0, 		 -0.392, 	2.017,
+				1.596,   -0.813,    0.0) * yuv;
 				outColor = vec4(rgb, 1.0);
 		}
 )";
@@ -79,7 +81,6 @@ void RenderNV21Sample::Init()
 	//upload Y plane data
 	glBindTexture(GL_TEXTURE_2D, m_TextureId);
 	glTexImage2D ( GL_TEXTURE_2D, 0, GL_LUMINANCE, m_RenderImage.width, m_RenderImage.height * 3 / 2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, m_RenderImage.ppPlane[0]);
-
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -87,9 +88,9 @@ void RenderNV21Sample::Init()
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 }
 
-void RenderNV21Sample::Draw(int screenW, int screenH)
+void RenderI420Sample::Draw(int screenW, int screenH)
 {
-	LOGCATE("RenderNV21Sample::Draw()");
+	LOGCATE("RenderI420Sample::Draw()");
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	if(m_ProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
 
@@ -134,7 +135,7 @@ void RenderNV21Sample::Draw(int screenW, int screenH)
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 }
 
-void RenderNV21Sample::Destroy()
+void RenderI420Sample::Destroy()
 {
 	if (m_ProgramObj)
 	{

@@ -58,6 +58,9 @@
 #include "LogUtil.h"
 #include "RenderP010Sample.h"
 #include "RenderNV21Sample.h"
+#include "RenderI420Sample.h"
+#include "RenderI444Sample.h"
+#include "RenderYUYVSample.h"
 //#include "HardwareBufferExample.h"
 
 MyGLRenderContext* MyGLRenderContext::m_pContext = nullptr;
@@ -245,14 +248,23 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 //			case SAMPLE_TYPE_KEY_HWBuffer:
 //				m_pCurSample = new HardwareBufferExample();
 //				break;
-			case SAMPLE_TYPE_KEY_16BitGray:
+			case SAMPLE_TYPE_KEY_RENDER_16BIT_GRAY:
 				m_pCurSample = new Render16BitGraySample();
 				break;
-            case SAMPLE_TYPE_KEY_P010:
+            case SAMPLE_TYPE_KEY_RENDER_P010:
                 m_pCurSample = new RenderP010Sample();
                 break;
 			case SAMPLE_TYPE_KEY_RENDER_NV21:
 				m_pCurSample = new RenderNV21Sample();
+				break;
+			case SAMPLE_TYPE_KEY_RENDER_I420:
+				m_pCurSample = new RenderI420Sample();
+				break;
+			case SAMPLE_TYPE_KEY_RENDER_I444:
+				m_pCurSample = new RenderI444Sample();
+				break;
+			case SAMPLE_TYPE_KEY_RENDER_YUYV:
+				m_pCurSample = new RenderYUYVSample();
 				break;
 			default:
 			    m_pCurSample = nullptr;

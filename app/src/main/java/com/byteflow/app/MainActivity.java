@@ -43,14 +43,16 @@ import com.byteflow.app.egl.EGLActivity;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Arrays;
 
 import static android.opengl.GLSurfaceView.RENDERMODE_CONTINUOUSLY;
 import static android.opengl.GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_GARY;
+import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_I420;
+import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_I444;
 import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_NV21;
 import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_RGBA;
+import static com.byteflow.app.MyGLSurfaceView.IMAGE_FORMAT_YUYV;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_BASIC_LIGHTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_BLENDING;
@@ -60,7 +62,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_EGL;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
-import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_16BitGray;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RENDER_16BitGray;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_AVATAR;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEATING_HEART;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEZIER_CURVE;
@@ -75,8 +77,11 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FBO_BLIT;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_HWBuffer;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MRT;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MULTI_THREAD_RENDER;
-import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_P010;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RENDER_I420;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RENDER_I444;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RENDER_P010;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RENDER_NV21;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RENDER_YUYV;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2I420;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2I444;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RGB2NV21;
@@ -165,7 +170,10 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "HardwareBuffer",
             "Render16BitGray",
             "RenderP010",
-            "RenderNV21"
+            "RenderNV21",
+            "RenderI420",
+            "RenderI444",
+            "RenderYUYV"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -478,13 +486,25 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                         mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;
-                    case SAMPLE_TYPE_KEY_16BitGray:
-                    case SAMPLE_TYPE_KEY_P010:
+                    case SAMPLE_TYPE_KEY_RENDER_16BitGray:
+                    case SAMPLE_TYPE_KEY_RENDER_P010:
                         //loadRGBAImage(R.drawable.front);
                         mGLSurfaceView.setAspectRatio(440, 310);
                         break;
                     case SAMPLE_TYPE_KEY_RENDER_NV21:
                         loadNV21Image2();
+                        mGLSurfaceView.setAspectRatio(440, 310);
+                        break;
+                    case SAMPLE_TYPE_KEY_RENDER_I420:
+                        loadI420Image();
+                        mGLSurfaceView.setAspectRatio(440, 310);
+                        break;
+                    case SAMPLE_TYPE_KEY_RENDER_I444:
+                        loadI444Image();
+                        mGLSurfaceView.setAspectRatio(440, 310);
+                        break;
+                    case SAMPLE_TYPE_KEY_RENDER_YUYV:
+                        loadYUYVImage();
                         mGLSurfaceView.setAspectRatio(440, 310);
                         break;
 //                    case SAMPLE_TYPE_KEY_CONVEYOR_BELT:
@@ -628,7 +648,90 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                 e.printStackTrace();
             }
         }
+    }
 
+    private void loadI420Image() {
+        InputStream is = null;
+        try {
+            is = getAssets().open("yuv/IMAGE_5288x3732.I420");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int lenght = 0;
+        try {
+            lenght = is.available();
+            byte[] buffer = new byte[lenght];
+            is.read(buffer);
+            mGLRender.setImageData(IMAGE_FORMAT_I420, 5288, 3732, buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try
+            {
+                is.close();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void loadI444Image() {
+        InputStream is = null;
+        try {
+            is = getAssets().open("yuv/IMAGE_5288x3732.I444");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int lenght = 0;
+        try {
+            lenght = is.available();
+            byte[] buffer = new byte[lenght];
+            is.read(buffer);
+            mGLRender.setImageData(IMAGE_FORMAT_I444, 5288, 3732, buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try
+            {
+                is.close();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void loadYUYVImage() {
+        InputStream is = null;
+        try {
+            is = getAssets().open("yuv/IMAGE_5288x3732.YUYV");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int lenght = 0;
+        try {
+            lenght = is.available();
+            byte[] buffer = new byte[lenght];
+            is.read(buffer);
+            mGLRender.setImageData(IMAGE_FORMAT_YUYV, 5288, 3732, buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try
+            {
+                is.close();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void loadGrayImage() {
