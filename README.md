@@ -130,6 +130,14 @@
 
 - [OpenGL ES 修图（P 图）功能](https://blog.csdn.net/Kennethdroid/article/details/133125813)
 
+- [OpenGL ES 抖音“传送带“特效实现终极版](https://blog.csdn.net/Kennethdroid/article/details/135014109)
+
+- [OpenGL ES 3.0 帧缓冲区失效 glInvalidateFramebuffer](https://blog.csdn.net/Kennethdroid/article/details/135203000)
+
+- [OpenGL ES 如何直接渲染 P010、P016 格式图像？](https://blog.csdn.net/Kennethdroid/article/details/135348813)
+
+- [OpenGL ES 渲染 NV21、NV12、I420、YV12、YUYV、UYVY、I444（建议收藏）](https://blog.csdn.net/Kennethdroid/article/details/136213988)
+
 ## 相关推荐
 
 - [Android OpenGL Camera 2.0 实现 30 种滤镜和抖音特效](https://github.com/githubhaohao/OpenGLCamera2)
