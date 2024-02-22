@@ -10,6 +10,7 @@
 #define _BYTE_FLOW_GL_UTILS_H_
 
 #include <GLES3/gl3.h>
+#include <GLES3/gl31.h>
 #include <string>
 #include <glm.hpp>
 
@@ -38,6 +39,8 @@ public:
     static void DeleteProgram(GLuint &program);
 
     static void CheckGLError(const char *pGLOperation);
+
+    static GLuint LoadComputeShader(const char* computeShaderSource);
 
     static void setBool(GLuint programId, const std::string &name, bool value) {
         glUniform1i(glGetUniformLocation(programId, name.c_str()), (int) value);

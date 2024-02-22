@@ -61,6 +61,7 @@
 #include "RenderI420Sample.h"
 #include "RenderI444Sample.h"
 #include "RenderYUYVSample.h"
+#include "ComputeShaderSample.h"
 //#include "HardwareBufferExample.h"
 
 MyGLRenderContext* MyGLRenderContext::m_pContext = nullptr;
@@ -265,6 +266,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 				break;
 			case SAMPLE_TYPE_KEY_RENDER_YUYV:
 				m_pCurSample = new RenderYUYVSample();
+				break;
+			case SAMPLE_TYPE_KEY_COMPUTE_SHADER:
+				m_pCurSample = new ComputeShaderSample();
 				break;
 			default:
 			    m_pCurSample = nullptr;

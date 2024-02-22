@@ -62,6 +62,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_EGL;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_COMPUTE_SHADER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RENDER_16BitGray;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_AVATAR;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEATING_HEART;
@@ -173,7 +174,8 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "RenderNV21",
             "RenderI420",
             "RenderI444",
-            "RenderYUYV"
+            "RenderYUYV",
+            "ComputeShader"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -273,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
 
     @Override
     public void onAudioBufferCallback(short[] buffer) {
-        Log.e(TAG, "onAudioBufferCallback() called with: buffer[0] = [" + buffer[0] + "]");
+        //Log.e(TAG, "onAudioBufferCallback() called with: buffer[0] = [" + buffer[0] + "]");
         mGLRender.setAudioData(buffer);
         //mGLSurfaceView.requestRender();
     }
@@ -282,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
     public void onSensorChanged(SensorEvent event) {
         switch (event.sensor.getType()) {
             case Sensor.TYPE_GRAVITY:
-                Log.d(TAG, "onSensorChanged() called with TYPE_GRAVITY: [x,y,z] = [" + event.values[0] + ", " + event.values[1] + ", " + event.values[2] + "]");
+                //Log.d(TAG, "onSensorChanged() called with TYPE_GRAVITY: [x,y,z] = [" + event.values[0] + ", " + event.values[1] + ", " + event.values[2] + "]");
                 if(mSampleSelectedIndex + SAMPLE_TYPE == SAMPLE_TYPE_KEY_AVATAR)
                 {
                     mGLRender.setGravityXY(event.values[0], event.values[1]);
@@ -512,6 +514,8 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
 //                        mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
 //                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
 //                        break;
+                    case SAMPLE_TYPE_KEY_COMPUTE_SHADER:
+                        break;
                     default:
                         break;
                 }
