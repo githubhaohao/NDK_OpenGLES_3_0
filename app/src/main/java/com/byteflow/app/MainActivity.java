@@ -63,6 +63,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_COMPUTE_SHADER;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_PORTRAIT_MODE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RENDER_16BitGray;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_AVATAR;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_BEATING_HEART;
@@ -120,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
     private static final int PERMISSION_REQUEST_CODE = 1;
     private static final String[] SAMPLE_TITLES = {
             "DrawTriangle",
-            "TextureMap",
+            "TextureMapping",
             "YUV Rendering",
             "VAO&VBO",
             "FBO Offscreen Rendering",
@@ -175,7 +176,8 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "RenderI420",
             "RenderI444",
             "RenderYUYV",
-            "ComputeShader"
+            "ComputeShader",
+            "PortraitMode"
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -509,17 +511,16 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                         loadYUYVImage();
                         mGLSurfaceView.setAspectRatio(440, 310);
                         break;
-//                    case SAMPLE_TYPE_KEY_CONVEYOR_BELT:
-//                        tmp = loadRGBAImage(R.drawable.lye4);
-//                        mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
-//                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
-//                        break;
+                    case SAMPLE_TYPE_KEY_PORTRAIT_MODE:
+                        tmp = loadRGBAImage(R.drawable.portrait_mode1, 0);
+                        loadRGBAImage(R.drawable.portrait_mode_mask1, 1);
+                        mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
+                        break;
                     case SAMPLE_TYPE_KEY_COMPUTE_SHADER:
                         break;
                     default:
                         break;
                 }
-
                 mGLSurfaceView.requestRender();
 
                 if(sampleType != SAMPLE_TYPE_KEY_VISUALIZE_AUDIO && mAudioCollector != null) {

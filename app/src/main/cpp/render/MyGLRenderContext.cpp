@@ -1,6 +1,10 @@
-//
-// Created by ByteFlow on 2019/7/9.
-//
+/**
+ *
+ * Created by 公众号：字节流动 on 2020/4/18.
+ * https://github.com/githubhaohao/NDK_OpenGLES_3_0
+ * 最新文章首发于公众号：字节流动，有疑问或者技术交流可以添加微信 Byte-Flow ,领取视频教程, 拉你进技术交流群
+ *
+ * */
 
 #include <TriangleSample.h>
 #include <TextureMapSample.h>
@@ -62,6 +66,8 @@
 #include "RenderI444Sample.h"
 #include "RenderYUYVSample.h"
 #include "ComputeShaderSample.h"
+//#include "ComputeShader2Sample.h"
+#include "PortraitModeSample.h"
 //#include "HardwareBufferExample.h"
 
 MyGLRenderContext* MyGLRenderContext::m_pContext = nullptr;
@@ -70,7 +76,6 @@ MyGLRenderContext::MyGLRenderContext()
 {
 	m_pCurSample = new BeatingHeartSample();
 	m_pBeforeSample = nullptr;
-
 }
 
 MyGLRenderContext::~MyGLRenderContext()
@@ -270,6 +275,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
 			case SAMPLE_TYPE_KEY_COMPUTE_SHADER:
 				m_pCurSample = new ComputeShaderSample();
 				break;
+            case SAMPLE_TYPE_KEY_PORTRAIT_MODE:
+                m_pCurSample = new PortraitModeSample();
+                break;
 			default:
 			    m_pCurSample = nullptr;
 				break;

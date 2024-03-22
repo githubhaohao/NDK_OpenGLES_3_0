@@ -167,6 +167,7 @@ GLuint GLUtils::CreateProgram(const char *pVertexShaderSource, const char *pFrag
 }
 
 GLuint GLUtils::LoadComputeShader(const char* computeShaderSource) {
+    LOGCATE("GLUtils::LoadComputeShader Compute shader: %s", computeShaderSource);
     GLuint computeShader = glCreateShader(GL_COMPUTE_SHADER);
     glShaderSource(computeShader, 1, &computeShaderSource, NULL);
     glCompileShader(computeShader);

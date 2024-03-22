@@ -2,8 +2,8 @@
 // Created by ByteFlow on 2019/7/9.
 //
 
-#ifndef NDK_OPENGLES_3_0_MYGLRENDERCONTEXT_H
-#define NDK_OPENGLES_3_0_MYGLRENDERCONTEXT_H
+#ifndef OPENGLES_3_0_MYGLRENDERCONTEXT_H
+#define OPENGLES_3_0_MYGLRENDERCONTEXT_H
 
 #include "stdint.h"
 #include <GLES3/gl3.h>

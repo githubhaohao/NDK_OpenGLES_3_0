@@ -67,8 +67,9 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_KEY_RENDER_I420         = SAMPLE_TYPE + 53;
     public static final int SAMPLE_TYPE_KEY_RENDER_I444         = SAMPLE_TYPE + 54;
     public static final int SAMPLE_TYPE_KEY_RENDER_YUYV         = SAMPLE_TYPE + 55;
-
     public static final int SAMPLE_TYPE_KEY_COMPUTE_SHADER      = SAMPLE_TYPE + 56;
+
+    public static final int SAMPLE_TYPE_KEY_PORTRAIT_MODE       = SAMPLE_TYPE + 57;
 
     public static final int SAMPLE_TYPE_SET_TOUCH_LOC           = SAMPLE_TYPE + 999;
     public static final int SAMPLE_TYPE_SET_GRAVITY_XY          = SAMPLE_TYPE + 1000;

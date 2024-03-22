@@ -1,6 +1,10 @@
-//
-// Created by ByteFlow on 2019/7/10.
-//
+/**
+ *
+ * Created by 公众号：字节流动 on 2021/10/12.
+ * https://github.com/githubhaohao/NDK_OpenGLES_3_0
+ * 最新文章首发于公众号：字节流动，有疑问或者技术交流可以添加微信 Byte-Flow ,领取视频教程, 拉你进技术交流群
+ *
+ * */
 
 #include <GLUtils.h>
 #include <LogUtil.h>
@@ -69,8 +73,8 @@ void TextureMapSample::Draw(int screenW, int screenH)
 
 	if(m_ProgramObj == GL_NONE || m_TextureId == GL_NONE) return;
 
-	glClear(GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(1.0, 1.0, 1.0, 1.0);
+	glClear(GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	GLfloat verticesCoords[] = {
 			-1.0f,  0.5f, 0.0f,  // Position 0
