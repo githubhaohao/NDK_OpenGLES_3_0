@@ -1,6 +1,10 @@
-//
-// Created by ByteFlow on 2019/12/26.
-//
+/**
+ *
+ * Created by 公众号：字节流动 on 2021/10/12.
+ * https://github.com/githubhaohao/NDK_OpenGLES_3_0
+ * 最新文章首发于公众号：字节流动，有疑问或者技术交流可以添加微信 Byte-Flow ,领取视频教程, 拉你进技术交流群
+ *
+ * */
 
 #include <GLUtils.h>
 #include <gtc/matrix_transform.hpp>
@@ -474,18 +478,31 @@ void PBOSample::DownloadPixels() {
     glReadPixels(0, 0, m_RenderImage.width, m_RenderImage.height, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     END_TIME("DownloadPixels glReadPixels with PBO")
 
-    BEGIN_TIME("DownloadPixels PBO glMapBufferRange")
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, m_DownloadPboIds[nextIndex]);
-    GLubyte *bufPtr = static_cast<GLubyte *>(glMapBufferRange(GL_PIXEL_PACK_BUFFER, 0,
-                                                           dataSize,
-                                                           GL_MAP_READ_BIT));
+    if(m_DownloadImages[nextIndex].ppPlane[0] == nullptr)
+    {
+		m_DownloadImages[nextIndex] = m_RenderImage;
+		m_DownloadImages[nextIndex].format = IMAGE_FORMAT_RGBA;
 
-    if (bufPtr) {
-        nativeImage.ppPlane[0] = bufPtr;
-        //NativeImageUtil::DumpNativeImage(&nativeImage, "/sdcard/DCIM", "PBO");
-        glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+		BEGIN_TIME("DownloadPixels PBO glMapBufferRange")
+			glBindBuffer(GL_PIXEL_PACK_BUFFER, m_DownloadPboIds[nextIndex]);
+			GLubyte *bufPtr = static_cast<GLubyte *>(glMapBufferRange(GL_PIXEL_PACK_BUFFER, 0,
+																	  dataSize,
+																	  GL_MAP_READ_BIT));
+
+			if (bufPtr) {
+				m_DownloadImages[nextIndex].ppPlane[0] = bufPtr;
+				//NativeImageUtil::DumpNativeImage(&nativeImage, "/sdcard/DCIM", "PBO");
+			}
+			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+		END_TIME("DownloadPixels PBO glMapBufferRange")
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
     }
-    END_TIME("DownloadPixels PBO glMapBufferRange")
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
+	if(m_DownloadImages[nextIndex].ppPlane[0] != nullptr) {
+		char key[] = "PBO";
+		char fileName[64] = {0};
+		sprintf(fileName, "%s_%d", key, nextIndex);
+		std::string path(DEFAULT_OGL_ASSETS_DIR);
+		NativeImageUtil::DumpNativeImage(&m_DownloadImages[nextIndex], path.c_str(), fileName);
+	}
 }
