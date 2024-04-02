@@ -59,7 +59,7 @@ void UniformBufferSample::Init()
             "}";
 
 	char fShaderStr[] =
-			"#version 300 es                                     \n"
+			"#version 310 es                                     \n"
 			"precision mediump float;                            \n"
 			"in vec2 v_texCoord;                                 \n"
 			"layout(location = 0) out vec4 outColor;             \n"
@@ -194,6 +194,7 @@ void UniformBufferSample::Destroy()
 		glDeleteBuffers(3, m_VboIds);
 		glDeleteVertexArrays(1, &m_VaoId);
 		glDeleteTextures(1, &m_TextureId);
+		glDeleteBuffers(1, &m_UboId);
 	}
 }
 
