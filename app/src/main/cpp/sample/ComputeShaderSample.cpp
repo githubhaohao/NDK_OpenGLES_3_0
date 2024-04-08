@@ -25,16 +25,15 @@ void ComputeShaderSample::Init()
 {
 	if(m_ProgramObj != GL_NONE) return;
 
-	char fComputeShaderStr[] =R"(
-        #version 310 es
-        layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
-        layout (std430, binding = 0) buffer DataBuffer {
-            float data[];
-        } buffer1;
-        void main() {
-            ivec2 pos = ivec2(gl_GlobalInvocationID.xy);
-            buffer1.data[pos.y * int(gl_NumWorkGroups.x) + pos.x] *= float(pos.y);
-        })";
+	char fComputeShaderStr[] = "#version 310 es\n"
+							   "layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;\n"
+							   "layout (std430, binding = 0) buffer DataBuffer {\n"
+							   "    float data[];\n"
+							   "} buffer1;\n"
+							   "void main() {\n"
+							   "    ivec2 pos = ivec2(gl_GlobalInvocationID.xy);\n"
+							   "    buffer1.data[pos.y * int(gl_NumWorkGroups.x) + pos.x] *= float(pos.y);\n"
+							   "}";
 
 	// Load the shaders and get a linked program object
 	m_ProgramObj = GLUtils::LoadComputeShader(fComputeShaderStr);

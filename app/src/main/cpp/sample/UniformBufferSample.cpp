@@ -73,7 +73,6 @@ void UniformBufferSample::Init()
 	if (m_ProgramObj)
 	{
 		m_SamplerLoc = glGetUniformLocation(m_ProgramObj, "s_TextureMap");
-		m_MVPMatLoc = glGetUniformLocation(m_ProgramObj, "u_MVPMatrix");
 	}
 	else
 	{
@@ -166,10 +165,7 @@ void UniformBufferSample::Draw(int screenW, int screenH)
 
 	// Use the program object
 	glUseProgram (m_ProgramObj);
-
 	glBindVertexArray(m_VaoId);
-
-	glUniformMatrix4fv(m_MVPMatLoc, 1, GL_FALSE, &m_MVPMatrix[0][0]);
 
     glBindBuffer(GL_UNIFORM_BUFFER, m_UboId);
     glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &m_ProjectionMatrix[0][0]);
