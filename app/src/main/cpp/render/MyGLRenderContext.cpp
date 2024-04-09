@@ -68,6 +68,7 @@
 #include "ComputeShaderSample.h"
 //#include "ComputeShader2Sample.h"
 #include "PortraitModeSample.h"
+#include "MultiSampleAntiAliasingSample.h"
 //#include "HardwareBufferExample.h"
 
 MyGLRenderContext* MyGLRenderContext::m_pContext = nullptr;
@@ -278,6 +279,9 @@ void MyGLRenderContext::SetParamsInt(int paramType, int value0, int value1)
             case SAMPLE_TYPE_KEY_PORTRAIT_MODE:
                 m_pCurSample = new PortraitModeSample();
                 break;
+			case SAMPLE_TYPE_KEY_MSAA:
+				m_pCurSample = new MultiSampleAntiAliasingSample();
+				break;
 			default:
 			    m_pCurSample = nullptr;
 				break;

@@ -14,6 +14,7 @@
 
 PortraitModeSample::PortraitModeSample()
 {
+	m_ProgramObj = GL_NONE;
 	m_VaoIds[0] = GL_NONE;
 	m_VboIds[0] = GL_NONE;
 
@@ -43,6 +44,7 @@ void PortraitModeSample::LoadMultiImageWithIndex(int index, NativeImage *pImage)
 
 void PortraitModeSample::Init()
 {
+	if(m_ProgramObj) return;
 	//顶点坐标
 	GLfloat vVertices[] = {
 			-1.0f, -1.0f, 0.0f,

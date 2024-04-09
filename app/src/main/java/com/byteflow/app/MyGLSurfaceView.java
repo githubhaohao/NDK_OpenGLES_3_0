@@ -15,6 +15,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_COORD_SYSTEM;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_DEPTH_TESTING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MSAA;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SCRATCH_CARD;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_SHOCK_WAVE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_TEXT_RENDER;
@@ -126,6 +127,7 @@ public class MyGLSurfaceView extends GLSurfaceView implements ScaleGestureDetect
                     case SAMPLE_TYPE_KEY_VISUALIZE_AUDIO:
                     case SAMPLE_TYPE_KEY_UBO:
                     case SAMPLE_TYPE_KEY_TEXT_RENDER:
+                    case SAMPLE_TYPE_KEY_MSAA:
                         mGLRender.updateTransformMatrix(mXAngle, mYAngle, mCurScale, mCurScale);
                         requestRender();
                         break;
@@ -182,6 +184,7 @@ public class MyGLSurfaceView extends GLSurfaceView implements ScaleGestureDetect
             case SAMPLE_TYPE_3D_MODEL:
             case SAMPLE_TYPE_KEY_VISUALIZE_AUDIO:
             case SAMPLE_TYPE_KEY_TEXT_RENDER:
+            case SAMPLE_TYPE_KEY_MSAA:
             {
                 float preSpan = detector.getPreviousSpan();
                 float curSpan = detector.getCurrentSpan();

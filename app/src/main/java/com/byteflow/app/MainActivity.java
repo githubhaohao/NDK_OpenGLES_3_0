@@ -63,6 +63,7 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_COMPUTE_SHADER;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MSAA;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_PORTRAIT_MODE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RENDER_16BitGray;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_AVATAR;
@@ -177,7 +178,8 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "RenderI444",
             "RenderYUYV",
             "ComputeShader",
-            "PortraitMode"
+            "PortraitMode",
+            "MSAA",
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -517,6 +519,10 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                         mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
                         break;
                     case SAMPLE_TYPE_KEY_COMPUTE_SHADER:
+                        break;
+                    case SAMPLE_TYPE_KEY_MSAA:
+                        tmp = loadRGBAImage(R.drawable.window1);
+                        mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
                         break;
                     default:
                         break;
