@@ -34,7 +34,7 @@ public:
 
 private:
 	GLuint m_ProgramObj2;
-	GLuint m_TextureId, m_TextureId2, m_MsTextureId;
+	GLuint m_TextureId, m_TextureId2, m_MultiSampleTexId;
 	GLint m_SamplerLoc;
 	GLint m_MVPMatLoc;
 	GLuint m_VaoId;

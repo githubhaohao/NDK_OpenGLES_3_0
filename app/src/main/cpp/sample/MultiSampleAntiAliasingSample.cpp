@@ -186,13 +186,13 @@ void MultiSampleAntiAliasingSample::Draw(int screenW, int screenH)
 //		glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_RGBA8, screenW, screenH);
 //		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, m_RboId);
 
-		glGenTextures(1, &m_MsTextureId);
-		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_MsTextureId);
+		glGenTextures(1, &m_MultiSampleTexId);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_MultiSampleTexId);
 		glTexStorage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA8, screenW,
 								  screenH, GL_TRUE);
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 		glFramebufferTexture2D(
-				GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, m_MsTextureId, 0
+				GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, m_MultiSampleTexId, 0
 		);
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
 			LOGCATE("MultiSampleAntiAliasingSample:: Framebuffer is not complete!");
@@ -260,7 +260,7 @@ void MultiSampleAntiAliasingSample::Destroy()
 		glDeleteRenderbuffers(1, &m_RboId);
 		glDeleteTextures(1, &m_TextureId2);
 		glDeleteFramebuffers(1, &m_FboId2);
-		glDeleteTextures(1, &m_MsTextureId);
+		glDeleteTextures(1, &m_MultiSampleTexId);
 	}
 }
 
