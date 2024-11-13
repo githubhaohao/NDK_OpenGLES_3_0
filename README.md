@@ -129,7 +129,7 @@ Android 代码只是做 UI 展示，核心代码是放到 C++ 那一层实现的
 
 - [OpenGL ES + GLTranslations 实现各种图像转场效果](https://blog.csdn.net/Kennethdroid/article/details/132656888)
 
-- [OpenGL ES 实现抖音传送带特效](https://mp.weixin.qq.com/s/Px6UeZuavqkKS0hek27vog)
+- [OpenGL ES 实现抖音传送带特效](https://blog.csdn.net/Kennethdroid/article/details/132656992)
 
 - [OpenGL ES 实现抖音“蓝线挑战”特效](https://blog.csdn.net/Kennethdroid/article/details/132657029)
   
