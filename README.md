@@ -1,5 +1,5 @@
 
-# Android OpenGLES 3.0 开发系统性学习教程
+# OpenGLES 3.0 开发系统性学习教程
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/githubhaohao/NDK_OpenGLES_3_0/blob/master/LICENSE.txt)
 ![Build](https://img.shields.io/badge/build-passing-brightgreen)
@@ -7,6 +7,13 @@
 [![GitHub stars](https://img.shields.io/github/stars/githubhaohao/NDK_OpenGLES_3_0)](https://github.com/githubhaohao/NDK_OpenGLES_3_0/stargazers)
 
 备注: 请使用 **Android Studio 4.1+ ，NDK r21，其中一些 Case 的 3D 效果是通过手势触发（转动和缩放）**
+
+## 关于跨平台
+OpenGL ES 是一套跨平台的编程接口（原生 C 接口，Java 和 JS 库都是二次封装的），支持 Android、iOS、Windows、Linux 平台。
+
+Android 代码只是做 UI 展示，核心代码是放到 C++ 那一层实现的，各个平台都可以共用（可以做到一套代码在这多个平台上共用和移植）。
+
+本教程适用于 Android\iOS\Windows\Linux 平台的开发者。
 
 ## 作者声明
 
@@ -110,17 +117,17 @@
 
 - [利用 OpenGL ES 给视频播放器和相机做个字符画滤镜](https://blog.csdn.net/Kennethdroid/article/details/113379112)
 
-- [使用 OpenGL 实现 RGB 到 YUV 的图像格式转换](https://t.1yb.co/uvfH)
+- [使用 OpenGL 实现 RGB 到 YUV 的图像格式转换](https://blog.csdn.net/Kennethdroid/article/details/117675581)
 
-- [OpenGL ES 共享上下文时，可以共享哪些资源？](https://t.1yb.co/uvfS)
+- [OpenGL ES 共享上下文时，可以共享哪些资源？](https://blog.csdn.net/Kennethdroid/article/details/143743942)
 
-- [OpenGL ES 文字渲染方式有几种？](http://mp.weixin.qq.com/s?__biz=MzIwNTIwMzAzNg==&mid=506682327&idx=1&sn=38f091451bb508b66933f2213ec0fb7d&chksm=0cf388e43b8401f2e115aa58b0ad8facb462363f3a1ed99604f9ea5c51b2bc815d8f237fc6e9#rd)
+- [OpenGL ES 文字渲染方式有几种？](https://blog.csdn.net/Kennethdroid/article/details/143744762)
 
-- [OpenGL ES 文字渲染进阶：渲染中文字体](https://t.1yb.co/vezw)
+- [OpenGL ES 文字渲染进阶：渲染中文字体](https://blog.csdn.net/Kennethdroid/article/details/143744917)
 
-- [OpenGL ES + 人像抠图实现人像留色](https://t.1yb.co/z84y) 
+- [OpenGL ES + 人像抠图实现人像留色](https://blog.csdn.net/Kennethdroid/article/details/132055965) 
 
-- [OpenGL ES + GLTranslations 实现各种图像转场效果](https://t.1yb.co/z8do)
+- [OpenGL ES + GLTranslations 实现各种图像转场效果](https://blog.csdn.net/Kennethdroid/article/details/132656888)
 
 - [OpenGL ES 实现抖音传送带特效](https://mp.weixin.qq.com/s/Px6UeZuavqkKS0hek27vog)
 
