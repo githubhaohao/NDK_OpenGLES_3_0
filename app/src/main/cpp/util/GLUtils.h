@@ -36,6 +36,8 @@ public:
             const GLchar **varying,
             int varyingCount);
 
+    static GLuint CreateProgramWithGeometryShader(const char *pVertexShaderSource, const char *pFragShaderSource, const char *pGeometryShaderSource);
+
     static void DeleteProgram(GLuint &program);
 
     static void CheckGLError(const char *pGLOperation);

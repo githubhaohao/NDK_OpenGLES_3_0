@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <cstring>
 #include <GLES2/gl2ext.h>
+#include <GLES3/gl32.h>
 
 GLuint GLUtils::LoadShader(GLenum shaderType, const char *pSource)
 {
@@ -138,6 +139,62 @@ GLuint GLUtils::CreateProgramWithFeedback(const char *pVertexShaderSource, const
         }
     FUN_END_TIME("GLUtils::CreateProgramWithFeedback")
     LOGCATE("GLUtils::CreateProgramWithFeedback program = %d", program);
+    return program;
+}
+
+GLuint GLUtils::CreateProgramWithGeometryShader(const char *pVertexShaderSource, const char *pFragShaderSource, const char *pGeometryShaderSource)
+{
+    GLuint program = GL_NONE;
+    GLuint vertexShaderHandle = GL_NONE, fragShaderHandle = GL_NONE, geometryShaderHandle = GL_NONE;
+    FUN_BEGIN_TIME("GLUtils::CreateProgramWithGeometryShader")
+        vertexShaderHandle = LoadShader(GL_VERTEX_SHADER, pVertexShaderSource);
+        if (!vertexShaderHandle) return program;
+        fragShaderHandle = LoadShader(GL_FRAGMENT_SHADER, pFragShaderSource);
+        if (!fragShaderHandle) return program;
+        geometryShaderHandle = LoadShader(GL_GEOMETRY_SHADER, pGeometryShaderSource);
+        if (!geometryShaderHandle) return program;
+        program = glCreateProgram();
+        if (program)
+        {
+            glAttachShader(program, vertexShaderHandle);
+            CheckGLError("CreateProgramWithGeometryShader::glAttachShader vs");
+            glAttachShader(program, geometryShaderHandle);
+            CheckGLError("CreateProgramWithGeometryShader::glAttachShader gs");
+            glAttachShader(program, fragShaderHandle);
+            CheckGLError("CreateProgramWithGeometryShader::glAttachShader fs");
+            glLinkProgram(program);
+            GLint linkStatus = GL_FALSE;
+            glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
+
+            glDetachShader(program, vertexShaderHandle);
+            glDeleteShader(vertexShaderHandle);
+            vertexShaderHandle = GL_NONE;
+            glDetachShader(program, geometryShaderHandle);
+            glDeleteShader(geometryShaderHandle);
+            geometryShaderHandle = GL_NONE;
+            glDetachShader(program, fragShaderHandle);
+            glDeleteShader(fragShaderHandle);
+            fragShaderHandle = GL_NONE;
+            if (linkStatus != GL_TRUE)
+            {
+                GLint bufLength = 0;
+                glGetProgramiv(program, GL_INFO_LOG_LENGTH, &bufLength);
+                if (bufLength)
+                {
+                    char* buf = (char*) malloc((size_t)bufLength);
+                    if (buf)
+                    {
+                        glGetProgramInfoLog(program, bufLength, NULL, buf);
+                        LOGCATE("GLUtils::CreateProgramWithGeometryShader Could not link program:\n%s\n", buf);
+                        free(buf);
+                    }
+                }
+                glDeleteProgram(program);
+                program = 0;
+            }
+        }
+    FUN_END_TIME("GLUtils::CreateProgramWithGeometryShader")
+    LOGCATE("GLUtils::CreateProgramWithGeometryShader program = %d", program);
     return program;
 }
 
