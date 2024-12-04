@@ -21,6 +21,12 @@ public:
         ID = GLUtils::CreateProgram(vertexStr, fragmentStr);
     }
 
+    Shader(const char* vertexStr, const char* fragmentStr, const char* geometryStr)
+    {
+        DEBUG_LOGCATE();
+        ID = GLUtils::CreateProgramWithGeometryShader(vertexStr, fragmentStr, geometryStr);
+    }
+
     ~Shader()
     {
         DEBUG_LOGCATE();
