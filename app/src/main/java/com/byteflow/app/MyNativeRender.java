@@ -70,8 +70,11 @@ public class MyNativeRender {
     public static final int SAMPLE_TYPE_KEY_COMPUTE_SHADER      = SAMPLE_TYPE + 56;
     public static final int SAMPLE_TYPE_KEY_PORTRAIT_MODE       = SAMPLE_TYPE + 57;
     public static final int SAMPLE_TYPE_KEY_MSAA                = SAMPLE_TYPE + 58;
-
     public static final int SAMPLE_TYPE_KEY_FULLSCREEN_TRIANGLE = SAMPLE_TYPE + 59;
+    public static final int SAMPLE_TYPE_KEY_GEOMETRY_SHADER     = SAMPLE_TYPE + 60;
+    public static final int SAMPLE_TYPE_KEY_GEOMETRY_SHADER2    = SAMPLE_TYPE + 61;
+    public static final int SAMPLE_TYPE_KEY_GEOMETRY_SHADER3    = SAMPLE_TYPE + 62;
+
     public static final int SAMPLE_TYPE_SET_TOUCH_LOC           = SAMPLE_TYPE + 999;
     public static final int SAMPLE_TYPE_SET_GRAVITY_XY          = SAMPLE_TYPE + 1000;
 

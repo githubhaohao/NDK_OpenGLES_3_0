@@ -64,6 +64,9 @@ import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_FBO_LEG;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_INSTANCING;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_COMPUTE_SHADER;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_FULLSCREEN_TRIANGLE;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_GEOMETRY_SHADER;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_GEOMETRY_SHADER2;
+import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_GEOMETRY_SHADER3;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_MSAA;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_PORTRAIT_MODE;
 import static com.byteflow.app.MyNativeRender.SAMPLE_TYPE_KEY_RENDER_16BitGray;
@@ -182,6 +185,9 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
             "PortraitMode",
             "MSAA",
             "FullScreenTriangle",
+            "GeometryShader",
+            "GeometryShader2",
+            "GeometryShader3",
     };
 
     private MyGLSurfaceView mGLSurfaceView;
@@ -417,6 +423,8 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;
                     case SAMPLE_TYPE_KEY_BEZIER_CURVE:
+                    case SAMPLE_TYPE_KEY_GEOMETRY_SHADER2:
+                    case SAMPLE_TYPE_KEY_GEOMETRY_SHADER3:
                         //loadRGBAImage(R.drawable.board_texture);
                         mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;
@@ -529,6 +537,11 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                     case SAMPLE_TYPE_KEY_FULLSCREEN_TRIANGLE:
                         tmp = loadRGBAImage(R.drawable.lye);
                         mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
+                        break;
+                    case SAMPLE_TYPE_KEY_GEOMETRY_SHADER:
+                        tmp = loadRGBAImage(R.drawable.lye);
+                        mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
+                        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
                         break;
                     default:
                         break;
