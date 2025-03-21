@@ -531,7 +531,7 @@ public class MainActivity extends AppCompatActivity implements AudioCollector.Ca
                     case SAMPLE_TYPE_KEY_COMPUTE_SHADER:
                         break;
                     case SAMPLE_TYPE_KEY_MSAA:
-                        tmp = loadRGBAImage(R.drawable.window1);
+                        tmp = loadRGBAImage(R.drawable.window);
                         mGLSurfaceView.setAspectRatio(tmp.getWidth(), tmp.getHeight());
                         break;
                     case SAMPLE_TYPE_KEY_FULLSCREEN_TRIANGLE:
